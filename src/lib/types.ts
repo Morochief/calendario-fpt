@@ -1,0 +1,41 @@
+export type Modalidad = {
+    id: string;
+    nombre: string;
+    color: string;
+};
+
+export type Evento = {
+    id: string;
+    modalidad_id: string;
+    titulo: string;
+    fecha: string;
+    hora: string;
+    ubicacion: string | null;
+    descripcion: string | null;
+    tipo: 'puntuable' | 'jornada_cero' | 'otro';
+    created_at: string;
+    modalidades?: Modalidad;
+};
+
+export type EventoConModalidad = Evento & {
+    modalidades: Modalidad;
+};
+
+export const MESES = [
+    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre'
+] as const;
+
+export const MODALIDADES_INICIALES = [
+    { nombre: 'Tiro Práctico IPSC', color: '#DC2626' },
+    { nombre: 'Silueta Metálica', color: '#2563EB' },
+    { nombre: 'Cartel', color: '#059669' },
+    { nombre: 'Long Range .22', color: '#7C3AED' },
+    { nombre: 'Long Range Gran Calibre', color: '#DB2777' },
+    { nombre: 'Tiro Práctico IDPA', color: '#EA580C' },
+    { nombre: 'Tiro Dinámico', color: '#0891B2' },
+    { nombre: 'Aire Comprimido (Olímpico)', color: '#4F46E5' },
+    { nombre: 'Trap Americano', color: '#65A30D' },
+    { nombre: 'Fosa Olímpica', color: '#CA8A04' },
+    { nombre: 'Hélice', color: '#6B7280' },
+];

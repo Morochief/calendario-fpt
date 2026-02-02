@@ -1,66 +1,119 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client';
 
-export default function Home() {
+import { useState, useEffect } from 'react';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import ModalityFilter from '@/components/ModalityFilter';
+import MonthCard from '@/components/MonthCard';
+import { createClient } from '@/lib/supabase';
+import { Modalidad, EventoConModalidad, MESES } from '@/lib/types';
+
+export default function CalendarPage() {
+  const [modalidades, setModalidades] = useState<Modalidad[]>([]);
+  const [eventos, setEventos] = useState<EventoConModalidad[]>([]);
+  const [selectedModalidad, setSelectedModalidad] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  async function loadData() {
+    try {
+      const supabase = createClient();
+
+      // Cargar modalidades
+      const { data: modalidadesData, error: modError } = await supabase
+        .from('modalidades')
+        .select('*')
+        .order('nombre');
+
+      if (modError) throw modError;
+      setModalidades(modalidadesData || []);
+
+      // Cargar eventos con su modalidad
+      const { data: eventosData, error: evError } = await supabase
+        .from('eventos')
+        .select(`
+          *,
+          modalidades (*)
+        `)
+        .order('fecha');
+
+      if (evError) throw evError;
+      setEventos(eventosData || []);
+    } catch (err) {
+      console.error('Error loading data:', err);
+      setError('Error al cargar los datos. Verifica la configuración de Supabase.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // Filtrar eventos por modalidad seleccionada
+  const eventosFiltrados = selectedModalidad
+    ? eventos.filter(e => e.modalidad_id === selectedModalidad)
+    : eventos;
+
+  if (loading) {
+    return (
+      <>
+        <Header />
+        <main className="main">
+          <div className="loading">
+            <div className="spinner"></div>
+          </div>
+        </main>
+      </>
+    );
+  }
+
+  if (error) {
+    return (
+      <>
+        <Header />
+        <main className="main">
+          <div className="admin-card" style={{ textAlign: 'center', padding: '3rem' }}>
+            <h2 style={{ color: '#DC2626', marginBottom: '1rem' }}>⚠️ Error de Configuración</h2>
+            <p style={{ marginBottom: '1.5rem' }}>{error}</p>
+            <p style={{ fontSize: '0.875rem', color: '#6B7280' }}>
+              Asegúrate de configurar las variables de entorno NEXT_PUBLIC_SUPABASE_URL y
+              NEXT_PUBLIC_SUPABASE_ANON_KEY en tu archivo .env.local
+            </p>
+          </div>
+        </main>
+        <Footer />
+      </>
+    );
+  }
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+    <>
+      <Header />
+      <main className="main">
+        <h2 className="section-title">Convocatoria 2026</h2>
+
+        {modalidades.length > 0 && (
+          <ModalityFilter
+            modalidades={modalidades}
+            selected={selectedModalidad}
+            onSelect={setSelectedModalidad}
+          />
+        )}
+
+        <div className="calendar-grid">
+          {MESES.map((mes, index) => (
+            <MonthCard
+              key={mes}
+              mes={mes}
+              mesIndex={index}
+              eventos={eventosFiltrados}
             />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          ))}
         </div>
       </main>
-    </div>
+      <Footer />
+    </>
   );
 }
