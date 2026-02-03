@@ -100,6 +100,9 @@ export default function AdminPage() {
                         <Link href="/admin/modalidades" className="btn btn-secondary">
                             🏷️ Modalidades
                         </Link>
+                        <Link href="/admin/tipos-evento" className="btn btn-secondary">
+                            📋 Tipos
+                        </Link>
                         <button onClick={handleLogout} className="btn btn-secondary">
                             Cerrar sesión
                         </button>

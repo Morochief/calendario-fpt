@@ -5,10 +5,11 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import { createClient } from '@/lib/supabase';
-import { Modalidad } from '@/lib/types';
+import { Modalidad, TipoEvento } from '@/lib/types';
 
 export default function NuevoEventoPage() {
     const [modalidades, setModalidades] = useState<Modalidad[]>([]);
+    const [tiposEvento, setTiposEvento] = useState<TipoEvento[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const router = useRouter();
@@ -20,7 +21,7 @@ export default function NuevoEventoPage() {
     const [hora, setHora] = useState('08:30');
     const [ubicacion, setUbicacion] = useState('');
     const [descripcion, setDescripcion] = useState('');
-    const [tipo, setTipo] = useState<'puntuable' | 'jornada_cero' | 'otro'>('puntuable');
+    const [tipo, setTipo] = useState('');
 
     useEffect(() => {
         checkAuthAndLoad();
@@ -36,15 +37,28 @@ export default function NuevoEventoPage() {
         }
 
         // Load modalidades
-        const { data } = await supabase
+        const { data: modalidadesData } = await supabase
             .from('modalidades')
             .select('*')
             .order('nombre');
 
-        if (data) {
-            setModalidades(data);
-            if (data.length > 0) {
-                setModalidadId(data[0].id);
+        if (modalidadesData) {
+            setModalidades(modalidadesData);
+            if (modalidadesData.length > 0) {
+                setModalidadId(modalidadesData[0].id);
+            }
+        }
+
+        // Load tipos de evento
+        const { data: tiposData } = await supabase
+            .from('tipos_evento')
+            .select('*')
+            .order('nombre');
+
+        if (tiposData) {
+            setTiposEvento(tiposData);
+            if (tiposData.length > 0) {
+                setTipo(tiposData[0].nombre);
             }
         }
     }
@@ -131,12 +145,14 @@ export default function NuevoEventoPage() {
                                 <select
                                     id="tipo"
                                     value={tipo}
-                                    onChange={(e) => setTipo(e.target.value as typeof tipo)}
+                                    onChange={(e) => setTipo(e.target.value)}
                                     required
                                 >
-                                    <option value="puntuable">Fecha Puntuable</option>
-                                    <option value="jornada_cero">Jornada de Cero</option>
-                                    <option value="otro">Otro</option>
+                                    {tiposEvento.map(t => (
+                                        <option key={t.id} value={t.nombre}>
+                                            {t.nombre}
+                                        </option>
+                                    ))}
                                 </select>
                             </div>
                         </div>

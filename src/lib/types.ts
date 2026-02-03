@@ -52,3 +52,16 @@ export type Inscripcion = {
     eventos?: Evento;
     modalidades?: Modalidad;
 };
+
+export type TipoEvento = {
+    id: string;
+    nombre: string;
+    color: string;
+};
+
+export const TIPOS_EVENTO_INICIALES = [
+    { nombre: 'Puntuable', color: '#DC2626' },
+    { nombre: 'Jornada de Cero', color: '#6366F1' },
+    { nombre: 'Tirada Social', color: '#059669' },
+    { nombre: 'Otro', color: '#6B7280' },
+];
