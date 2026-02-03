@@ -5,13 +5,17 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ModalityFilter from '@/components/ModalityFilter';
 import MonthCard from '@/components/MonthCard';
+import AnnualCalendar from '@/components/AnnualCalendar';
 import { createClient } from '@/lib/supabase';
 import { Modalidad, EventoConModalidad, MESES } from '@/lib/types';
+
+type ViewType = 'mensual' | 'anual';
 
 export default function CalendarPage() {
   const [modalidades, setModalidades] = useState<Modalidad[]>([]);
   const [eventos, setEventos] = useState<EventoConModalidad[]>([]);
   const [selectedModalidad, setSelectedModalidad] = useState<string | null>(null);
+  const [vista, setVista] = useState<ViewType>('mensual');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -93,7 +97,24 @@ export default function CalendarPage() {
     <>
       <Header />
       <main className="main">
-        <h2 className="section-title">Competencias 2026</h2>
+        <div className="calendar-header">
+          <h2 className="section-title">Competencias 2026</h2>
+
+          <div className="view-toggle">
+            <button
+              className={`view-btn ${vista === 'mensual' ? 'active' : ''}`}
+              onClick={() => setVista('mensual')}
+            >
+              📅 Mensual
+            </button>
+            <button
+              className={`view-btn ${vista === 'anual' ? 'active' : ''}`}
+              onClick={() => setVista('anual')}
+            >
+              📆 Anual
+            </button>
+          </div>
+        </div>
 
         {modalidades.length > 0 && (
           <ModalityFilter
@@ -103,16 +124,20 @@ export default function CalendarPage() {
           />
         )}
 
-        <div className="calendar-grid">
-          {MESES.map((mes, index) => (
-            <MonthCard
-              key={mes}
-              mes={mes}
-              mesIndex={index}
-              eventos={eventosFiltrados}
-            />
-          ))}
-        </div>
+        {vista === 'mensual' ? (
+          <div className="calendar-grid">
+            {MESES.map((mes, index) => (
+              <MonthCard
+                key={mes}
+                mes={mes}
+                mesIndex={index}
+                eventos={eventosFiltrados}
+              />
+            ))}
+          </div>
+        ) : (
+          <AnnualCalendar eventos={eventosFiltrados} year={2026} />
+        )}
       </main>
       <Footer />
     </>
