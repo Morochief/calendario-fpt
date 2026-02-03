@@ -5,12 +5,13 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import { createClient } from '@/lib/supabase';
-import { Inscripcion, Modalidad, Evento } from '@/lib/types';
+import { Inscripcion, Modalidad, Evento, TipoEvento } from '@/lib/types';
 
 export default function InscripcionesPage() {
     const [inscripciones, setInscripciones] = useState<Inscripcion[]>([]);
     const [modalidades, setModalidades] = useState<Modalidad[]>([]);
     const [eventos, setEventos] = useState<Evento[]>([]);
+    const [tiposEvento, setTiposEvento] = useState<TipoEvento[]>([]);
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
@@ -21,6 +22,7 @@ export default function InscripcionesPage() {
     const [telefono, setTelefono] = useState('');
     const [email, setEmail] = useState('');
     const [modalidadId, setModalidadId] = useState('');
+    const [tipoEventoId, setTipoEventoId] = useState('');
     const [eventoId, setEventoId] = useState('');
     const [notas, setNotas] = useState('');
     const [saving, setSaving] = useState(false);
@@ -40,7 +42,7 @@ export default function InscripcionesPage() {
             return;
         }
 
-        await Promise.all([loadInscripciones(), loadModalidades(), loadEventos()]);
+        await Promise.all([loadInscripciones(), loadModalidades(), loadEventos(), loadTiposEvento()]);
         setLoading(false);
     }
 
@@ -51,7 +53,8 @@ export default function InscripcionesPage() {
             .select(`
                 *,
                 modalidades (*),
-                eventos (*)
+                eventos (*),
+                tipos_evento (*)
             `)
             .order('created_at', { ascending: false });
 
@@ -79,6 +82,17 @@ export default function InscripcionesPage() {
         }
     }
 
+    async function loadTiposEvento() {
+        const supabase = createClient();
+        const { data } = await supabase.from('tipos_evento').select('*').order('nombre');
+        if (data) {
+            setTiposEvento(data);
+            if (data.length > 0 && !tipoEventoId) {
+                setTipoEventoId(data[0].id);
+            }
+        }
+    }
+
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         setSaving(true);
@@ -90,6 +104,7 @@ export default function InscripcionesPage() {
             telefono,
             email: email || null,
             modalidad_id: modalidadId,
+            tipo_evento_id: tipoEventoId || null,
             evento_id: eventoId || null,
             notas: notas || null,
         };
@@ -110,18 +125,20 @@ export default function InscripcionesPage() {
         setTelefono('');
         setEmail('');
         setModalidadId(modalidades[0]?.id || '');
+        setTipoEventoId(tiposEvento[0]?.id || '');
         setEventoId('');
         setNotas('');
         setEditingId(null);
         setShowForm(false);
     }
 
-    function handleEdit(insc: Inscripcion) {
+    function handleEdit(insc: Inscripcion & { tipo_evento_id?: string }) {
         setEditingId(insc.id);
         setNombre(insc.nombre);
         setTelefono(insc.telefono);
         setEmail(insc.email || '');
         setModalidadId(insc.modalidad_id);
+        setTipoEventoId(insc.tipo_evento_id || tiposEvento[0]?.id || '');
         setEventoId(insc.evento_id || '');
         setNotas(insc.notas || '');
         setShowForm(true);
@@ -229,20 +246,35 @@ export default function InscripcionesPage() {
                                 </div>
                             </div>
 
-                            <div className="form-group">
-                                <label htmlFor="evento">Evento específico (opcional)</label>
-                                <select
-                                    id="evento"
-                                    value={eventoId}
-                                    onChange={(e) => setEventoId(e.target.value)}
-                                >
-                                    <option value="">-- Inscripción general a la modalidad --</option>
-                                    {eventosDeModalidad.map(e => (
-                                        <option key={e.id} value={e.id}>
-                                            {new Date(e.fecha + 'T12:00:00').toLocaleDateString('es-ES')} - {e.titulo}
-                                        </option>
-                                    ))}
-                                </select>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                <div className="form-group">
+                                    <label htmlFor="tipoEvento">Tipo de Evento *</label>
+                                    <select
+                                        id="tipoEvento"
+                                        value={tipoEventoId}
+                                        onChange={(e) => setTipoEventoId(e.target.value)}
+                                        required
+                                    >
+                                        {tiposEvento.map(t => (
+                                            <option key={t.id} value={t.id}>{t.nombre}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="evento">Evento específico (opcional)</label>
+                                    <select
+                                        id="evento"
+                                        value={eventoId}
+                                        onChange={(e) => setEventoId(e.target.value)}
+                                    >
+                                        <option value="">-- Inscripción general --</option>
+                                        {eventosDeModalidad.map(e => (
+                                            <option key={e.id} value={e.id}>
+                                                {new Date(e.fecha + 'T12:00:00').toLocaleDateString('es-ES')} - {e.titulo}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
 
                             <div className="form-group">
@@ -294,12 +326,13 @@ export default function InscripcionesPage() {
                                     <th>Nombre</th>
                                     <th>Teléfono</th>
                                     <th>Modalidad</th>
+                                    <th>Tipo</th>
                                     <th>Evento</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredInscripciones.map(insc => (
+                                {filteredInscripciones.map((insc: Inscripcion & { tipos_evento?: TipoEvento }) => (
                                     <tr key={insc.id}>
                                         <td style={{ fontWeight: 500 }}>{insc.nombre}</td>
                                         <td>
@@ -325,6 +358,18 @@ export default function InscripcionesPage() {
                                                 fontWeight: 500
                                             }}>
                                                 {insc.modalidades?.nombre}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span style={{
+                                                padding: '0.25rem 0.5rem',
+                                                background: `${insc.tipos_evento?.color || '#6B7280'}15`,
+                                                color: insc.tipos_evento?.color || '#6B7280',
+                                                borderRadius: '4px',
+                                                fontSize: '0.8rem',
+                                                fontWeight: 500
+                                            }}>
+                                                {insc.tipos_evento?.nombre || '-'}
                                             </span>
                                         </td>
                                         <td style={{ fontSize: '0.85rem', color: '#6B7280' }}>
