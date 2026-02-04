@@ -1441,6 +1441,13 @@ textarea:focus-visible {
   background: var(--color-light-gray);
 }
 
+/* Force dark text for anchor links inside dropdown */
+a.user-dropdown-item,
+.user-dropdown-menu a {
+  color: #111827 !important;
+  text-decoration: none !important;
+}
+
 .user-dropdown-item.danger {
   color: #DC2626;
 }
