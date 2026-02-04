@@ -9,7 +9,7 @@ import EmptyState from '@/components/EmptyState';
 import Pagination from '@/components/Pagination';
 import { TableSkeleton } from '@/components/Skeleton';
 import { useToast } from '@/components/Toast';
-import UserDropdown from '@/components/UserDropdown';
+
 import { createClient } from '@/lib/supabase';
 import { Evento, Modalidad, TipoEvento } from '@/lib/types';
 
@@ -57,12 +57,7 @@ export default function AdminPage() {
         setLoading(false);
     }
 
-    async function handleLogout() {
-        const supabase = createClient();
-        await supabase.auth.signOut();
-        showToast('Sesión cerrada correctamente', 'info');
-        router.push('/admin/login');
-    }
+
 
     async function handleDelete(id: string) {
         if (!confirm('¿Estás seguro de eliminar este evento?')) return;
@@ -138,8 +133,6 @@ export default function AdminPage() {
                         <Link href="/admin/tipos-evento" className="btn btn-secondary" aria-label="Gestionar tipos de evento">
                             📋 Tipos
                         </Link>
-                        <div style={{ width: '1px', height: '24px', background: '#E5E7EB', margin: '0 0.5rem' }}></div>
-                        <UserDropdown email={user?.email} onLogout={handleLogout} />
                     </div>
                 </div>
 

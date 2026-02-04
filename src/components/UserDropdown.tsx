@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import Link from 'next/link';
 
 interface UserDropdownProps {
     email: string | undefined;
@@ -48,9 +49,16 @@ export default function UserDropdown({ email, onLogout }: UserDropdownProps) {
                         <span className="user-dropdown-email">{email}</span>
                     </div>
                     <div className="user-dropdown-divider" />
+                    <Link href="/admin" className="user-dropdown-item" role="menuitem" onClick={() => setIsOpen(false)}>
+                        <span>⚙️</span>
+                        Panel Admin
+                    </Link>
                     <button
                         className="user-dropdown-item danger"
-                        onClick={onLogout}
+                        onClick={() => {
+                            setIsOpen(false);
+                            onLogout();
+                        }}
                         role="menuitem"
                     >
                         <span>🚪</span>
