@@ -178,15 +178,15 @@ export default function AdminPage() {
                                             const fecha = new Date(evento.fecha + 'T12:00:00');
                                             return (
                                                 <tr key={evento.id}>
-                                                    <td>
+                                                    <td data-label="Fecha">
                                                         {fecha.toLocaleDateString('es-ES', {
                                                             day: '2-digit',
                                                             month: '2-digit',
                                                             year: 'numeric'
                                                         })}
                                                     </td>
-                                                    <td style={{ fontWeight: 500 }}>{evento.titulo}</td>
-                                                    <td>
+                                                    <td data-label="Título" style={{ fontWeight: 500 }}>{evento.titulo}</td>
+                                                    <td data-label="Modalidad">
                                                         <span
                                                             style={{
                                                                 display: 'inline-flex',
@@ -209,7 +209,7 @@ export default function AdminPage() {
                                                             {evento.modalidades?.nombre}
                                                         </span>
                                                     </td>
-                                                    <td>
+                                                    <td data-label="Tipo">
                                                         <span style={{
                                                             display: 'inline-block',
                                                             padding: '0.25rem 0.5rem',
@@ -222,7 +222,7 @@ export default function AdminPage() {
                                                             {evento.tipos_evento?.nombre || evento.tipo || '-'}
                                                         </span>
                                                     </td>
-                                                    <td>
+                                                    <td data-label="Acciones">
                                                         <div className="admin-actions">
                                                             <Link
                                                                 href={`/admin/eventos/${evento.id}`}

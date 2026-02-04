@@ -223,21 +223,100 @@ a {
 
 /* Event Card */
 .event-card {
-  background: var(--color-light-gray);
+  background: var(--color-white);
   border-radius: var(--radius-md);
   padding: 1rem;
   margin-bottom: 0.75rem;
   border-left: 4px solid var(--color-primary);
-  transition: var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
-.event-card:last-child {
-  margin-bottom: 0;
+.event-card.has-image {
+  padding: 0;
+  /* Let image fill width */
 }
 
 .event-card:hover {
-  transform: translateX(4px);
-  box-shadow: var(--shadow-sm);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.event-hero-image {
+  background-color: var(--color-light-gray);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.btn-location-action:hover {
+  background: #E5E7EB !important;
+  color: #111827 !important;
+  transform: translateY(-1px);
+}
+
+/* ========================================
+   Mobile Admin Tables (Card Transformation)
+   ======================================== */
+@media (max-width: 768px) {
+  .admin-table-wrapper {
+    overflow: visible;
+  }
+
+  .admin-table thead {
+    display: none;
+    /* Hide headers */
+  }
+
+  .admin-table,
+  .admin-table tbody,
+  .admin-table tr,
+  .admin-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .admin-table tr {
+    background: white;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #E5E7EB;
+    padding: 1rem;
+    position: relative;
+  }
+
+  .admin-table td {
+    padding: 0.5rem 0;
+    border: none;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* Label for each cell content */
+  .admin-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    font-size: 0.75rem;
+    color: #6B7280;
+    text-transform: uppercase;
+    margin-right: 1rem;
+  }
+
+  /* Specific tweaks for admin actions */
+  .admin-table td:last-child {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #F3F4F6;
+    justify-content: flex-end;
+  }
+
+  .admin-table td:last-child::before {
+    display: none;
+  }
 }
 
 .event-date {
