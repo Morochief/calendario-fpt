@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { ToastProvider } from "@/components/Toast";
 
 export const metadata: Metadata = {
   title: "Calendario 2026 | Club Paraguayo de Tiro Práctico",
@@ -23,7 +24,12 @@ export default function RootLayout({
         />
       </head>
       <body style={{ fontFamily: "'Inter', sans-serif" }}>
-        {children}
+        <a href="#main-content" className="sr-only">
+          Saltar al contenido principal
+        </a>
+        <ToastProvider>
+          {children}
+        </ToastProvider>
       </body>
     </html>
   );
