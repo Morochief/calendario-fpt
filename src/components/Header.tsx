@@ -53,9 +53,14 @@ export default function Header() {
             </Link>
             <nav className="header-nav">
                 <Link href="/" style={{
-                    background: !isAdmin ? 'rgba(255,255,255,0.15)' : 'transparent'
+                    background: !isAdmin && pathname !== '/reglamentos' ? 'rgba(255,255,255,0.15)' : 'transparent'
                 }}>
                     📅 Calendario
+                </Link>
+                <Link href="/reglamentos" style={{
+                    background: pathname === '/reglamentos' ? 'rgba(255,255,255,0.15)' : 'transparent'
+                }}>
+                    📂 Reglamentos
                 </Link>
                 {user ? (
                     <UserDropdown email={user.email} onLogout={handleLogout} />
