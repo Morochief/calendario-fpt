@@ -768,21 +768,6 @@ a {
     grid-template-columns: 1fr;
   }
 
-  .filter-bar {
-    padding: 1rem 0;
-    margin: 0 -1rem 1.5rem -1rem;
-    /* Negative margin to bleed to edges */
-    border-radius: 0;
-    width: calc(100% + 2rem);
-    background: rgba(255, 255, 255, 0.95);
-    /* More opaque on mobile */
-  }
-
-  .filter-scroll-container {
-    padding: 0 1rem;
-    /* Restore padding inside scroll */
-  }
-
   .filter-chip {
     font-size: 0.75rem;
     padding: 0.4rem 0.75rem;
