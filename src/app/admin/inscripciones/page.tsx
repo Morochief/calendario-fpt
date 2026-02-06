@@ -329,6 +329,7 @@ export default function InscripcionesPage() {
                                         <th>Modalidad</th>
                                         <th>Tipo</th>
                                         <th>Evento</th>
+                                        <th>Estado</th>
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
@@ -375,6 +376,35 @@ export default function InscripcionesPage() {
                                             </td>
                                             <td style={{ fontSize: '0.85rem', color: '#6B7280' }}>
                                                 {insc.eventos?.titulo || 'General'}
+                                            </td>
+                                            <td>
+                                                <span
+                                                    onClick={async () => {
+                                                        const supabase = createClient();
+                                                        const newStatus = !insc.pagado;
+                                                        await supabase
+                                                            .from('inscripciones')
+                                                            .update({ pagado: newStatus })
+                                                            .eq('id', insc.id);
+                                                        loadInscripciones();
+                                                    }}
+                                                    style={{
+                                                        cursor: 'pointer',
+                                                        padding: '0.25rem 0.6rem',
+                                                        borderRadius: '100px',
+                                                        fontSize: '0.75rem',
+                                                        fontWeight: 600,
+                                                        background: insc.pagado ? '#DCFCE7' : '#FEE2E2',
+                                                        color: insc.pagado ? '#166534' : '#991B1B',
+                                                        display: 'inline-flex',
+                                                        alignItems: 'center',
+                                                        gap: '0.25rem',
+                                                        border: `1px solid ${insc.pagado ? '#BBF7D0' : '#FECACA'}`
+                                                    }}
+                                                    title="Click para cambiar estado"
+                                                >
+                                                    {insc.pagado ? '✅ PAGADO' : '⏳ PENDIENTE'}
+                                                </span>
                                             </td>
                                             <td>
                                                 <div className="admin-actions">
