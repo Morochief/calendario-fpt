@@ -27,6 +27,19 @@ export const modalidadCreateSchema = modalidadSchema.omit({ id: true, created_at
 export const modalidadUpdateSchema = modalidadCreateSchema.partial();
 
 // ========================================
+// Reglamento Schema
+// ========================================
+
+export const reglamentoSchema = z.object({
+    id: uuidSchema,
+    titulo: z.string().min(1, 'El título es requerido').max(200, 'Máximo 200 caracteres'),
+    url: z.string().url('URL inválida'),
+    created_at: z.string().optional(),
+});
+
+export const reglamentoCreateSchema = reglamentoSchema.omit({ id: true, created_at: true });
+
+// ========================================
 // Tipo Evento Schema
 // ========================================
 
