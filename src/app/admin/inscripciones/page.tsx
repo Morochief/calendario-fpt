@@ -293,6 +293,19 @@ export default function InscripcionesPage() {
                                 />
                             </div>
 
+                            <div className="form-group">
+                                <label htmlFor="monto">Monto Abonado (Gs)</label>
+                                <input
+                                    id="monto"
+                                    type="number"
+                                    value={montoPagado}
+                                    onChange={(e) => setMontoPagado(e.target.value)}
+                                    placeholder="0"
+                                    min="0"
+                                    step="5000"
+                                />
+                            </div>
+
                             <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
                                 <button type="button" onClick={resetForm} className="btn btn-secondary">
                                     Cancelar
@@ -335,6 +348,7 @@ export default function InscripcionesPage() {
                                         <th>Tipo</th>
                                         <th>Evento</th>
                                         <th>Estado</th>
+                                        <th>Monto (Gs)</th>
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
