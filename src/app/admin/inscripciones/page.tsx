@@ -438,6 +438,9 @@ export default function InscripcionesPage() {
                                                         (insc.estado_pago === 'parcial') ? '🟠 PARCIAL' : '⏳ PENDIENTE'}
                                                 </span>
                                             </td>
+                                            <td style={{ fontWeight: 600, color: '#374151' }}>
+                                                Gs. {(insc.monto_pagado || 0).toLocaleString('es-PY')}
+                                            </td>
                                             <td>
                                                 <div className="admin-actions">
                                                     <button
