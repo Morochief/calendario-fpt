@@ -41,7 +41,7 @@ export default function LoginPage() {
         <div className="login-container">
             <div className="login-card">
                 <div className="login-logo">
-                    <img src="/logo.png" alt="CPTP" style={{ height: '80px' }} />
+                    <img src="/logo.svg" alt="CPTP" style={{ height: '140px' }} />
                 </div>
                 <h1>Panel de Administración</h1>
                 <p style={{
