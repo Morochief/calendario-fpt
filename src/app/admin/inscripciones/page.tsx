@@ -25,6 +25,7 @@ export default function InscripcionesPage() {
     const [tipoEventoId, setTipoEventoId] = useState('');
     const [eventoId, setEventoId] = useState('');
     const [notas, setNotas] = useState('');
+    const [montoPagado, setMontoPagado] = useState('');
     const [saving, setSaving] = useState(false);
 
     const router = useRouter();
@@ -70,6 +71,7 @@ export default function InscripcionesPage() {
             setModalidades(data);
             if (data.length > 0 && !modalidadId) {
                 setModalidadId(data[0].id);
+                setMontoPagado('');
             }
         }
     }
@@ -107,6 +109,7 @@ export default function InscripcionesPage() {
             tipo_evento_id: tipoEventoId || null,
             evento_id: eventoId || null,
             notas: notas || null,
+            monto_pagado: montoPagado ? parseInt(montoPagado) : 0,
         };
 
         if (editingId) {
@@ -128,6 +131,7 @@ export default function InscripcionesPage() {
         setTipoEventoId(tiposEvento[0]?.id || '');
         setEventoId('');
         setNotas('');
+        setMontoPagado('');
         setEditingId(null);
         setShowForm(false);
     }
@@ -141,6 +145,7 @@ export default function InscripcionesPage() {
         setTipoEventoId(insc.tipo_evento_id || tiposEvento[0]?.id || '');
         setEventoId(insc.evento_id || '');
         setNotas(insc.notas || '');
+        setMontoPagado(insc.monto_pagado?.toString() || '');
         setShowForm(true);
     }
 
@@ -410,7 +415,7 @@ export default function InscripcionesPage() {
                                                         alignItems: 'center',
                                                         gap: '0.25rem',
                                                         border: `1px solid ${(insc.estado_pago === 'pagado') ? '#BBF7D0' :
-                                                                (insc.estado_pago === 'parcial') ? '#FDE68A' : '#FECACA'
+                                                            (insc.estado_pago === 'parcial') ? '#FDE68A' : '#FECACA'
                                                             }`
                                                     }}
                                                     title="Click para cambiar: Pendiente -> Parcial -> Pagado"
