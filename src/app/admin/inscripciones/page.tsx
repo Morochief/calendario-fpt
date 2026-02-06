@@ -381,10 +381,16 @@ export default function InscripcionesPage() {
                                                 <span
                                                     onClick={async () => {
                                                         const supabase = createClient();
-                                                        const newStatus = !insc.pagado;
+                                                        // Cycle: Pendiente -> Parcial -> Pagado -> Pendiente
+                                                        const currentStatus = insc.estado_pago || 'pendiente';
+                                                        let newStatus = 'pendiente';
+                                                        if (currentStatus === 'pendiente') newStatus = 'parcial';
+                                                        else if (currentStatus === 'parcial') newStatus = 'pagado';
+                                                        else if (currentStatus === 'pagado') newStatus = 'pendiente';
+
                                                         await supabase
                                                             .from('inscripciones')
-                                                            .update({ pagado: newStatus })
+                                                            .update({ estado_pago: newStatus })
                                                             .eq('id', insc.id);
                                                         loadInscripciones();
                                                     }}
@@ -394,16 +400,23 @@ export default function InscripcionesPage() {
                                                         borderRadius: '100px',
                                                         fontSize: '0.75rem',
                                                         fontWeight: 600,
-                                                        background: insc.pagado ? '#DCFCE7' : '#FEE2E2',
-                                                        color: insc.pagado ? '#166534' : '#991B1B',
+                                                        background:
+                                                            (insc.estado_pago === 'pagado') ? '#DCFCE7' :
+                                                                (insc.estado_pago === 'parcial') ? '#FEF3C7' : '#FEE2E2',
+                                                        color:
+                                                            (insc.estado_pago === 'pagado') ? '#166534' :
+                                                                (insc.estado_pago === 'parcial') ? '#92400E' : '#991B1B',
                                                         display: 'inline-flex',
                                                         alignItems: 'center',
                                                         gap: '0.25rem',
-                                                        border: `1px solid ${insc.pagado ? '#BBF7D0' : '#FECACA'}`
+                                                        border: `1px solid ${(insc.estado_pago === 'pagado') ? '#BBF7D0' :
+                                                                (insc.estado_pago === 'parcial') ? '#FDE68A' : '#FECACA'
+                                                            }`
                                                     }}
-                                                    title="Click para cambiar estado"
+                                                    title="Click para cambiar: Pendiente -> Parcial -> Pagado"
                                                 >
-                                                    {insc.pagado ? '✅ PAGADO' : '⏳ PENDIENTE'}
+                                                    {(insc.estado_pago === 'pagado') ? '✅ PAGADO' :
+                                                        (insc.estado_pago === 'parcial') ? '🟠 PARCIAL' : '⏳ PENDIENTE'}
                                                 </span>
                                             </td>
                                             <td>
