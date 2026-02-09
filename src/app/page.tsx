@@ -98,20 +98,21 @@ export default function CalendarPage() {
       <Header />
       <main className="main">
         <div className="calendar-header">
-          <h2 className="section-title">Competencias 2026</h2>
+          <h2 className="section-title">Calendario de Eventos</h2>
 
           <div className="view-toggle">
+            {/* Using standard text labels for clarity without emojis */}
             <button
               className={`view-btn ${vista === 'mensual' ? 'active' : ''}`}
               onClick={() => setVista('mensual')}
             >
-              📅 Mensual
+              Vista Mensual
             </button>
             <button
               className={`view-btn ${vista === 'anual' ? 'active' : ''}`}
               onClick={() => setVista('anual')}
             >
-              📆 Anual
+              Vista Anual
             </button>
           </div>
         </div>

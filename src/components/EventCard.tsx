@@ -1,6 +1,7 @@
 'use client';
 
 import { EventoConModalidad } from '@/lib/types';
+import { Clock, MapPin, Map } from 'lucide-react';
 
 interface EventCardProps {
     evento: EventoConModalidad;
@@ -22,7 +23,6 @@ export default function EventCard({ evento }: EventCardProps) {
             className={`event-card ${hasImage ? 'has-image' : ''}`}
             style={{
                 borderLeftColor: evento.modalidades?.color || '#DC2626',
-                overflow: 'hidden' // Ensure image doesn't overflow rounded corners
             }}
         >
             {hasImage && (
@@ -39,26 +39,30 @@ export default function EventCard({ evento }: EventCardProps) {
             )}
 
             <div className="event-content" style={{ padding: '1.25rem' }}>
-                <div className="event-date">
-                    {diaSemana}, {dia} de {mes}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
+                    <div className="event-date">
+                        {diaSemana}, {dia} de {mes}
+                    </div>
                 </div>
+
                 <div className="event-title">{evento.titulo}</div>
 
                 <div className="event-meta">
                     {evento.hora && (
-                        <span>🕐 {evento.hora.slice(0, 5)} hs</span>
+                        <span><Clock size={14} /> {evento.hora.slice(0, 5)}</span>
                     )}
 
                     {tipoNombre && (
                         <span
                             style={{
                                 display: 'inline-block',
-                                padding: '0.2rem 0.5rem',
+                                padding: '0.2rem 0.6rem',
                                 borderRadius: '4px',
-                                fontSize: '0.75rem',
+                                fontSize: '0.7rem',
                                 fontWeight: 500,
-                                background: `${tipoColor}20`,
-                                color: tipoColor
+                                background: `${tipoColor}15`,
+                                color: tipoColor,
+                                border: `1px solid ${tipoColor}30`
                             }}
                         >
                             {tipoNombre}
@@ -67,24 +71,20 @@ export default function EventCard({ evento }: EventCardProps) {
                 </div>
 
                 {evento.ubicacion && (
-                    <div className="event-location-row" style={{ marginTop: '0.75rem', fontSize: '0.9rem', color: '#4B5563', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                        <span>📍</span>
-                        <span>{evento.ubicacion}</span>
+                    <div className="event-location-row" style={{ marginTop: '0.75rem', fontSize: '0.9rem', color: '#4B5563', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                        <MapPin size={15} className="flex-shrink-0" />
+                        <span style={{ lineHeight: 1.4 }}>{evento.ubicacion}</span>
                     </div>
                 )}
 
                 {evento.modalidades && (
-                    <div style={{ marginTop: '0.75rem' }}>
+                    <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #f3f4f6' }}>
                         <span
                             className="event-modalidad"
                             style={{
-                                background: `${evento.modalidades.color}15`,
+                                background: 'transparent',
                                 color: evento.modalidades.color,
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: '0.4rem',
-                                padding: '0.25rem 0.6rem',
-                                borderRadius: '999px',
+                                padding: 0,
                                 fontSize: '0.8rem',
                                 fontWeight: 600
                             }}
@@ -93,8 +93,8 @@ export default function EventCard({ evento }: EventCardProps) {
                                 className="dot"
                                 style={{
                                     background: evento.modalidades.color,
-                                    width: '8px',
-                                    height: '8px',
+                                    width: '6px',
+                                    height: '6px',
                                     borderRadius: '50%',
                                 }}
                             />
@@ -126,19 +126,20 @@ export default function EventCard({ evento }: EventCardProps) {
                             alignItems: 'center',
                             justifyContent: 'center',
                             gap: '0.5rem',
-                            marginTop: '1rem',
+                            marginTop: '1.25rem',
                             width: '100%',
                             padding: '0.6rem',
-                            background: '#F3F4F6',
-                            color: '#1F2937',
-                            borderRadius: '8px',
+                            background: '#F9FAFB',
+                            color: '#374151',
+                            borderRadius: '6px',
                             textDecoration: 'none',
                             fontSize: '0.875rem',
                             fontWeight: 500,
+                            border: '1px solid #E5E7EB',
                             transition: 'all 0.2s'
                         }}
                     >
-                        <span>🗺️</span>
+                        <Map size={16} />
                         Cómo llegar
                     </a>
                 )}

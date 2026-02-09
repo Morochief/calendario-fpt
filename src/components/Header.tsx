@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase';
 import { useToast } from '@/components/Toast';
 import UserDropdown from './UserDropdown';
+import { Calendar, FileText, Users, Settings } from 'lucide-react';
 
 export default function Header() {
     const pathname = usePathname();
@@ -33,8 +34,13 @@ export default function Header() {
         await supabase.auth.signOut();
         showToast('Sesión cerrada correctamente', 'info');
         router.push('/admin/login');
-        router.refresh(); // Ensure state updates propagate
+        router.refresh();
     }
+
+    const getLinkStyle = (isActive: boolean) => ({
+        background: isActive ? 'rgba(255,255,255,0.1)' : 'transparent',
+        opacity: isActive ? 1 : 0.8
+    });
 
     return (
         <header className="header">
@@ -42,38 +48,34 @@ export default function Header() {
                 <Image
                     src="/logo.jpg"
                     alt="Federación Paraguaya de Tiro"
-                    width={60}
-                    height={60}
-                    style={{ objectFit: 'contain' }}
+                    width={48}
+                    height={48}
+                    style={{ objectFit: 'contain', borderRadius: '50%' }}
                 />
                 <div className="header-title">
-                    <h1>FEDERACIÓN PARAGUAYA DE TIRO</h1>
-                    <span>CALENDARIO DE ACTIVIDADES {new Date().getFullYear()}</span>
+                    <h1>FPT</h1>
+                    <span>Federación Paraguaya de Tiro</span>
                 </div>
             </Link>
             <nav className="header-nav">
-                <Link href="/" style={{
-                    background: !isAdmin && pathname !== '/reglamentos' ? 'rgba(255,255,255,0.15)' : 'transparent'
-                }}>
-                    📅 Calendario
+                <Link href="/" style={getLinkStyle(!isAdmin && pathname !== '/reglamentos' && pathname !== '/tiradores')}>
+                    <Calendar size={18} />
+                    <span>Calendario</span>
                 </Link>
-                <Link href="/reglamentos" style={{
-                    background: pathname === '/reglamentos' ? 'rgba(255,255,255,0.15)' : 'transparent'
-                }}>
-                    📂 Reglamentos
+                <Link href="/reglamentos" style={getLinkStyle(pathname === '/reglamentos')}>
+                    <FileText size={18} />
+                    <span>Reglamentos</span>
                 </Link>
-                <Link href="/tiradores" style={{
-                    background: pathname === '/tiradores' ? 'rgba(255,255,255,0.15)' : 'transparent'
-                }}>
-                    👥 Tiradores
+                <Link href="/tiradores" style={getLinkStyle(pathname === '/tiradores')}>
+                    <Users size={18} />
+                    <span>Tiradores</span>
                 </Link>
                 {user ? (
                     <UserDropdown email={user.email} onLogout={handleLogout} />
                 ) : (
-                    <Link href="/admin" style={{
-                        background: isAdmin ? 'rgba(255,255,255,0.15)' : 'transparent'
-                    }}>
-                        ⚙️ Admin
+                    <Link href="/admin" style={getLinkStyle(isAdmin)}>
+                        <Settings size={18} />
+                        <span>Admin</span>
                     </Link>
                 )}
             </nav>

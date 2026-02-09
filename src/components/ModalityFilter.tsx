@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Modalidad } from '@/lib/types';
+import { Filter, Check, ChevronDown } from 'lucide-react';
 
 interface ModalityFilterProps {
     modalidades: Modalidad[];
@@ -37,41 +38,34 @@ export default function ModalityFilter({ modalidades, selected, onSelect }: Moda
                 className={`filter-trigger ${selected ? 'active' : ''}`}
                 onClick={() => setIsOpen(!isOpen)}
             >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                     {selectedModality ? (
                         <>
                             <span
                                 className="dot"
                                 style={{
                                     background: selectedModality.color,
-                                    width: '10px', height: '10px', borderRadius: '50%', display: 'inline-block'
+                                    width: '8px', height: '8px', borderRadius: '50%', display: 'inline-block'
                                 }}
                             />
                             {selectedModality.nombre}
                         </>
                     ) : (
                         <>
-                            <span>🔍</span>
-                            Filtrar por Modalidad
+                            <Filter size={18} className="text-gray-500" />
+                            <span>Explorar por Modalidad</span>
                         </>
                     )}
                 </div>
 
-                {/* Chevron Icon */}
-                <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
+                <ChevronDown
+                    size={16}
                     style={{
                         transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
                         transition: 'transform 0.2s ease',
                         opacity: 0.5
                     }}
-                >
-                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
+                />
             </button>
 
             {isOpen && (
@@ -80,8 +74,10 @@ export default function ModalityFilter({ modalidades, selected, onSelect }: Moda
                         className={`dropdown-item ${selected === null ? 'selected' : ''}`}
                         onClick={() => handleSelect(null)}
                     >
-                        <span>👁️</span>
-                        Ver Todas
+                        <div style={{ width: '20px', display: 'flex', justifyContent: 'center' }}>
+                            {selected === null && <Check size={14} />}
+                        </div>
+                        Todas las modalidades
                     </button>
 
                     <div style={{ height: '1px', background: 'rgba(0,0,0,0.05)', margin: '0.25rem 0' }} />
@@ -97,6 +93,11 @@ export default function ModalityFilter({ modalidades, selected, onSelect }: Moda
                                 style={{ background: mod.color }}
                             />
                             {mod.nombre}
+                            {selected === mod.id && (
+                                <div style={{ marginLeft: 'auto' }}>
+                                    <Check size={14} />
+                                </div>
+                            )}
                         </button>
                     ))}
                 </div>
