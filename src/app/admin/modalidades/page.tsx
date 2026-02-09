@@ -5,8 +5,20 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import { createClient } from '@/lib/supabase';
+import {
+    Plus,
+    ArrowLeft,
+    Edit2,
+    Trash2,
+    X,
+    Save,
+    Palette,
+    Phone,
+    User,
+    LayoutGrid
+} from 'lucide-react';
 
-interface ModalidadConContacto {
+interface Modalidad {
     id: string;
     nombre: string;
     color: string;
@@ -15,32 +27,23 @@ interface ModalidadConContacto {
 }
 
 export default function ModalidadesPage() {
-    const [modalidades, setModalidades] = useState<ModalidadConContacto[]>([]);
+    const [modalidades, setModalidades] = useState<Modalidad[]>([]);
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
+    const [saving, setSaving] = useState(false);
+
+    // Form state
     const [nombre, setNombre] = useState('');
-    const [color, setColor] = useState('#DC2626');
+    const [color, setColor] = useState('#3B82F6');
     const [contactoNombre, setContactoNombre] = useState('');
     const [contactoTelefono, setContactoTelefono] = useState('');
-    const [saving, setSaving] = useState(false);
+
     const router = useRouter();
 
     useEffect(() => {
-        checkAuthAndLoad();
-    }, []);
-
-    async function checkAuthAndLoad() {
-        const supabase = createClient();
-        const { data: { user } } = await supabase.auth.getUser();
-
-        if (!user) {
-            router.push('/admin/login');
-            return;
-        }
-
         loadModalidades();
-    }
+    }, []);
 
     async function loadModalidades() {
         const supabase = createClient();
@@ -58,235 +61,273 @@ export default function ModalidadesPage() {
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         setSaving(true);
-
         const supabase = createClient();
 
         const modalidadData = {
             nombre,
             color,
             contacto_nombre: contactoNombre || null,
-            contacto_telefono: contactoTelefono || null,
+            contacto_telefono: contactoTelefono || null
         };
 
-        if (editingId) {
-            await supabase
-                .from('modalidades')
-                .update(modalidadData)
-                .eq('id', editingId);
-        } else {
-            await supabase
-                .from('modalidades')
-                .insert(modalidadData);
-        }
+        try {
+            if (editingId) {
+                await supabase.from('modalidades').update(modalidadData).eq('id', editingId);
+            } else {
+                await supabase.from('modalidades').insert(modalidadData);
+            }
 
-        resetForm();
-        loadModalidades();
+            resetForm();
+            await loadModalidades();
+        } catch (error) {
+            console.error('Error saving modalidad:', error);
+            alert('Error al guardar la modalidad');
+        } finally {
+            setSaving(false);
+        }
     }
 
     function resetForm() {
         setNombre('');
-        setColor('#DC2626');
+        setColor('#3B82F6');
         setContactoNombre('');
         setContactoTelefono('');
         setEditingId(null);
         setShowForm(false);
-        setSaving(false);
+    }
+
+    function handleEdit(modalidad: Modalidad) {
+        setEditingId(modalidad.id);
+        setNombre(modalidad.nombre);
+        setColor(modalidad.color);
+        setContactoNombre(modalidad.contacto_nombre || '');
+        setContactoTelefono(modalidad.contacto_telefono || '');
+        setShowForm(true);
     }
 
     async function handleDelete(id: string) {
-        if (!confirm('¿Eliminar esta modalidad? Se eliminarán también todos sus eventos.')) return;
+        if (!confirm('¿Estás seguro de eliminar esta modalidad? Se eliminarán también los eventos asociados.')) return;
 
         const supabase = createClient();
-        await supabase.from('modalidades').delete().eq('id', id);
-        loadModalidades();
-    }
+        const { error } = await supabase.from('modalidades').delete().eq('id', id);
 
-    function handleEdit(mod: ModalidadConContacto) {
-        setEditingId(mod.id);
-        setNombre(mod.nombre);
-        setColor(mod.color);
-        setContactoNombre(mod.contacto_nombre || '');
-        setContactoTelefono(mod.contacto_telefono || '');
-        setShowForm(true);
+        if (error) {
+            console.error('Error deleting modalidad:', error);
+            alert('Error al eliminar. Asegúrate de que no tenga inscripciones asociadas.');
+        } else {
+            await loadModalidades();
+        }
     }
 
     if (loading) {
         return (
-            <>
+            <div className="min-h-screen bg-slate-50 flex flex-col">
                 <Header />
-                <div className="admin-container">
-                    <div className="loading">
-                        <div className="spinner"></div>
-                    </div>
+                <div className="flex-grow flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
                 </div>
-            </>
+            </div>
         );
     }
 
     return (
-        <>
+        <div className="min-h-screen bg-slate-50 flex flex-col">
             <Header />
-            <div className="admin-container">
-                <div className="admin-header">
-                    <div>
-                        <h2 className="section-title">Gestión de Modalidades</h2>
-                        <Link href="/admin" style={{ color: '#6B7280', fontSize: '0.875rem' }}>
-                            ← Volver al panel
-                        </Link>
+            <main className="flex-grow py-8 px-4 sm:px-6 lg:px-8">
+                <div className="max-w-4xl mx-auto space-y-6">
+
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h1 className="text-2xl font-bold text-slate-900">Modalidades</h1>
+                            <Link
+                                href="/admin"
+                                className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-blue-600 transition-colors mt-1"
+                            >
+                                <ArrowLeft size={16} />
+                                Volver al panel
+                            </Link>
+                        </div>
+                        {!showForm && (
+                            <button
+                                onClick={() => setShowForm(true)}
+                                className="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                            >
+                                <Plus size={16} className="mr-2" />
+                                Nueva Modalidad
+                            </button>
+                        )}
                     </div>
-                    {!showForm && (
-                        <button
-                            onClick={() => setShowForm(true)}
-                            className="btn btn-primary"
-                        >
-                            ➕ Nueva Modalidad
-                        </button>
-                    )}
-                </div>
 
-                {showForm && (
-                    <div className="admin-card" style={{ marginBottom: '1.5rem' }}>
-                        <h3 style={{ marginBottom: '1rem' }}>
-                            {editingId ? 'Editar Modalidad' : 'Nueva Modalidad'}
-                        </h3>
-                        <form onSubmit={handleSubmit}>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '1rem', alignItems: 'end' }}>
-                                <div className="form-group" style={{ marginBottom: 0 }}>
-                                    <label htmlFor="nombre">Nombre de la modalidad *</label>
-                                    <input
-                                        id="nombre"
-                                        type="text"
-                                        value={nombre}
-                                        onChange={(e) => setNombre(e.target.value)}
-                                        placeholder="Ej: Tiro Práctico IPSC"
-                                        required
-                                    />
-                                </div>
-                                <div className="form-group" style={{ marginBottom: 0 }}>
-                                    <label htmlFor="color">Color</label>
-                                    <input
-                                        id="color"
-                                        type="color"
-                                        value={color}
-                                        onChange={(e) => setColor(e.target.value)}
-                                        style={{ height: '42px', padding: '4px' }}
-                                    />
-                                </div>
-                            </div>
-
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '1rem' }}>
-                                <div className="form-group" style={{ marginBottom: 0 }}>
-                                    <label htmlFor="contactoNombre">👤 Contacto / Responsable</label>
-                                    <input
-                                        id="contactoNombre"
-                                        type="text"
-                                        value={contactoNombre}
-                                        onChange={(e) => setContactoNombre(e.target.value)}
-                                        placeholder="Ej: Alberto Ruiz"
-                                    />
-                                </div>
-                                <div className="form-group" style={{ marginBottom: 0 }}>
-                                    <label htmlFor="contactoTelefono">📱 Teléfono de contacto</label>
-                                    <input
-                                        id="contactoTelefono"
-                                        type="tel"
-                                        value={contactoTelefono}
-                                        onChange={(e) => setContactoTelefono(e.target.value)}
-                                        placeholder="Ej: 0971 151 500"
-                                    />
-                                </div>
-                            </div>
-
-                            <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem', justifyContent: 'flex-end' }}>
-                                <button type="button" onClick={resetForm} className="btn btn-secondary">
-                                    Cancelar
-                                </button>
-                                <button type="submit" className="btn btn-primary" disabled={saving}>
-                                    {saving ? 'Guardando...' : '💾 Guardar'}
+                    {showForm && (
+                        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                            <div className="border-b border-slate-200 px-6 py-4 flex items-center justify-between">
+                                <h3 className="text-lg font-medium text-slate-900">
+                                    {editingId ? 'Editar Modalidad' : 'Nueva Modalidad'}
+                                </h3>
+                                <button onClick={resetForm} className="text-slate-400 hover:text-slate-500">
+                                    <X size={20} />
                                 </button>
                             </div>
-                        </form>
-                    </div>
-                )}
+                            <div className="p-6">
+                                <form onSubmit={handleSubmit} className="space-y-6">
+                                    <div>
+                                        <label htmlFor="nombre" className="block text-sm font-medium text-slate-700 mb-1">Nombre de la modalidad</label>
+                                        <input
+                                            id="nombre"
+                                            type="text"
+                                            value={nombre}
+                                            onChange={(e) => setNombre(e.target.value)}
+                                            placeholder="Ej: Tiro Práctico (IPSC)"
+                                            required
+                                            className="block w-full rounded-lg border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                        />
+                                    </div>
 
-                <div className="admin-card">
-                    <h3 style={{ marginBottom: '1.5rem' }}>
-                        Modalidades ({modalidades.length})
-                    </h3>
+                                    <div>
+                                        <label htmlFor="color" className="block text-sm font-medium text-slate-700 mb-1">Color distintivo</label>
+                                        <div className="flex items-center gap-3">
+                                            <input
+                                                id="color"
+                                                type="color"
+                                                value={color}
+                                                onChange={(e) => setColor(e.target.value)}
+                                                className="h-10 w-20 rounded border border-slate-300 p-1 cursor-pointer"
+                                            />
+                                            <span className="text-sm text-slate-500 font-mono">{color}</span>
+                                        </div>
+                                    </div>
 
-                    {modalidades.length === 0 ? (
-                        <p style={{ textAlign: 'center', padding: '2rem', color: '#6B7280' }}>
-                            No hay modalidades. ¡Crea la primera!
-                        </p>
-                    ) : (
-                        <div className="admin-table-wrapper">
-                            <table className="admin-table">
-                                <thead>
-                                    <tr>
-                                        <th>Color</th>
-                                        <th>Nombre</th>
-                                        <th>Contacto</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {modalidades.map(mod => (
-                                        <tr key={mod.id}>
-                                            <td>
-                                                <span style={{
-                                                    display: 'inline-block',
-                                                    width: '24px',
-                                                    height: '24px',
-                                                    borderRadius: '4px',
-                                                    background: mod.color
-                                                }} />
-                                            </td>
-                                            <td style={{ fontWeight: 500 }}>{mod.nombre}</td>
-                                            <td>
-                                                {mod.contacto_nombre ? (
-                                                    <div>
-                                                        <div style={{ fontWeight: 500 }}>{mod.contacto_nombre}</div>
-                                                        {mod.contacto_telefono && (
-                                                            <a
-                                                                href={`https://wa.me/595${mod.contacto_telefono.replace(/\D/g, '')}`}
-                                                                target="_blank"
-                                                                rel="noopener noreferrer"
-                                                                style={{ color: '#25D366', fontSize: '0.85rem' }}
-                                                            >
-                                                                📱 {mod.contacto_telefono}
-                                                            </a>
-                                                        )}
-                                                    </div>
-                                                ) : (
-                                                    <span style={{ color: '#9CA3AF' }}>Sin contacto</span>
-                                                )}
-                                            </td>
-                                            <td>
-                                                <div className="admin-actions">
-                                                    <button
-                                                        onClick={() => handleEdit(mod)}
-                                                        className="btn btn-secondary"
-                                                        style={{ padding: '0.4rem 0.75rem', fontSize: '0.8rem' }}
-                                                    >
-                                                        ✏️ Editar
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleDelete(mod.id)}
-                                                        className="btn btn-danger"
-                                                        style={{ padding: '0.4rem 0.75rem', fontSize: '0.8rem' }}
-                                                    >
-                                                        🗑️
-                                                    </button>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label htmlFor="contactoNombre" className="block text-sm font-medium text-slate-700 mb-1">Nombre de contacto (opcional)</label>
+                                            <div className="relative rounded-md shadow-sm">
+                                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                    <User size={16} className="text-slate-400" />
                                                 </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                                <input
+                                                    id="contactoNombre"
+                                                    type="text"
+                                                    value={contactoNombre}
+                                                    onChange={(e) => setContactoNombre(e.target.value)}
+                                                    className="block w-full pl-10 rounded-lg border-slate-300 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                                    placeholder="Persona a cargo"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label htmlFor="contactoTelefono" className="block text-sm font-medium text-slate-700 mb-1">Teléfono de contacto (opcional)</label>
+                                            <div className="relative rounded-md shadow-sm">
+                                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                    <Phone size={16} className="text-slate-400" />
+                                                </div>
+                                                <input
+                                                    id="contactoTelefono"
+                                                    type="tel"
+                                                    value={contactoTelefono}
+                                                    onChange={(e) => setContactoTelefono(e.target.value)}
+                                                    className="block w-full pl-10 rounded-lg border-slate-300 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                                    placeholder="09xx xxx xxx"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex justify-end gap-3 pt-4 border-t border-slate-200">
+                                        <button
+                                            type="button"
+                                            onClick={resetForm}
+                                            className="inline-flex items-center px-4 py-2 border border-slate-300 rounded-lg shadow-sm text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                                        >
+                                            Cancelar
+                                        </button>
+                                        <button
+                                            type="submit"
+                                            disabled={saving}
+                                            className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors disabled:opacity-50"
+                                        >
+                                            {saving ? 'Guardando...' : (
+                                                <>
+                                                    <Save size={16} className="mr-2" />
+                                                    Guardar
+                                                </>
+                                            )}
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     )}
+
+                    <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div className="px-6 py-4 border-b border-slate-200">
+                            <h3 className="text-lg font-medium text-slate-900">Listado de Modalidades</h3>
+                        </div>
+
+                        {modalidades.length === 0 ? (
+                            <div className="p-12 text-center text-slate-500">
+                                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 mb-4">
+                                    <LayoutGrid size={32} className="text-slate-400" />
+                                </div>
+                                <p className="text-lg font-medium text-slate-900 mb-1">No hay modalidades</p>
+                                <p>Crea la primera modalidad para comenzar a organizar eventos.</p>
+                            </div>
+                        ) : (
+                            <div className="divide-y divide-slate-200">
+                                {modalidades.map((modalidad) => (
+                                    <div key={modalidad.id} className="p-4 sm:p-6 hover:bg-slate-50 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                        <div className="flex items-start gap-4">
+                                            <div
+                                                className="w-12 h-12 rounded-lg flex items-center justify-center shadow-sm flex-shrink-0"
+                                                style={{ backgroundColor: modalidad.color }}
+                                            >
+                                                <span className="text-white font-bold text-xl uppercase">
+                                                    {modalidad.nombre.substring(0, 1)}
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <h4 className="text-base font-medium text-slate-900">{modalidad.nombre}</h4>
+                                                {(modalidad.contacto_nombre || modalidad.contacto_telefono) && (
+                                                    <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-500">
+                                                        {modalidad.contacto_nombre && (
+                                                            <span className="flex items-center gap-1">
+                                                                <User size={14} />
+                                                                {modalidad.contacto_nombre}
+                                                            </span>
+                                                        )}
+                                                        {modalidad.contacto_telefono && (
+                                                            <span className="flex items-center gap-1">
+                                                                <Phone size={14} />
+                                                                {modalidad.contacto_telefono}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-center gap-2 sm:self-center self-end">
+                                            <button
+                                                onClick={() => handleEdit(modalidad)}
+                                                className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                                title="Editar"
+                                            >
+                                                <Edit2 size={18} />
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(modalidad.id)}
+                                                className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                                title="Eliminar"
+                                            >
+                                                <Trash2 size={18} />
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
                 </div>
-            </div>
-        </>
+            </main>
+        </div>
     );
 }

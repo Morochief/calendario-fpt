@@ -6,10 +6,10 @@ import Link from 'next/link';
 import Header from '@/components/Header';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import EventForm from '@/components/EventForm';
-import { FormSkeleton } from '@/components/Skeleton';
 import EmptyState from '@/components/EmptyState';
 import { createClient } from '@/lib/supabase';
 import { EventoInput } from '@/lib/schemas';
+import { ArrowLeft, Search } from 'lucide-react';
 
 interface EventoData extends Partial<EventoInput> {
     id: string;
@@ -62,53 +62,62 @@ export default function EditarEventoPage({ params }: { params: Promise<{ id: str
 
     if (loading) {
         return (
-            <>
+            <div className="min-h-screen bg-slate-50 flex flex-col">
                 <Header />
-                <div className="admin-container">
-                    <Breadcrumbs />
-                    <div className="admin-card">
-                        <h3 style={{ marginBottom: '1.5rem' }}>Cargando evento...</h3>
-                        <FormSkeleton />
-                    </div>
+                <div className="flex-grow flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
                 </div>
-            </>
+            </div>
         );
     }
 
     if (notFound) {
         return (
-            <>
+            <div className="min-h-screen bg-slate-50 flex flex-col">
                 <Header />
-                <div className="admin-container">
-                    <Breadcrumbs />
-                    <EmptyState
-                        icon="🔍"
-                        title="Evento no encontrado"
-                        description="El evento que buscas no existe o fue eliminado."
-                        actionLabel="← Volver al panel"
-                        actionHref="/admin"
-                    />
-                </div>
-            </>
+                <main className="flex-grow py-8 px-4 sm:px-6 lg:px-8">
+                    <div className="max-w-4xl mx-auto">
+                        <Breadcrumbs />
+                        <div className="mt-8">
+                            <EmptyState
+                                icon={<Search size={48} className="text-slate-300" />}
+                                title="Evento no encontrado"
+                                description="El evento que buscas no existe o fue eliminado."
+                                actionLabel="Volver al panel"
+                                actionHref="/admin"
+                            />
+                        </div>
+                    </div>
+                </main>
+            </div>
         );
     }
 
     return (
-        <>
+        <div className="min-h-screen bg-slate-50 flex flex-col">
             <Header />
-            <div className="admin-container" id="main-content">
-                <Breadcrumbs />
-                <div className="admin-header">
-                    <h2 className="section-title">Editar Evento</h2>
-                    <Link href="/admin" className="btn btn-secondary" aria-label="Volver al panel">
-                        ← Volver
-                    </Link>
-                </div>
+            <main className="flex-grow py-8 px-4 sm:px-6 lg:px-8">
+                <div className="max-w-4xl mx-auto space-y-6">
+                    <Breadcrumbs />
 
-                <div className="admin-card">
-                    <EventForm initialData={evento!} isEditing />
+                    <div className="flex items-center justify-between">
+                        <h1 className="text-2xl font-bold text-slate-900">Editar Evento</h1>
+                        <Link
+                            href="/admin"
+                            className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-blue-600 transition-colors"
+                        >
+                            <ArrowLeft size={16} />
+                            Volver al panel
+                        </Link>
+                    </div>
+
+                    <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div className="p-6 sm:p-8">
+                            <EventForm initialData={evento!} isEditing />
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </>
+            </main>
+        </div>
     );
 }

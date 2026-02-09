@@ -6,7 +6,7 @@ import Link from 'next/link';
 import Header from '@/components/Header';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import EventForm from '@/components/EventForm';
-import { FormSkeleton } from '@/components/Skeleton';
+import { ArrowLeft } from 'lucide-react';
 import { createClient } from '@/lib/supabase';
 
 export default function NuevoEventoPage() {
@@ -31,35 +31,40 @@ export default function NuevoEventoPage() {
 
     if (loading) {
         return (
-            <>
+            <div className="min-h-screen bg-slate-50 flex flex-col">
                 <Header />
-                <div className="admin-container">
-                    <Breadcrumbs />
-                    <div className="admin-card">
-                        <h3 style={{ marginBottom: '1.5rem' }}>Cargando...</h3>
-                        <FormSkeleton />
-                    </div>
+                <div className="flex-grow flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
                 </div>
-            </>
+            </div>
         );
     }
 
     return (
-        <>
+        <div className="min-h-screen bg-slate-50 flex flex-col">
             <Header />
-            <div className="admin-container" id="main-content">
-                <Breadcrumbs />
-                <div className="admin-header">
-                    <h2 className="section-title">Nuevo Evento</h2>
-                    <Link href="/admin" className="btn btn-secondary" aria-label="Volver al panel">
-                        ← Volver
-                    </Link>
-                </div>
+            <main className="flex-grow py-8 px-4 sm:px-6 lg:px-8">
+                <div className="max-w-4xl mx-auto space-y-6">
+                    <Breadcrumbs />
 
-                <div className="admin-card">
-                    <EventForm />
+                    <div className="flex items-center justify-between">
+                        <h1 className="text-2xl font-bold text-slate-900">Nuevo Evento</h1>
+                        <Link
+                            href="/admin"
+                            className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-blue-600 transition-colors"
+                        >
+                            <ArrowLeft size={16} />
+                            Volver al panel
+                        </Link>
+                    </div>
+
+                    <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div className="p-6 sm:p-8">
+                            <EventForm />
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </>
+            </main>
+        </div>
     );
 }
