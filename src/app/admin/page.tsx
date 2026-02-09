@@ -7,7 +7,6 @@ import Header from '@/components/Header';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import EmptyState from '@/components/EmptyState';
 import Pagination from '@/components/Pagination';
-import { TableSkeleton } from '@/components/Skeleton';
 import { useToast } from '@/components/Toast';
 import {
     Plus,
@@ -19,7 +18,8 @@ import {
     Edit,
     Trash2,
     Search,
-    Filter
+    Filter,
+    BookOpen
 } from 'lucide-react';
 
 import { createClient } from '@/lib/supabase';
@@ -103,198 +103,393 @@ export default function AdminPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-slate-50 flex flex-col">
+            <div style={{ minHeight: '100vh', background: '#f8fafc', display: 'flex', flexDirection: 'column' }}>
                 <Header />
-                <div className="flex-grow flex items-center justify-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                <div style={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{
+                        width: '48px',
+                        height: '48px',
+                        border: '3px solid #e2e8f0',
+                        borderTopColor: '#3b82f6',
+                        borderRadius: '50%',
+                        animation: 'spin 1s linear infinite'
+                    }}></div>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 flex flex-col">
+        <div style={{ minHeight: '100vh', background: '#f8fafc', display: 'flex', flexDirection: 'column' }}>
             <Header />
-            <main className="flex-grow py-8 px-4 sm:px-6 lg:px-8">
-                <div className="max-w-7xl mx-auto space-y-6">
-                    <Breadcrumbs />
+            <main style={{ flexGrow: 1, padding: '32px 16px', maxWidth: '1280px', margin: '0 auto', width: '100%' }}>
+                <Breadcrumbs />
 
-                    {/* Header Section */}
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                {/* Header Section */}
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginTop: '24px',
+                    marginBottom: '24px',
+                    flexWrap: 'wrap',
+                    gap: '16px'
+                }}>
+                    <div>
+                        <h1 style={{ fontSize: '1.75rem', fontWeight: 700, color: '#0f172a', margin: 0 }}>
+                            Panel de Administración
+                        </h1>
+                        <p style={{ color: '#64748b', marginTop: '4px', fontSize: '0.95rem' }}>
+                            Gestiona eventos, inscripciones y configuraciones del sistema.
+                        </p>
+                    </div>
+                    <Link
+                        href="/admin/eventos/nuevo"
+                        style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            background: '#2563eb',
+                            color: 'white',
+                            padding: '10px 20px',
+                            borderRadius: '8px',
+                            fontSize: '0.9rem',
+                            fontWeight: 500,
+                            textDecoration: 'none',
+                            boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+                        }}
+                    >
+                        <Plus size={18} />
+                        Nuevo Evento
+                    </Link>
+                </div>
+
+                {/* Quick Actions Grid */}
+                <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                    gap: '20px',
+                    marginBottom: '24px'
+                }}>
+                    {/* Inscripciones Card */}
+                    <Link
+                        href="/admin/inscripciones"
+                        style={{
+                            background: 'white',
+                            padding: '24px',
+                            borderRadius: '12px',
+                            border: '1px solid #e2e8f0',
+                            boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+                            textDecoration: 'none',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '16px',
+                            transition: 'box-shadow 0.2s'
+                        }}
+                    >
+                        <div style={{
+                            padding: '14px',
+                            background: '#dcfce7',
+                            borderRadius: '10px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                        }}>
+                            <Users size={26} style={{ color: '#16a34a' }} />
+                        </div>
                         <div>
-                            <h1 className="text-2xl font-bold text-slate-900">Panel de Administración</h1>
-                            <p className="text-slate-500 mt-1">Gestiona eventos, inscripciones y configuraciones del sistema.</p>
+                            <h3 style={{ fontWeight: 600, color: '#0f172a', margin: 0, fontSize: '1.05rem' }}>Inscripciones</h3>
+                            <p style={{ color: '#64748b', margin: '4px 0 0', fontSize: '0.85rem' }}>Ver lista de tiradores inscritos</p>
                         </div>
-                        <Link
-                            href="/admin/eventos/nuevo"
-                            className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm whitespace-nowrap"
-                        >
-                            <Plus size={18} />
-                            Nuevo Evento
-                        </Link>
+                    </Link>
+
+                    {/* Configuración Card */}
+                    <div style={{
+                        background: 'white',
+                        padding: '24px',
+                        borderRadius: '12px',
+                        border: '1px solid #e2e8f0',
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
+                    }}>
+                        <h3 style={{
+                            fontWeight: 600,
+                            color: '#0f172a',
+                            margin: '0 0 16px',
+                            fontSize: '1.05rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px'
+                        }}>
+                            <Settings size={18} style={{ color: '#64748b' }} />
+                            Configuración
+                        </h3>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                            <Link href="/admin/modalidades" style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                                padding: '8px 14px',
+                                background: '#f1f5f9',
+                                color: '#475569',
+                                fontSize: '0.85rem',
+                                fontWeight: 500,
+                                borderRadius: '8px',
+                                textDecoration: 'none',
+                                border: '1px solid #e2e8f0'
+                            }}>
+                                <ClipboardList size={16} />
+                                Modalidades
+                            </Link>
+                            <Link href="/admin/tipos-evento" style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                                padding: '8px 14px',
+                                background: '#f1f5f9',
+                                color: '#475569',
+                                fontSize: '0.85rem',
+                                fontWeight: 500,
+                                borderRadius: '8px',
+                                textDecoration: 'none',
+                                border: '1px solid #e2e8f0'
+                            }}>
+                                <Filter size={16} />
+                                Tipos
+                            </Link>
+                            <Link href="/admin/reglamentos" style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                                padding: '8px 14px',
+                                background: '#f1f5f9',
+                                color: '#475569',
+                                fontSize: '0.85rem',
+                                fontWeight: 500,
+                                borderRadius: '8px',
+                                textDecoration: 'none',
+                                border: '1px solid #e2e8f0'
+                            }}>
+                                <BookOpen size={16} />
+                                Reglamentos
+                            </Link>
+                        </div>
                     </div>
+                </div>
 
-                    {/* Quick Actions Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <Link href="/admin/inscripciones" className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow group">
-                            <div className="flex items-center gap-4">
-                                <div className="p-3 bg-green-100 text-green-600 rounded-lg group-hover:bg-green-600 group-hover:text-white transition-colors">
-                                    <Users size={24} />
-                                </div>
-                                <div>
-                                    <h3 className="font-semibold text-slate-900">Inscripciones</h3>
-                                    <p className="text-sm text-slate-500">Ver lista de tiradores inscritos</p>
-                                </div>
-                            </div>
-                        </Link>
-
-                        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-                            <h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
-                                <Settings size={18} className="text-slate-400" />
-                                Configuración
+                {/* Events Table Card */}
+                <div style={{
+                    background: 'white',
+                    borderRadius: '12px',
+                    border: '1px solid #e2e8f0',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+                    overflow: 'hidden'
+                }}>
+                    {/* Table Header */}
+                    <div style={{
+                        padding: '16px 24px',
+                        borderBottom: '1px solid #e2e8f0',
+                        background: '#f8fafc',
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        flexWrap: 'wrap',
+                        gap: '12px'
+                    }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <Calendar size={20} style={{ color: '#64748b' }} />
+                            <h3 style={{ fontWeight: 600, color: '#0f172a', margin: 0, fontSize: '1rem' }}>
+                                Eventos Programados
                             </h3>
-                            <div className="flex flex-wrap gap-2">
-                                <Link href="/admin/modalidades" className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 text-slate-600 text-sm font-medium rounded-lg hover:bg-slate-100 transition-colors border border-slate-200">
-                                    <ClipboardList size={16} />
-                                    Modalidades
-                                </Link>
-                                <Link href="/admin/tipos-evento" className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 text-slate-600 text-sm font-medium rounded-lg hover:bg-slate-100 transition-colors border border-slate-200">
-                                    <Filter size={16} />
-                                    Tipos
-                                </Link>
-                                <Link href="/admin/reglamentos" className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 text-slate-600 text-sm font-medium rounded-lg hover:bg-slate-100 transition-colors border border-slate-200">
-                                    <FileText size={16} />
-                                    Reglamentos
-                                </Link>
-                            </div>
+                            <span style={{
+                                background: '#dbeafe',
+                                color: '#1d4ed8',
+                                fontSize: '0.75rem',
+                                fontWeight: 600,
+                                padding: '3px 10px',
+                                borderRadius: '999px'
+                            }}>
+                                {eventos.length}
+                            </span>
+                        </div>
+                        <div style={{ position: 'relative' }}>
+                            <Search size={16} style={{
+                                position: 'absolute',
+                                left: '12px',
+                                top: '50%',
+                                transform: 'translateY(-50%)',
+                                color: '#94a3b8'
+                            }} />
+                            <input
+                                type="text"
+                                placeholder="Buscar eventos..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                style={{
+                                    paddingLeft: '38px',
+                                    paddingRight: '16px',
+                                    paddingTop: '8px',
+                                    paddingBottom: '8px',
+                                    fontSize: '0.9rem',
+                                    border: '1px solid #e2e8f0',
+                                    borderRadius: '8px',
+                                    outline: 'none',
+                                    width: '220px'
+                                }}
+                            />
                         </div>
                     </div>
 
-                    {/* Main Content Card */}
-                    <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                        <div className="px-6 py-4 border-b border-slate-200 bg-slate-50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                            <div className="flex items-center gap-2">
-                                <Calendar size={20} className="text-slate-400" />
-                                <h3 className="font-semibold text-slate-900">
-                                    Eventos Programados
-                                    <span className="ml-2 bg-blue-100 text-blue-700 text-xs font-medium px-2.5 py-0.5 rounded-full">
-                                        {eventos.length}
-                                    </span>
-                                </h3>
+                    {/* Table Content */}
+                    {eventos.length === 0 ? (
+                        <div style={{ padding: '48px 24px', textAlign: 'center' }}>
+                            <div style={{
+                                width: '64px',
+                                height: '64px',
+                                margin: '0 auto 16px',
+                                background: '#f1f5f9',
+                                borderRadius: '50%',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}>
+                                <Calendar size={28} style={{ color: '#94a3b8' }} />
                             </div>
-
-                            <div className="relative">
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-                                <input
-                                    type="text"
-                                    placeholder="Buscar eventos..."
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="pl-9 pr-4 py-1.5 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none w-full sm:w-64"
-                                />
-                            </div>
+                            <p style={{ fontWeight: 600, color: '#0f172a', margin: '0 0 4px', fontSize: '1.1rem' }}>
+                                No hay eventos creados
+                            </p>
+                            <p style={{ color: '#64748b', margin: '0 0 20px', fontSize: '0.9rem' }}>
+                                Comienza creando tu primer evento para el calendario.
+                            </p>
+                            <Link
+                                href="/admin/eventos/nuevo"
+                                style={{
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '6px',
+                                    background: '#0f172a',
+                                    color: 'white',
+                                    padding: '10px 20px',
+                                    borderRadius: '8px',
+                                    fontSize: '0.9rem',
+                                    fontWeight: 500,
+                                    textDecoration: 'none'
+                                }}
+                            >
+                                <Plus size={16} />
+                                Crear evento
+                            </Link>
                         </div>
-
-                        {eventos.length === 0 ? (
-                            <div className="p-8">
-                                <EmptyState
-                                    icon={<Calendar size={48} className="text-slate-300" />}
-                                    title="No hay eventos creados"
-                                    description="Comienza creando tu primer evento para el calendario."
-                                    actionLabel="Crear evento"
-                                    actionHref="/admin/eventos/nuevo"
+                    ) : (
+                        <>
+                            <div style={{ overflowX: 'auto' }}>
+                                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
+                                    <thead>
+                                        <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+                                            <th style={{ padding: '12px 24px', textAlign: 'left', fontWeight: 500, color: '#64748b' }}>Fecha</th>
+                                            <th style={{ padding: '12px 24px', textAlign: 'left', fontWeight: 500, color: '#64748b' }}>Título</th>
+                                            <th style={{ padding: '12px 24px', textAlign: 'left', fontWeight: 500, color: '#64748b' }}>Modalidad</th>
+                                            <th style={{ padding: '12px 24px', textAlign: 'left', fontWeight: 500, color: '#64748b' }}>Tipo</th>
+                                            <th style={{ padding: '12px 24px', textAlign: 'right', fontWeight: 500, color: '#64748b' }}>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {paginatedEventos.map(evento => {
+                                            const fecha = new Date(evento.fecha + 'T12:00:00');
+                                            return (
+                                                <tr key={evento.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                                                    <td style={{ padding: '14px 24px', color: '#64748b', whiteSpace: 'nowrap' }}>
+                                                        {fecha.toLocaleDateString('es-ES', {
+                                                            day: '2-digit',
+                                                            month: '2-digit',
+                                                            year: 'numeric'
+                                                        })}
+                                                    </td>
+                                                    <td style={{ padding: '14px 24px', fontWeight: 500, color: '#0f172a' }}>
+                                                        {evento.titulo}
+                                                    </td>
+                                                    <td style={{ padding: '14px 24px' }}>
+                                                        <span style={{
+                                                            display: 'inline-flex',
+                                                            alignItems: 'center',
+                                                            gap: '6px',
+                                                            padding: '4px 10px',
+                                                            borderRadius: '6px',
+                                                            fontSize: '0.8rem',
+                                                            fontWeight: 500,
+                                                            background: `${evento.modalidades?.color}15`,
+                                                            color: evento.modalidades?.color
+                                                        }}>
+                                                            <span style={{
+                                                                width: '6px',
+                                                                height: '6px',
+                                                                borderRadius: '50%',
+                                                                background: evento.modalidades?.color
+                                                            }}></span>
+                                                            {evento.modalidades?.nombre}
+                                                        </span>
+                                                    </td>
+                                                    <td style={{ padding: '14px 24px' }}>
+                                                        <span style={{
+                                                            padding: '4px 10px',
+                                                            borderRadius: '6px',
+                                                            fontSize: '0.8rem',
+                                                            fontWeight: 500,
+                                                            background: `${evento.tipos_evento?.color || '#6B7280'}15`,
+                                                            color: evento.tipos_evento?.color || '#6B7280'
+                                                        }}>
+                                                            {evento.tipos_evento?.nombre || evento.tipo || '-'}
+                                                        </span>
+                                                    </td>
+                                                    <td style={{ padding: '14px 24px', textAlign: 'right' }}>
+                                                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                                                            <Link
+                                                                href={`/admin/eventos/${evento.id}`}
+                                                                style={{
+                                                                    padding: '6px',
+                                                                    color: '#64748b',
+                                                                    borderRadius: '6px',
+                                                                    display: 'inline-flex'
+                                                                }}
+                                                                title="Editar"
+                                                            >
+                                                                <Edit size={16} />
+                                                            </Link>
+                                                            <button
+                                                                onClick={() => handleDelete(evento.id)}
+                                                                style={{
+                                                                    padding: '6px',
+                                                                    color: '#64748b',
+                                                                    background: 'transparent',
+                                                                    border: 'none',
+                                                                    borderRadius: '6px',
+                                                                    cursor: 'pointer',
+                                                                    display: 'inline-flex'
+                                                                }}
+                                                                title="Eliminar"
+                                                            >
+                                                                <Trash2 size={16} />
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div style={{ padding: '16px 24px', borderTop: '1px solid #e2e8f0' }}>
+                                <Pagination
+                                    currentPage={currentPage}
+                                    totalPages={totalPages}
+                                    onPageChange={setCurrentPage}
+                                    totalItems={filteredEventos.length}
+                                    itemsPerPage={ITEMS_PER_PAGE}
                                 />
                             </div>
-                        ) : (
-                            <>
-                                <div className="overflow-x-auto">
-                                    <table className="w-full text-left text-sm">
-                                        <thead className="bg-slate-50 text-slate-500 font-medium border-b border-slate-200">
-                                            <tr>
-                                                <th className="px-6 py-3">Fecha</th>
-                                                <th className="px-6 py-3">Título</th>
-                                                <th className="px-6 py-3">Modalidad</th>
-                                                <th className="px-6 py-3">Tipo</th>
-                                                <th className="px-6 py-3 text-right">Acciones</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="divide-y divide-slate-100">
-                                            {paginatedEventos.map(evento => {
-                                                const fecha = new Date(evento.fecha + 'T12:00:00');
-                                                return (
-                                                    <tr key={evento.id} className="hover:bg-slate-50 transition-colors group">
-                                                        <td className="px-6 py-4 text-slate-500 whitespace-nowrap">
-                                                            {fecha.toLocaleDateString('es-ES', {
-                                                                day: '2-digit',
-                                                                month: '2-digit',
-                                                                year: 'numeric'
-                                                            })}
-                                                        </td>
-                                                        <td className="px-6 py-4 font-medium text-slate-900">
-                                                            {evento.titulo}
-                                                        </td>
-                                                        <td className="px-6 py-4">
-                                                            <span
-                                                                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium"
-                                                                style={{
-                                                                    backgroundColor: `${evento.modalidades?.color}15`,
-                                                                    color: evento.modalidades?.color,
-                                                                }}
-                                                            >
-                                                                <span
-                                                                    className="w-1.5 h-1.5 rounded-full"
-                                                                    style={{ backgroundColor: evento.modalidades?.color }}
-                                                                />
-                                                                {evento.modalidades?.nombre}
-                                                            </span>
-                                                        </td>
-                                                        <td className="px-6 py-4">
-                                                            <span
-                                                                className="inline-flex px-2.5 py-1 rounded-md text-xs font-medium"
-                                                                style={{
-                                                                    backgroundColor: `${evento.tipos_evento?.color || '#6B7280'}15`,
-                                                                    color: evento.tipos_evento?.color || '#6B7280'
-                                                                }}
-                                                            >
-                                                                {evento.tipos_evento?.nombre || evento.tipo || '-'}
-                                                            </span>
-                                                        </td>
-                                                        <td className="px-6 py-4 text-right">
-                                                            <div className="flex items-center justify-end gap-2">
-                                                                <Link
-                                                                    href={`/admin/eventos/${evento.id}`}
-                                                                    className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                                                                    title="Editar"
-                                                                >
-                                                                    <Edit size={16} />
-                                                                </Link>
-                                                                <button
-                                                                    onClick={() => handleDelete(evento.id)}
-                                                                    className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                                                                    title="Eliminar"
-                                                                >
-                                                                    <Trash2 size={16} />
-                                                                </button>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                );
-                                            })}
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div className="px-6 py-4 border-t border-slate-200">
-                                    <Pagination
-                                        currentPage={currentPage}
-                                        totalPages={totalPages}
-                                        onPageChange={setCurrentPage}
-                                        totalItems={filteredEventos.length}
-                                        itemsPerPage={ITEMS_PER_PAGE}
-                                    />
-                                </div>
-                            </>
-                        )}
-                    </div>
+                        </>
+                    )}
                 </div>
             </main>
         </div>
