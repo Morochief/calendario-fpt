@@ -61,6 +61,8 @@ function ToastContainer({ toasts, onRemove }: { toasts: Toast[]; onRemove: (id: 
     );
 }
 
+import { CheckCircle, XCircle, AlertTriangle, Info } from 'lucide-react';
+
 function ToastItem({ toast, onRemove }: { toast: Toast; onRemove: (id: string) => void }) {
     const [isExiting, setIsExiting] = useState(false);
 
@@ -69,11 +71,11 @@ function ToastItem({ toast, onRemove }: { toast: Toast; onRemove: (id: string) =
         return () => clearTimeout(timer);
     }, []);
 
-    const icons: Record<ToastType, string> = {
-        success: '✅',
-        error: '❌',
-        warning: '⚠️',
-        info: 'ℹ️',
+    const icons: Record<ToastType, ReactNode> = {
+        success: <CheckCircle size={20} />,
+        error: <XCircle size={20} />,
+        warning: <AlertTriangle size={20} />,
+        info: <Info size={20} />,
     };
 
     return (

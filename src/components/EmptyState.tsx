@@ -1,9 +1,11 @@
 'use client';
 
 import Link from 'next/link';
+import { ReactNode } from 'react';
+import { Inbox, AlertTriangle } from 'lucide-react';
 
 interface EmptyStateProps {
-    icon?: string;
+    icon?: ReactNode;
     title: string;
     description?: string;
     actionLabel?: string;
@@ -17,7 +19,7 @@ interface EmptyStateProps {
  * Optionally provides a call-to-action
  */
 export default function EmptyState({
-    icon = '📭',
+    icon = <Inbox size={48} className="text-gray-300" />,
     title,
     description,
     actionLabel,
@@ -64,7 +66,9 @@ export function SelectEmptyState({
 }) {
     return (
         <div className="select-empty-state">
-            <span className="select-empty-icon">⚠️</span>
+            <span className="select-empty-icon">
+                <AlertTriangle size={16} />
+            </span>
             <span>No hay {entityName} disponibles.</span>
             <Link href={createHref} className="select-empty-link">
                 Crear {entityName}

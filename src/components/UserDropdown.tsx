@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import { Settings, LogOut, ChevronDown } from 'lucide-react';
 
 interface UserDropdownProps {
     email: string | undefined;
@@ -39,7 +40,9 @@ export default function UserDropdown({ email, onLogout }: UserDropdownProps) {
                     {initial}
                 </div>
                 <span className="user-email">{email}</span>
-                <span className="user-chevron">▼</span>
+                <span className="user-chevron">
+                    <ChevronDown size={14} />
+                </span>
             </button>
 
             {isOpen && (
@@ -50,7 +53,7 @@ export default function UserDropdown({ email, onLogout }: UserDropdownProps) {
                     </div>
                     <div className="user-dropdown-divider" />
                     <Link href="/admin" className="user-dropdown-item" role="menuitem" onClick={() => setIsOpen(false)}>
-                        <span>⚙️</span>
+                        <Settings size={16} />
                         Panel Admin
                     </Link>
                     <button
@@ -61,7 +64,7 @@ export default function UserDropdown({ email, onLogout }: UserDropdownProps) {
                         }}
                         role="menuitem"
                     >
-                        <span>🚪</span>
+                        <LogOut size={16} />
                         Cerrar sesión
                     </button>
                 </div>

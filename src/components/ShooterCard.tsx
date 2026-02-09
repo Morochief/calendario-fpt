@@ -1,4 +1,5 @@
 import React from 'react';
+import { Target } from 'lucide-react';
 
 interface ShooterCardProps {
     name: string;
@@ -21,20 +22,20 @@ export default function ShooterCard({ name, division, category, club }: ShooterC
         }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
                 <div style={{
-                    width: '48px',
-                    height: '48px',
+                    width: '40px',
+                    height: '40px',
                     background: '#f3f4f6',
                     borderRadius: '50%',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontSize: '1.25rem'
+                    color: '#DC2626'
                 }}>
-                    🎯
+                    <Target size={20} />
                 </div>
                 <div>
                     <h3 style={{ margin: 0, fontSize: '1.125rem', fontWeight: 600, color: '#111827' }}>{name}</h3>
-                    <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>Legacy Member</span>
+                    <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>Tirador FPT</span>
                 </div>
             </div>
 

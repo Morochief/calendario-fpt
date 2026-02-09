@@ -2,9 +2,11 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { Home, Settings, ChevronRight } from 'lucide-react';
 
 interface BreadcrumbItem {
     label: string;
+    icon?: React.ReactNode;
     href?: string;
 }
 
@@ -22,14 +24,14 @@ export default function Breadcrumbs() {
 
     // Generate breadcrumb items from current path
     const getBreadcrumbs = (): BreadcrumbItem[] => {
-        const items: BreadcrumbItem[] = [{ label: '🏠 Inicio', href: '/' }];
+        const items: BreadcrumbItem[] = [{ label: 'Inicio', icon: <Home size={14} />, href: '/' }];
 
         if (!pathname.startsWith('/admin')) {
             return items;
         }
 
         // Add admin root
-        items.push({ label: '⚙️ Admin', href: '/admin' });
+        items.push({ label: 'Admin', icon: <Settings size={14} />, href: '/admin' });
 
         // Check for known routes
         const route = ROUTES[pathname];
@@ -63,16 +65,22 @@ export default function Breadcrumbs() {
                                         href={item.href}
                                         className="breadcrumb-link"
                                         aria-current={undefined}
+                                        style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}
                                     >
+                                        {item.icon}
                                         {item.label}
                                     </Link>
-                                    <span className="breadcrumb-separator" aria-hidden="true">/</span>
+                                    <span className="breadcrumb-separator" aria-hidden="true">
+                                        <ChevronRight size={14} />
+                                    </span>
                                 </>
                             ) : (
                                 <span
                                     className="breadcrumb-current"
                                     aria-current="page"
+                                    style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}
                                 >
+                                    {item.icon}
                                     {item.label}
                                 </span>
                             )}
