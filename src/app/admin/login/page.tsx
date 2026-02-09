@@ -41,7 +41,7 @@ export default function LoginPage() {
         <div className="login-container">
             <div className="login-card">
                 <div className="login-logo">
-                    <img src="/logo.svg" alt="CPTP" style={{ height: '140px' }} />
+                    <img src="/logo.jpg" alt="FPT" style={{ height: '140px' }} />
                 </div>
                 <h1>Panel de Administración</h1>
                 <p style={{
@@ -50,7 +50,7 @@ export default function LoginPage() {
                     marginBottom: '2rem',
                     fontSize: '0.875rem'
                 }}>
-                    Club Paraguayo de Tiro Práctico
+                    Federación Paraguaya de Tiro
                 </p>
 
                 {error && (

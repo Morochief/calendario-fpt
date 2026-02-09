@@ -1,4 +1,4 @@
-# 🎯 Calendario CPTP 2026 - Edición Enterprise
+# 🎯 Calendario FPT 2026 - Edición Enterprise
 
 ![Next.js](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-Strict-blue?style=for-the-badge&logo=typescript)
@@ -8,7 +8,7 @@
 
 > **Score de Auditoría de Ingeniería:** 10/10 (Elite Standard)
 
-Este repositorio contiene el código fuente de la aplicación oficial de calendario para la **Federación Paraguaya de Tiro Práctico**. Es una implementación de referencia de arquitectura moderna "Inhackeable" y escalable.
+Este repositorio contiene el código fuente de la aplicación oficial de calendario para la **Federación Paraguaya de Tiro**. Es una implementación de referencia de arquitectura moderna "Inhackeable" y escalable.
 
 ## 🚀 Características Principales
 

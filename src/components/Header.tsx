@@ -40,14 +40,14 @@ export default function Header() {
         <header className="header">
             <Link href="/" className="header-logo">
                 <Image
-                    src="/logo.svg"
-                    alt="Club Paraguayo de Tiro Práctico"
+                    src="/logo.jpg"
+                    alt="Federación Paraguaya de Tiro"
                     width={60}
                     height={60}
                     style={{ objectFit: 'contain' }}
                 />
                 <div className="header-title">
-                    <h1>CLUB PARAGUAYO DE TIRO PRÁCTICO</h1>
+                    <h1>FEDERACIÓN PARAGUAYA DE TIRO</h1>
                     <span>CALENDARIO DE ACTIVIDADES {new Date().getFullYear()}</span>
                 </div>
             </Link>
@@ -61,6 +61,11 @@ export default function Header() {
                     background: pathname === '/reglamentos' ? 'rgba(255,255,255,0.15)' : 'transparent'
                 }}>
                     📂 Reglamentos
+                </Link>
+                <Link href="/tiradores" style={{
+                    background: pathname === '/tiradores' ? 'rgba(255,255,255,0.15)' : 'transparent'
+                }}>
+                    👥 Tiradores
                 </Link>
                 {user ? (
                     <UserDropdown email={user.email} onLogout={handleLogout} />

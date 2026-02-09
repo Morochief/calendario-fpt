@@ -3,9 +3,9 @@ import "./globals.css";
 import { ToastProvider } from "@/components/Toast";
 
 export const metadata: Metadata = {
-  title: "Calendario 2026 | Club Paraguayo de Tiro Práctico",
-  description: "Calendario oficial de competiciones del Club Paraguayo de Tiro Práctico - 2026",
-  keywords: "tiro práctico, Paraguay, IPSC, competiciones, calendario, CPTP",
+  title: "Calendario 2026 | Federación Paraguaya de Tiro",
+  description: "Calendario oficial de competiciones de la Federación Paraguaya de Tiro - 2026",
+  keywords: "tiro práctico, Paraguay, IPSC, competiciones, calendario, FPT",
 };
 
 export default function RootLayout({

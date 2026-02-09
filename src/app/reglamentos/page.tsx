@@ -42,7 +42,7 @@ export default function PublicReglamentosPage() {
                     <div className="admin-header" style={{ marginBottom: '3rem', textAlign: 'center', flexDirection: 'column', gap: '1rem' }}>
                         <h2 className="section-title" style={{ fontSize: '2.5rem' }}>Reglamentos y Documentos</h2>
                         <p style={{ color: '#6B7280', maxWidth: '600px', margin: '0 auto' }}>
-                            Accede a la documentación oficial, reglamentos técnicos y normativas vigentes del Club Paraguayo de Tiro Práctico.
+                            Accede a la documentación oficial, reglamentos técnicos y normativas vigentes de la Federación Paraguaya de Tiro.
                         </p>
                     </div>
 
