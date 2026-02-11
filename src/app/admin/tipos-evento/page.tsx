@@ -121,7 +121,7 @@ export default function TiposEventoPage() {
 
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
-                            <h1 className="text-2xl font-bold text-slate-900">Tipos de Evento</h1>
+                            <h1 className="text-2xl font-bold text-[#1E3A8A]">Tipos de Evento</h1>
                             <Link
                                 href="/admin"
                                 className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-blue-600 transition-colors mt-1"
@@ -133,7 +133,7 @@ export default function TiposEventoPage() {
                         {!showForm && (
                             <button
                                 onClick={() => setShowForm(true)}
-                                className="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                                className="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-[#D91E18] hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors"
                             >
                                 <Plus size={16} className="mr-2" />
                                 Nuevo Tipo
@@ -144,7 +144,7 @@ export default function TiposEventoPage() {
                     {showForm && (
                         <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                             <div className="border-b border-slate-200 px-6 py-4 flex items-center justify-between">
-                                <h3 className="text-lg font-medium text-slate-900">
+                                <h3 className="text-lg font-medium text-[#1E3A8A]">
                                     {editingId ? 'Editar Tipo' : 'Nuevo Tipo de Evento'}
                                 </h3>
                                 <button onClick={resetForm} className="text-slate-400 hover:text-slate-500">
@@ -191,7 +191,7 @@ export default function TiposEventoPage() {
                                         <button
                                             type="submit"
                                             disabled={saving}
-                                            className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors disabled:opacity-50"
+                                            className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-[#D91E18] hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors disabled:opacity-50"
                                         >
                                             {saving ? 'Guardando...' : (
                                                 <>
@@ -208,7 +208,7 @@ export default function TiposEventoPage() {
 
                     <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                         <div className="px-6 py-4 border-b border-slate-200">
-                            <h3 className="text-lg font-medium text-slate-900">Listado de Tipos</h3>
+                            <h3 className="text-lg font-medium text-[#1E3A8A]">Listado de Tipos</h3>
                         </div>
 
                         {tipos.length === 0 ? (

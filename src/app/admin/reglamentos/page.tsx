@@ -6,7 +6,7 @@ import Link from 'next/link';
 import Header from '@/components/Header';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { createClient } from '@/lib/supabase';
-import { Plus, Save, Trash2, FileText, ArrowLeft, Upload, X, BookOpen } from 'lucide-react';
+import { Plus, Save, Trash2, FileText, ArrowLeft, Upload, X, BookOpen, Loader2 } from 'lucide-react';
 
 interface Reglamento {
     id: string;
@@ -127,377 +127,200 @@ export default function AdminReglamentosPage() {
 
     if (loading) {
         return (
-            <div style={{ minHeight: '100vh', background: '#f8fafc', display: 'flex', flexDirection: 'column' }}>
+            <div className="min-h-screen bg-slate-50 flex flex-col">
                 <Header />
-                <div style={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <div style={{
-                        width: '48px',
-                        height: '48px',
-                        border: '3px solid #e2e8f0',
-                        borderTopColor: '#3b82f6',
-                        borderRadius: '50%',
-                        animation: 'spin 1s linear infinite'
-                    }}></div>
+                <div className="flex-grow flex items-center justify-center">
+                    <Loader2 size={48} className="text-blue-600 animate-spin" />
                 </div>
             </div>
         );
     }
 
     return (
-        <div style={{ minHeight: '100vh', background: '#f8fafc', display: 'flex', flexDirection: 'column' }}>
+        <div className="min-h-screen bg-slate-50 flex flex-col">
             <Header />
-            <main style={{ flexGrow: 1, padding: '32px 16px', maxWidth: '1000px', margin: '0 auto', width: '100%' }}>
-                <Breadcrumbs />
+            <main className="flex-grow py-8 px-4 sm:px-6 lg:px-8">
+                <div className="max-w-5xl mx-auto space-y-6">
+                    <Breadcrumbs />
 
-                {/* Header Section */}
-                <div style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    marginTop: '24px',
-                    marginBottom: '24px',
-                    flexWrap: 'wrap',
-                    gap: '16px'
-                }}>
-                    <div>
-                        <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#0f172a', margin: 0 }}>
-                            Gestión de Reglamentos
-                        </h1>
-                        <Link
-                            href="/admin"
-                            style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: '4px',
-                                fontSize: '0.9rem',
-                                color: '#64748b',
-                                textDecoration: 'none',
-                                marginTop: '4px'
-                            }}
-                        >
-                            <ArrowLeft size={16} />
-                            Volver al panel
-                        </Link>
-                    </div>
-                    {!showForm && (
-                        <button
-                            onClick={() => setShowForm(true)}
-                            style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: '8px',
-                                background: '#2563eb',
-                                color: 'white',
-                                padding: '10px 20px',
-                                borderRadius: '8px',
-                                fontSize: '0.9rem',
-                                fontWeight: 500,
-                                border: 'none',
-                                cursor: 'pointer',
-                                boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
-                            }}
-                        >
-                            <Plus size={18} />
-                            Nuevo Reglamento
-                        </button>
-                    )}
-                </div>
-
-                {/* Upload Form */}
-                {showForm && (
-                    <div style={{
-                        background: 'white',
-                        borderRadius: '12px',
-                        border: '1px solid #e2e8f0',
-                        boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-                        padding: '24px',
-                        marginBottom: '24px'
-                    }}>
-                        <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            marginBottom: '20px'
-                        }}>
-                            <h3 style={{ fontWeight: 600, color: '#0f172a', margin: 0, fontSize: '1.1rem' }}>
-                                Nuevo Reglamento
-                            </h3>
-                            <button
-                                onClick={resetForm}
-                                style={{
-                                    background: 'transparent',
-                                    border: 'none',
-                                    color: '#94a3b8',
-                                    cursor: 'pointer',
-                                    padding: '4px'
-                                }}
+                    {/* Header Section */}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h1 className="text-2xl font-bold text-[#1E3A8A]">Gestión de Reglamentos</h1>
+                            <Link
+                                href="/admin"
+                                className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-blue-600 transition-colors mt-1"
                             >
-                                <X size={20} />
-                            </button>
+                                <ArrowLeft size={16} />
+                                Volver al panel
+                            </Link>
                         </div>
+                        {!showForm && (
+                            <button
+                                onClick={() => setShowForm(true)}
+                                className="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-[#D91E18] hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors"
+                            >
+                                <Plus size={18} className="mr-2" />
+                                Nuevo Reglamento
+                            </button>
+                        )}
+                    </div>
 
-                        <form onSubmit={handleSubmit}>
-                            <div style={{ marginBottom: '16px' }}>
-                                <label style={{
-                                    display: 'block',
-                                    fontSize: '0.9rem',
-                                    fontWeight: 500,
-                                    color: '#374151',
-                                    marginBottom: '6px'
-                                }}>
-                                    Título del Reglamento *
-                                </label>
-                                <input
-                                    type="text"
-                                    value={titulo}
-                                    onChange={(e) => setTitulo(e.target.value)}
-                                    placeholder="Ej: Reglamento Técnico IPSC 2024"
-                                    required
-                                    style={{
-                                        width: '100%',
-                                        padding: '10px 14px',
-                                        borderRadius: '8px',
-                                        border: '1px solid #e2e8f0',
-                                        fontSize: '0.95rem',
-                                        outline: 'none',
-                                        boxSizing: 'border-box'
-                                    }}
-                                />
+                    {/* Upload Form */}
+                    {showForm && (
+                        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                            <div className="border-b border-slate-200 px-6 py-4 flex items-center justify-between">
+                                <h3 className="text-lg font-medium text-[#1E3A8A]">
+                                    Nuevo Reglamento
+                                </h3>
+                                <button onClick={resetForm} className="text-slate-400 hover:text-slate-500">
+                                    <X size={20} />
+                                </button>
                             </div>
 
-                            <div style={{ marginBottom: '20px' }}>
-                                <label style={{
-                                    display: 'block',
-                                    fontSize: '0.9rem',
-                                    fontWeight: 500,
-                                    color: '#374151',
-                                    marginBottom: '6px'
-                                }}>
-                                    Archivo PDF *
-                                </label>
-                                <div style={{
-                                    border: '2px dashed #d1d5db',
-                                    borderRadius: '8px',
-                                    padding: '32px 16px',
-                                    textAlign: 'center',
-                                    background: '#f9fafb',
-                                    cursor: 'pointer',
-                                    position: 'relative'
-                                }}>
-                                    <Upload size={40} style={{ color: '#94a3b8', marginBottom: '12px' }} />
-                                    <p style={{ margin: '0 0 4px', fontSize: '0.9rem', color: '#374151' }}>
-                                        <span style={{ color: '#2563eb', fontWeight: 500 }}>Subir un archivo</span> o arrastrar y soltar
-                                    </p>
-                                    <p style={{ margin: 0, fontSize: '0.8rem', color: '#94a3b8' }}>
-                                        PDF hasta 10MB
-                                    </p>
-                                    {file && (
-                                        <p style={{
-                                            margin: '12px 0 0',
-                                            fontSize: '0.9rem',
-                                            fontWeight: 500,
-                                            color: '#2563eb'
-                                        }}>
-                                            Seleccionado: {file.name}
-                                        </p>
-                                    )}
+                            <form onSubmit={handleSubmit} className="p-6 space-y-6">
+                                <div>
+                                    <label htmlFor="titulo" className="block text-sm font-medium text-slate-700 mb-1">
+                                        Título del Reglamento *
+                                    </label>
                                     <input
-                                        type="file"
-                                        accept=".pdf"
-                                        onChange={(e) => setFile(e.target.files?.[0] || null)}
+                                        id="titulo"
+                                        type="text"
+                                        value={titulo}
+                                        onChange={(e) => setTitulo(e.target.value)}
+                                        placeholder="Ej: Reglamento Técnico IPSC 2024"
                                         required
-                                        style={{
-                                            position: 'absolute',
-                                            inset: 0,
-                                            opacity: 0,
-                                            cursor: 'pointer'
-                                        }}
+                                        className="block w-full rounded-lg border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                                     />
                                 </div>
-                            </div>
 
-                            <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
-                                <button
-                                    type="button"
-                                    onClick={resetForm}
-                                    style={{
-                                        padding: '10px 20px',
-                                        fontSize: '0.9rem',
-                                        fontWeight: 500,
-                                        color: '#475569',
-                                        background: 'white',
-                                        border: '1px solid #e2e8f0',
-                                        borderRadius: '8px',
-                                        cursor: 'pointer'
-                                    }}
-                                >
-                                    Cancelar
-                                </button>
-                                <button
-                                    type="submit"
-                                    disabled={uploading}
-                                    style={{
-                                        display: 'inline-flex',
-                                        alignItems: 'center',
-                                        gap: '8px',
-                                        padding: '10px 20px',
-                                        fontSize: '0.9rem',
-                                        fontWeight: 500,
-                                        color: 'white',
-                                        background: uploading ? '#94a3b8' : '#2563eb',
-                                        border: 'none',
-                                        borderRadius: '8px',
-                                        cursor: uploading ? 'not-allowed' : 'pointer'
-                                    }}
-                                >
-                                    {uploading ? (
-                                        <>
-                                            <div style={{
-                                                width: '16px',
-                                                height: '16px',
-                                                border: '2px solid rgba(255,255,255,0.3)',
-                                                borderTopColor: 'white',
-                                                borderRadius: '50%',
-                                                animation: 'spin 1s linear infinite'
-                                            }}></div>
-                                            Subiendo...
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Save size={16} />
-                                            Guardar
-                                        </>
-                                    )}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                )}
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                                        Archivo PDF *
+                                    </label>
+                                    <div className="relative border-2 border-dashed border-slate-300 rounded-lg p-8 text-center bg-slate-50 hover:bg-slate-100 transition-colors">
+                                        <Upload size={40} className="mx-auto text-slate-400 mb-3" />
+                                        <p className="text-sm text-slate-600 mb-1">
+                                            <span className="font-medium text-blue-600">Sube un archivo</span> o arrástralo aquí
+                                        </p>
+                                        <p className="text-xs text-slate-400">PDF hasta 10MB</p>
 
-                {/* Documents List */}
-                <div style={{
-                    background: 'white',
-                    borderRadius: '12px',
-                    border: '1px solid #e2e8f0',
-                    boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-                    overflow: 'hidden'
-                }}>
-                    <div style={{
-                        padding: '16px 24px',
-                        borderBottom: '1px solid #e2e8f0',
-                        background: '#f8fafc',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between'
-                    }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <BookOpen size={20} style={{ color: '#64748b' }} />
-                            <h3 style={{ fontWeight: 600, color: '#0f172a', margin: 0, fontSize: '1rem' }}>
-                                Documentos Publicados
-                            </h3>
-                        </div>
-                        <span style={{
-                            background: '#dbeafe',
-                            color: '#1d4ed8',
-                            fontSize: '0.75rem',
-                            fontWeight: 600,
-                            padding: '3px 10px',
-                            borderRadius: '999px'
-                        }}>
-                            {reglamentos.length} archivos
-                        </span>
-                    </div>
+                                        {file && (
+                                            <div className="mt-3 inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-medium">
+                                                <FileText size={14} />
+                                                {file.name}
+                                            </div>
+                                        )}
 
-                    {reglamentos.length === 0 ? (
-                        <div style={{
-                            textAlign: 'center',
-                            padding: '48px 24px'
-                        }}>
-                            <div style={{
-                                width: '64px',
-                                height: '64px',
-                                background: '#f1f5f9',
-                                borderRadius: '50%',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                margin: '0 auto 16px'
-                            }}>
-                                <FileText size={28} style={{ color: '#94a3b8' }} />
-                            </div>
-                            <p style={{ fontWeight: 600, color: '#0f172a', margin: '0 0 4px', fontSize: '1.1rem' }}>
-                                No hay reglamentos cargados
-                            </p>
-                            <p style={{ color: '#64748b', margin: 0, fontSize: '0.9rem' }}>
-                                Sube el primer reglamento utilizando el botón &quot;Nuevo Reglamento&quot;.
-                            </p>
-                        </div>
-                    ) : (
-                        <div style={{ overflowX: 'auto' }}>
-                            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
-                                <thead>
-                                    <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
-                                        <th style={{ padding: '12px 24px', textAlign: 'left', fontWeight: 500, color: '#64748b' }}>Fecha</th>
-                                        <th style={{ padding: '12px 24px', textAlign: 'left', fontWeight: 500, color: '#64748b' }}>Título</th>
-                                        <th style={{ padding: '12px 24px', textAlign: 'left', fontWeight: 500, color: '#64748b' }}>Archivo</th>
-                                        <th style={{ padding: '12px 24px', textAlign: 'right', fontWeight: 500, color: '#64748b' }}>Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {reglamentos.map((reg) => (
-                                        <tr key={reg.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                                            <td style={{ padding: '14px 24px', color: '#64748b', whiteSpace: 'nowrap' }}>
-                                                {new Date(reg.created_at).toLocaleDateString('es-ES')}
-                                            </td>
-                                            <td style={{ padding: '14px 24px', fontWeight: 500, color: '#0f172a' }}>
-                                                {reg.titulo}
-                                            </td>
-                                            <td style={{ padding: '14px 24px' }}>
-                                                <a
-                                                    href={reg.url}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    style={{
-                                                        display: 'inline-flex',
-                                                        alignItems: 'center',
-                                                        gap: '6px',
-                                                        color: '#2563eb',
-                                                        fontWeight: 500,
-                                                        textDecoration: 'none'
-                                                    }}
-                                                >
-                                                    <FileText size={16} />
-                                                    Ver PDF
-                                                </a>
-                                            </td>
-                                            <td style={{ padding: '14px 24px', textAlign: 'right' }}>
-                                                <button
-                                                    onClick={() => handleDelete(reg.id, reg.url)}
-                                                    style={{
-                                                        display: 'inline-flex',
-                                                        alignItems: 'center',
-                                                        gap: '6px',
-                                                        color: '#dc2626',
-                                                        background: 'transparent',
-                                                        border: 'none',
-                                                        padding: '6px 12px',
-                                                        borderRadius: '6px',
-                                                        cursor: 'pointer',
-                                                        fontSize: '0.85rem',
-                                                        fontWeight: 500
-                                                    }}
-                                                >
-                                                    <Trash2 size={16} />
-                                                    Eliminar
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                        <input
+                                            type="file"
+                                            accept=".pdf"
+                                            onChange={(e) => setFile(e.target.files?.[0] || null)}
+                                            required
+                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="flex justify-end gap-3 pt-4 border-t border-slate-200">
+                                    <button
+                                        type="button"
+                                        onClick={resetForm}
+                                        className="px-4 py-2 border border-slate-300 rounded-lg shadow-sm text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                                    >
+                                        Cancelar
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        disabled={uploading}
+                                        className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-[#D91E18] hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        {uploading ? (
+                                            <>
+                                                <Loader2 size={16} className="mr-2 animate-spin" />
+                                                Subiendo...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Save size={16} className="mr-2" />
+                                                Guardar
+                                            </>
+                                        )}
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     )}
+
+                    {/* Documents List */}
+                    <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div className="px-6 py-4 border-b border-slate-200 bg-slate-50/50 flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                <BookOpen size={20} className="text-slate-400" />
+                                <h3 className="text-lg font-medium text-[#1E3A8A]">
+                                    Documentos Publicados
+                                </h3>
+                            </div>
+                            <span className="bg-blue-100 text-blue-700 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                                {reglamentos.length} archivos
+                            </span>
+                        </div>
+
+                        {reglamentos.length === 0 ? (
+                            <div className="p-12 text-center text-slate-500">
+                                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 mb-4">
+                                    <FileText size={32} className="text-slate-400" />
+                                </div>
+                                <p className="text-lg font-medium text-slate-900 mb-1">No hay reglamentos cargados</p>
+                                <p>Sube el primer reglamento utilizando el botón "Nuevo Reglamento".</p>
+                            </div>
+                        ) : (
+                            <div className="overflow-x-auto">
+                                <table className="min-w-full divide-y divide-slate-200">
+                                    <thead className="bg-slate-50">
+                                        <tr>
+                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Fecha</th>
+                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Título</th>
+                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Archivo</th>
+                                            <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="bg-white divide-y divide-slate-200">
+                                        {reglamentos.map((reg) => (
+                                            <tr key={reg.id} className="hover:bg-slate-50 transition-colors group">
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                                                    {new Date(reg.created_at).toLocaleDateString('es-ES')}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">
+                                                    {reg.titulo}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm">
+                                                    <a
+                                                        href={reg.url}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="inline-flex items-center gap-1.5 text-blue-600 hover:text-blue-800 font-medium transition-colors"
+                                                    >
+                                                        <FileText size={16} />
+                                                        Ver PDF
+                                                    </a>
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                    <button
+                                                        onClick={() => handleDelete(reg.id, reg.url)}
+                                                        className="text-slate-400 hover:text-red-600 transition-colors p-1 rounded-md hover:bg-red-50"
+                                                        title="Eliminar"
+                                                    >
+                                                        <Trash2 size={18} />
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </main>
         </div>
