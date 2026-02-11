@@ -928,12 +928,57 @@ a {
   border-bottom: 1px solid var(--color-border);
 }
 
+/* COP Watermark */
+.hero-watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
 .hero-content {
   text-align: center;
   max-width: 800px;
   padding: 2rem;
   z-index: 10;
   animation: heroFadeIn 0.8s ease-out forwards;
+}
+
+/* Paraguayan Flag in Header */
+.header-flag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.5rem;
+  opacity: 0.7;
+  transition: opacity var(--transition-fast);
+}
+
+.header-flag:hover {
+  opacity: 1;
+}
+
+/* Global COP Watermark for content areas */
+.main-content-area {
+  position: relative;
+}
+
+.main-content-area::before {
+  content: '';
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  height: 500px;
+  background: url('/logo_cop-removebg-preview.svg') center/contain no-repeat;
+  opacity: 0.02;
+  filter: grayscale(100%);
+  pointer-events: none;
+  z-index: 0;
 }
 
 .hero-image-wrapper {

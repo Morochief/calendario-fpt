@@ -13,17 +13,35 @@ export default function Hero() {
 
     return (
         <section className="hero-section">
+            {/* COP Watermark Background */}
+            <div className="hero-watermark" aria-hidden="true">
+                <img
+                    src="/logo_cop-removebg-preview.svg"
+                    alt=""
+                    style={{
+                        width: '600px',
+                        height: '600px',
+                        objectFit: 'contain',
+                        opacity: 0.03,
+                        filter: 'grayscale(100%)',
+                        userSelect: 'none',
+                        pointerEvents: 'none',
+                    }}
+                />
+            </div>
+
             <div className="hero-content">
                 <div className="hero-image-wrapper">
                     <div className="hero-image-container">
-                        <Image
-                            src="/logo fpdt.svg"
+                        <img
+                            src="/LOGO_FPDT-removebg-preview.svg"
                             alt="Federación Paraguaya de Tiro"
-                            fill
-                            unoptimized
-                            style={{ objectFit: 'contain' }}
-                            priority
-                            className="hero-logo"
+                            style={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'contain',
+                                padding: '0.5rem',
+                            }}
                         />
                     </div>
                 </div>

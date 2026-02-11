@@ -46,16 +46,20 @@ export default function Header() {
     return (
         <header className="header">
             <Link href="/" className="header-logo">
-                <Image
-                    src="/logo fpdt.svg"
+                {/* Logo with proper aspect ratio - no squishing */}
+                <img
+                    src="/LOGO_FPDT-removebg-preview.svg"
                     alt="Federación Paraguaya de Tiro"
-                    width={56}
-                    height={56}
-                    unoptimized
-                    style={{ objectFit: 'contain' }}
+                    style={{
+                        height: '48px',
+                        width: 'auto',
+                        objectFit: 'contain',
+                        imageRendering: 'auto',
+                        flexShrink: 0,
+                    }}
                 />
                 <div className="header-title">
-                    <h1>FPT</h1>
+                    <h1>FPDT</h1>
                     <span>Federación Paraguaya de Tiro</span>
                 </div>
             </Link>
@@ -82,6 +86,16 @@ export default function Header() {
                     <Users size={16} strokeWidth={1.5} />
                     <span>Tiradores</span>
                 </Link>
+
+                {/* Bandera Paraguaya */}
+                <div className="header-flag" title="Paraguay">
+                    <svg width="22" height="15" viewBox="0 0 5 3" style={{ borderRadius: '2px', boxShadow: '0 1px 2px rgba(0,0,0,0.1)' }}>
+                        <rect width="5" height="1" fill="#D52B1E" />
+                        <rect y="1" width="5" height="1" fill="#FFFFFF" />
+                        <rect y="2" width="5" height="1" fill="#0038A8" />
+                    </svg>
+                </div>
+
                 {user ? (
                     <UserDropdown email={user.email} onLogout={handleLogout} />
                 ) : (

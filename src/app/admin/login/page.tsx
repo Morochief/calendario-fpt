@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase';
 import { Lock, Mail, ArrowRight, AlertTriangle, ShieldCheck } from 'lucide-react';
-import Image from 'next/image';
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
@@ -68,13 +67,14 @@ export default function LoginPage() {
                         alignItems: 'center',
                         justifyContent: 'center'
                     }}>
-                        <Image
-                            src="/logo fpdt.svg"
+                        <img
+                            src="/LOGO_FPDT-removebg-preview.svg"
                             alt="FPT Logo"
-                            width={90}
-                            height={90}
-                            unoptimized
-                            style={{ objectFit: 'contain' }}
+                            style={{
+                                width: '90px',
+                                height: '90px',
+                                objectFit: 'contain',
+                            }}
                         />
                     </div>
                     <h2 style={{

@@ -7,9 +7,9 @@ export const metadata: Metadata = {
   description: "Calendario oficial de competiciones de la Federación Paraguaya de Tiro - 2026",
   keywords: "tiro práctico, Paraguay, IPSC, competiciones, calendario, FPT",
   icons: {
-    icon: "/logo fpdt.svg",
-    shortcut: "/logo fpdt.svg",
-    apple: "/logo fpdt.svg",
+    icon: "/LOGO_FPDT-removebg-preview.svg",
+    shortcut: "/LOGO_FPDT-removebg-preview.svg",
+    apple: "/LOGO_FPDT-removebg-preview.svg",
   },
 };
 

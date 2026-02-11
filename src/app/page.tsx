@@ -105,7 +105,7 @@ export default function CalendarPage() {
     <>
       <Header />
       <Hero />
-      <main className="main" id="calendario">
+      <main className="main main-content-area" id="calendario">
         <div className="calendar-header">
           <h2 className="section-title">Calendario de Eventos</h2>
 
