@@ -972,11 +972,10 @@ a {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 500px;
-  height: 500px;
+  width: 800px;
+  height: 800px;
   background: url('/logo_cop-removebg-preview.svg') center/contain no-repeat;
-  opacity: 0.02;
-  filter: grayscale(100%);
+  opacity: 0.04;
   pointer-events: none;
   z-index: 0;
 }
