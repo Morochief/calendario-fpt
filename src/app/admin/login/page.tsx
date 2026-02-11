@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase';
-import { Lock, Mail, ArrowRight, AlertCircle } from 'lucide-react';
+import { Lock, Mail, ArrowRight, AlertTriangle, ShieldCheck } from 'lucide-react';
+import Image from 'next/image';
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
@@ -25,116 +26,264 @@ export default function LoginPage() {
             });
 
             if (authError) {
-                setError('Email o contraseña incorrectos');
+                setError('Credenciales incorrectas');
                 return;
             }
 
+            // Redirect handled by middleware mostly, but explicit push helps
             router.push('/admin');
             router.refresh();
         } catch {
-            setError('Error al iniciar sesión');
+            setError('Error de conexión al iniciar sesión');
         } finally {
             setLoading(false);
         }
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-            <div className="sm:mx-auto sm:w-full sm:max-w-md">
-                <div className="flex justify-center">
-                    <img
-                        src="/logo_ftp_proposed_1770576186779.png"
-                        alt="FPT Logo"
-                        className="h-24 w-auto drop-shadow-sm"
-                    />
+        <div style={{
+            minHeight: '100vh',
+            background: '#FAFAFA',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: '1.5rem'
+        }}>
+            <div style={{
+                width: '100%',
+                maxWidth: '420px',
+            }}>
+                {/* Branding Header */}
+                <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+                    <div style={{
+                        width: '80px',
+                        height: '80px',
+                        background: 'white',
+                        borderRadius: '50%',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
+                        padding: '0.75rem',
+                        margin: '0 auto 1.5rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                    }}>
+                        <Image
+                            src="/logo.jpg"
+                            alt="FPT Logo"
+                            width={56}
+                            height={56}
+                            style={{ objectFit: 'contain' }}
+                        />
+                    </div>
+                    <h2 style={{
+                        fontSize: '1.5rem',
+                        fontWeight: 700,
+                        color: '#171717',
+                        letterSpacing: '-0.03em',
+                        marginBottom: '0.5rem'
+                    }}>
+                        Panel Administrativo
+                    </h2>
+                    <p style={{
+                        color: '#737373',
+                        fontSize: '0.9375rem'
+                    }}>
+                        Federación Paraguaya de Tiro
+                    </p>
                 </div>
-                <h2 className="mt-6 text-center text-3xl font-extrabold text-slate-900">
-                    Panel de Administración
-                </h2>
-                <p className="mt-2 text-center text-sm text-slate-600">
-                    Federación Paraguaya de Tiro
-                </p>
-            </div>
 
-            <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-                <div className="bg-white py-8 px-4 shadow-sm border border-slate-200 sm:rounded-xl sm:px-10">
-                    <form className="space-y-6" onSubmit={handleSubmit}>
+                {/* Login Card */}
+                <div style={{
+                    background: 'white',
+                    borderRadius: '16px',
+                    padding: '2rem',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.02), 0 4px 20px rgba(0,0,0,0.04)',
+                    border: '1px solid rgba(0,0,0,0.04)'
+                }}>
+                    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+
                         {error && (
-                            <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-md flex items-start gap-3">
-                                <AlertCircle className="text-red-500 mt-0.5" size={18} />
-                                <div className="text-sm text-red-700">{error}</div>
+                            <div style={{
+                                background: '#FEF2F2',
+                                border: '1px solid #FECACA',
+                                borderRadius: '8px',
+                                padding: '0.75rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.75rem',
+                                color: '#991B1B',
+                                fontSize: '0.875rem'
+                            }}>
+                                <AlertTriangle size={18} strokeWidth={1.5} />
+                                {error}
                             </div>
                         )}
 
                         <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-slate-700">
-                                Correo Electrónico
+                            <label htmlFor="email" style={{
+                                display: 'block',
+                                fontSize: '0.75rem',
+                                fontWeight: 600,
+                                color: '#171717',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.05em',
+                                marginBottom: '0.5rem'
+                            }}>
+                                Email Corporativo
                             </label>
-                            <div className="mt-1 relative rounded-md shadow-sm">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <Mail className="h-5 w-5 text-slate-400" />
+                            <div style={{ position: 'relative' }}>
+                                <div style={{
+                                    position: 'absolute',
+                                    left: '0.75rem',
+                                    top: '50%',
+                                    transform: 'translateY(-50%)',
+                                    color: '#A3A3A3',
+                                    display: 'flex', alignItems: 'center'
+                                }}>
+                                    <Mail size={18} strokeWidth={1.5} />
                                 </div>
                                 <input
                                     id="email"
-                                    name="email"
                                     type="email"
-                                    autoComplete="email"
                                     required
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="block w-full pl-10 pr-3 py-2 border border-slate-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 sm:text-sm outline-none transition-all"
-                                    placeholder="nombre@ejemplo.com"
+                                    placeholder="usuario@dominio.com"
+                                    style={{
+                                        width: '100%',
+                                        padding: '0.75rem 1rem 0.75rem 2.75rem',
+                                        background: '#FAFAFA',
+                                        border: '1px solid rgba(0,0,0,0.06)',
+                                        borderRadius: '10px',
+                                        fontSize: '0.9375rem',
+                                        color: '#171717',
+                                        outline: 'none',
+                                        transition: 'all 0.2s ease'
+                                    }}
+                                    className="login-input"
                                 />
                             </div>
                         </div>
 
                         <div>
-                            <label htmlFor="password" className="block text-sm font-medium text-slate-700">
+                            <label htmlFor="password" style={{
+                                display: 'block',
+                                fontSize: '0.75rem',
+                                fontWeight: 600,
+                                color: '#171717',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.05em',
+                                marginBottom: '0.5rem'
+                            }}>
                                 Contraseña
                             </label>
-                            <div className="mt-1 relative rounded-md shadow-sm">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <Lock className="h-5 w-5 text-slate-400" />
+                            <div style={{ position: 'relative' }}>
+                                <div style={{
+                                    position: 'absolute',
+                                    left: '0.75rem',
+                                    top: '50%',
+                                    transform: 'translateY(-50%)',
+                                    color: '#A3A3A3',
+                                    display: 'flex', alignItems: 'center'
+                                }}>
+                                    <Lock size={18} strokeWidth={1.5} />
                                 </div>
                                 <input
                                     id="password"
-                                    name="password"
                                     type="password"
-                                    autoComplete="current-password"
                                     required
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="block w-full pl-10 pr-3 py-2 border border-slate-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 sm:text-sm outline-none transition-all"
                                     placeholder="••••••••"
+                                    style={{
+                                        width: '100%',
+                                        padding: '0.75rem 1rem 0.75rem 2.75rem',
+                                        background: '#FAFAFA',
+                                        border: '1px solid rgba(0,0,0,0.06)',
+                                        borderRadius: '10px',
+                                        fontSize: '0.9375rem',
+                                        color: '#171717',
+                                        outline: 'none',
+                                        transition: 'all 0.2s ease'
+                                    }}
+                                    className="login-input"
                                 />
                             </div>
                         </div>
 
-                        <div>
-                            <button
-                                type="submit"
-                                disabled={loading}
-                                className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed items-center gap-2"
-                            >
-                                {loading ? (
-                                    <>
-                                        <div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                                        Ingresando...
-                                    </>
-                                ) : (
-                                    <>
-                                        Ingresar
-                                        <ArrowRight size={16} />
-                                    </>
-                                )}
-                            </button>
-                        </div>
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            style={{
+                                marginTop: '0.5rem',
+                                width: '100%',
+                                padding: '0.875rem',
+                                background: '#000000',
+                                color: 'white',
+                                borderRadius: '10px',
+                                fontWeight: 500,
+                                fontSize: '0.9375rem',
+                                border: 'none',
+                                cursor: loading ? 'not-allowed' : 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '0.5rem',
+                                opacity: loading ? 0.7 : 1,
+                                transition: 'transform 0.1s ease'
+                            }}
+                            className="login-btn"
+                        >
+                            {loading ? (
+                                <>
+                                    <div className="spinner-sm" style={{
+                                        width: '16px', height: '16px',
+                                        border: '2px solid rgba(255,255,255,0.3)',
+                                        borderTopColor: 'white',
+                                        borderRadius: '50%',
+                                        animation: 'spin 0.8s linear infinite'
+                                    }} />
+                                    Autenticando...
+                                </>
+                            ) : (
+                                <>
+                                    Ingresar al Sistema
+                                    <ArrowRight size={18} strokeWidth={1.5} />
+                                </>
+                            )}
+                        </button>
                     </form>
                 </div>
-                <p className="mt-6 text-center text-xs text-slate-400">
-                    &copy; 2026 FPT. Acceso restringido únicamente a personal autorizado.
-                </p>
+
+                <div style={{
+                    marginTop: '2rem',
+                    textAlign: 'center',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.5rem',
+                    color: '#A3A3A3',
+                    fontSize: '0.75rem'
+                }}>
+                    <ShieldCheck size={14} strokeWidth={1.5} />
+                    <span>Acceso Seguro · Solo Personal Autorizado</span>
+                </div>
             </div>
+
+            <style jsx global>{`
+                .login-input:focus {
+                    background: white !important;
+                    border-color: rgba(0,0,0,0.15) !important;
+                    box-shadow: 0 0 0 3px rgba(0,0,0,0.03);
+                }
+                .login-btn:active {
+                    transform: scale(0.98);
+                }
+                @keyframes spin {
+                    to { transform: rotate(360deg); }
+                }
+            `}</style>
         </div>
     );
 }
