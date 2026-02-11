@@ -19,8 +19,8 @@ export default function Hero() {
                     src="/logo_cop-removebg-preview.svg"
                     alt=""
                     style={{
-                        width: '900px',
-                        height: '900px',
+                        width: '600px',
+                        height: '600px',
                         objectFit: 'contain',
                         opacity: 0.05,
                         userSelect: 'none',
