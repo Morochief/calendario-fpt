@@ -1134,6 +1134,8 @@ a {
   grid-row: span 2;
 }
 
+
+
 /* ========================================
    Toast Notifications — Subtle
    ======================================== */
@@ -1826,4 +1828,22 @@ a.user-dropdown-item,
   .skeleton-form-row {
     grid-template-columns: 1fr;
   }
+}
+
+/* ========================================
+   Annual Calendar / Mini Month Accent
+   ======================================== */
+
+.mini-month-header {
+  color: var(--color-fpt-red);
+  /* Action Red for Annual View Headers */
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
