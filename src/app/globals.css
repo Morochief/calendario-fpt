@@ -912,20 +912,164 @@ a {
   flex: 1;
 }
 
-.mini-event-toggle {
-  display: block;
-  width: 100%;
-  padding: 0.3rem;
-  margin-top: 0.25rem;
-  background: var(--color-text);
-  color: var(--color-surface);
-  border: none;
-  border-radius: 4px;
-  font-size: 0.5625rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: opacity var(--transition-fast);
+
+/* ========================================
+   Hero Section — Federation Branding
+   ======================================== */
+
+.hero-section {
+  min-height: 85vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-surface);
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--color-border);
 }
+
+.hero-content {
+  text-align: center;
+  max-width: 800px;
+  padding: 2rem;
+  z-index: 10;
+  animation: heroFadeIn 0.8s ease-out forwards;
+}
+
+.hero-image-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2.5rem;
+}
+
+.hero-image-container {
+  width: 140px;
+  height: 140px;
+  position: relative;
+  background: var(--color-surface);
+  border-radius: 50%;
+  box-shadow: var(--shadow-lg);
+  /* Elevación premium */
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.4s ease;
+}
+
+.hero-image-container:hover {
+  transform: translateY(-4px);
+}
+
+.hero-logo {
+  object-fit: contain;
+  /* Filter minimal (optional) */
+}
+
+.hero-title {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--color-text);
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, #171717 0%, #404040 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-subtitle {
+  font-size: 1.125rem;
+  color: var(--color-text-secondary);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  margin-bottom: 3rem;
+  opacity: 0.8;
+}
+
+.hero-action {
+  display: flex;
+  justify-content: center;
+}
+
+.hero-scroll-btn {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 100px;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.hero-scroll-btn:hover {
+  background: var(--color-accent-subtle);
+  border-color: var(--color-border-hover);
+  padding-right: 1.75rem;
+  /* Subtle arrow movement hint */
+}
+
+.hero-arrow-icon {
+  animation: bounce 2s infinite;
+}
+
+@keyframes heroFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounce {
+
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+
+  40% {
+    transform: translateY(6px);
+  }
+
+  60% {
+    transform: translateY(3px);
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-section {
+    min-height: 70vh;
+  }
+
+  .hero-image-container {
+    width: 100px;
+    height: 100px;
+  }
+
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .hero-subtitle {
+    font-size: 0.9375rem;
+  }
+}
+
+/* ========================================
+   Mini-Month Event Toggle
+
 
 .mini-event-toggle:hover {
   opacity: 0.85;

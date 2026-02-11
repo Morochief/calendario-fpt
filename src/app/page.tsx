@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Header from '@/components/Header';
+import Hero from '@/components/Hero';
 import Footer from '@/components/Footer';
 import ModalityFilter from '@/components/ModalityFilter';
 import MonthCard from '@/components/MonthCard';
@@ -103,7 +104,8 @@ export default function CalendarPage() {
   return (
     <>
       <Header />
-      <main className="main">
+      <Hero />
+      <main className="main" id="calendario">
         <div className="calendar-header">
           <h2 className="section-title">Calendario de Eventos</h2>
 
