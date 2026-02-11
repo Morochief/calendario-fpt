@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useToast } from '@/components/Toast';
@@ -8,7 +8,7 @@ import { SelectEmptyState } from '@/components/EmptyState';
 import { createClient } from '@/lib/supabase';
 import { Modalidad, TipoEvento } from '@/lib/types';
 import { eventoCreateSchema, EventoInput } from '@/lib/schemas';
-import { Save, X, Calendar, MapPin, Link as LinkIcon, Image as ImageIcon, AlignLeft } from 'lucide-react';
+import { Save, X, Calendar, MapPin, Link as LinkIcon, Image as ImageIcon, AlignLeft, UploadCloud, Loader2 } from 'lucide-react';
 
 interface EventFormProps {
     initialData?: Partial<EventoInput> & { id?: string };
@@ -18,14 +18,17 @@ interface EventFormProps {
 /**
  * Reusable Event Form Component
  * Handles both creating and editing events with Zod validation
+ * & Image Upload to Supabase Storage
  */
 export default function EventForm({ initialData, isEditing = false }: EventFormProps) {
     const [modalidades, setModalidades] = useState<Modalidad[]>([]);
     const [tiposEvento, setTiposEvento] = useState<TipoEvento[]>([]);
     const [loading, setLoading] = useState(false);
+    const [uploading, setUploading] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const router = useRouter();
     const { showToast } = useToast();
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     // Form state
     const [titulo, setTitulo] = useState(initialData?.titulo || '');
@@ -34,7 +37,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
     const [hora, setHora] = useState(initialData?.hora || '08:30');
     const [ubicacion, setUbicacion] = useState(initialData?.ubicacion || '');
     const [ubicacionUrl, setUbicacionUrl] = useState(
-        initialData?.ubicacion_url || 'https://maps.app.goo.gl/weBjZMXHERaafE858?g_st=aw'
+        initialData?.ubicacion_url || ''
     );
     const [imagenUrl, setImagenUrl] = useState(initialData?.imagen_url || '');
     const [descripcion, setDescripcion] = useState(initialData?.descripcion || '');
@@ -44,7 +47,6 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
         loadOptions();
     }, []);
 
-    // Update form when initialData changes (for edit mode)
     useEffect(() => {
         if (initialData) {
             setTitulo(initialData.titulo || '');
@@ -52,7 +54,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
             setFecha(initialData.fecha || '');
             setHora(initialData.hora || '08:30');
             setUbicacion(initialData.ubicacion || '');
-            setUbicacionUrl(initialData.ubicacion_url || 'https://maps.app.goo.gl/weBjZMXHERaafE858?g_st=aw');
+            setUbicacionUrl(initialData.ubicacion_url || '');
             setImagenUrl(initialData.imagen_url || '');
             setDescripcion(initialData.descripcion || '');
             setTipoEventoId(initialData.tipo_evento_id || '');
@@ -70,7 +72,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
 
         if (modalidadesData) {
             setModalidades(modalidadesData);
-            if (modalidadesData.length > 0 && !modalidadId) {
+            if (modalidadesData.length > 0 && !modalidadId && !isEditing) {
                 setModalidadId(modalidadesData[0].id);
             }
         }
@@ -83,11 +85,53 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
 
         if (tiposData) {
             setTiposEvento(tiposData);
-            if (tiposData.length > 0 && !tipoEventoId) {
+            if (tiposData.length > 0 && !tipoEventoId && !isEditing) {
                 setTipoEventoId(tiposData[0].id);
             }
         }
     }
+
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files || e.target.files.length === 0) {
+            return;
+        }
+
+        const file = e.target.files[0];
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
+        const filePath = `${fileName}`;
+
+        setUploading(true);
+
+        try {
+            const supabase = createClient();
+
+            // 1. Upload file to 'eventos' bucket
+            const { error: uploadError } = await supabase.storage
+                .from('eventos')
+                .upload(filePath, file);
+
+            if (uploadError) {
+                throw uploadError;
+            }
+
+            // 2. Get Public URL
+            const { data: { publicUrl } } = supabase.storage
+                .from('eventos')
+                .getPublicUrl(filePath);
+
+            setImagenUrl(publicUrl);
+            showToast('Imagen subida correctamente', 'success');
+        } catch (error: any) {
+            console.error('Error uploading image:', error);
+            showToast(`Error al subir imagen: ${error.message}`, 'error');
+        } finally {
+            setUploading(false);
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
+        }
+    };
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
@@ -99,7 +143,6 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
             titulo,
             modalidad_id: modalidadId,
             fecha,
-            // Ensure time is HH:MM (strip seconds if present)
             hora: hora.slice(0, 5),
             ubicacion: ubicacion || null,
             ubicacion_url: ubicacionUrl || null,
@@ -108,7 +151,6 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
             tipo_evento_id: tipoEventoId || null,
         };
 
-        // Validate with Zod
         const validation = eventoCreateSchema.safeParse(formData);
 
         if (!validation.success) {
@@ -117,7 +159,6 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                 const field = issue.path[0]?.toString() || 'general';
                 fieldErrors[field] = issue.message;
             });
-            console.error('❌ Errores de validación Zod:', fieldErrors); // Log para debug
             setErrors(fieldErrors);
             showToast('Por favor corrige los errores del formulario', 'error');
             setLoading(false);
@@ -154,95 +195,94 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
         }
     }
 
+    // Styles for Elite Palette
+    const labelStyle = "block text-sm font-semibold text-[#1E3A8A] mb-1.5"; // Blue Headers
+    const inputStyle = `block w-full rounded-lg border-slate-200 shadow-sm focus:border-[#1E3A8A] focus:ring-[#1E3A8A]/20 sm:text-sm py-2.5 transition-all`;
+    const errorInputStyle = "border-red-300 focus:border-red-500 focus:ring-red-500";
+    const sectionHeaderStyle = "text-lg font-bold text-[#1E3A8A] flex items-center gap-2 mb-6 pb-2 border-b border-slate-100";
+
     return (
-        <form onSubmit={handleSubmit} noValidate className="space-y-8">
-            <div className="space-y-6">
-                <h3 className="text-lg font-medium text-slate-900 border-b border-slate-200 pb-2">
+        <form onSubmit={handleSubmit} noValidate className="space-y-8 animate-in fade-in duration-500">
+
+            {/* --- General Information --- */}
+            <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
+                <h3 className={sectionHeaderStyle}>
+                    <AlignLeft size={20} className="text-[#D91E18]" />
                     Información General
                 </h3>
 
                 <div className="grid grid-cols-1 gap-6">
                     <div>
-                        <label htmlFor="titulo" className="block text-sm font-medium text-slate-700 mb-1">
-                            Título del evento <span className="text-red-500">*</span>
+                        <label htmlFor="titulo" className={labelStyle}>
+                            Título del evento <span className="text-[#D91E18]">*</span>
                         </label>
                         <input
                             id="titulo"
                             type="text"
                             value={titulo}
                             onChange={(e) => setTitulo(e.target.value)}
-                            placeholder="Ej: 1.ª Fecha Campeonato Nacional"
+                            placeholder="Ej: Torneo Apertura 2026"
                             required
-                            aria-invalid={!!errors.titulo}
-                            className={`block w-full rounded-lg border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm ${errors.titulo ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''
-                                }`}
+                            className={`${inputStyle} ${errors.titulo ? errorInputStyle : ''}`}
                         />
-                        {errors.titulo && (
-                            <p className="mt-1 text-sm text-red-600">{errors.titulo}</p>
-                        )}
+                        {errors.titulo && <p className="mt-1 text-sm text-red-600 font-medium">{errors.titulo}</p>}
                     </div>
 
-                    {modalidades.length === 0 ? (
-                        <SelectEmptyState entityName="modalidades" createHref="/admin/modalidades" />
-                    ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {modalidades.length === 0 ? (
+                            <div className="col-span-2">
+                                <SelectEmptyState entityName="modalidades" createHref="/admin/modalidades" />
+                            </div>
+                        ) : (
                             <div>
-                                <label htmlFor="modalidad" className="block text-sm font-medium text-slate-700 mb-1">
-                                    Modalidad <span className="text-red-500">*</span>
+                                <label htmlFor="modalidad" className={labelStyle}>
+                                    Modalidad <span className="text-[#D91E18]">*</span>
                                 </label>
                                 <select
                                     id="modalidad"
                                     value={modalidadId}
                                     onChange={(e) => setModalidadId(e.target.value)}
                                     required
-                                    className={`block w-full rounded-lg border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm ${errors.modalidad_id ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''
-                                        }`}
+                                    className={`${inputStyle} ${errors.modalidad_id ? errorInputStyle : ''}`}
                                 >
                                     {modalidades.map(mod => (
-                                        <option key={mod.id} value={mod.id}>
-                                            {mod.nombre}
-                                        </option>
+                                        <option key={mod.id} value={mod.id}>{mod.nombre}</option>
                                     ))}
                                 </select>
-                                {errors.modalidad_id && (
-                                    <p className="mt-1 text-sm text-red-600">{errors.modalidad_id}</p>
-                                )}
                             </div>
+                        )}
 
-                            <div>
-                                <label htmlFor="tipo" className="block text-sm font-medium text-slate-700 mb-1">
-                                    Tipo de evento <span className="text-red-500">*</span>
-                                </label>
-                                <select
-                                    id="tipo"
-                                    value={tipoEventoId}
-                                    onChange={(e) => setTipoEventoId(e.target.value)}
-                                    required
-                                    className={`block w-full rounded-lg border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm ${errors.tipo_evento_id ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''
-                                        }`}
-                                >
-                                    {tiposEvento.map(t => (
-                                        <option key={t.id} value={t.id}>
-                                            {t.nombre}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
+                        <div>
+                            <label htmlFor="tipo" className={labelStyle}>
+                                Tipo de evento <span className="text-[#D91E18]">*</span>
+                            </label>
+                            <select
+                                id="tipo"
+                                value={tipoEventoId}
+                                onChange={(e) => setTipoEventoId(e.target.value)}
+                                required
+                                className={`${inputStyle} ${errors.tipo_evento_id ? errorInputStyle : ''}`}
+                            >
+                                {tiposEvento.map(t => (
+                                    <option key={t.id} value={t.id}>{t.nombre}</option>
+                                ))}
+                            </select>
                         </div>
-                    )}
+                    </div>
                 </div>
             </div>
 
-            <div className="space-y-6">
-                <h3 className="text-lg font-medium text-slate-900 border-b border-slate-200 pb-2 flex items-center gap-2">
-                    <Calendar size={20} className="text-slate-400" />
-                    Fecha y Hora
+            {/* --- Date & Location --- */}
+            <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
+                <h3 className={sectionHeaderStyle}>
+                    <Calendar size={20} className="text-[#D91E18]" />
+                    Fecha y Ubicación
                 </h3>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <div>
-                        <label htmlFor="fecha" className="block text-sm font-medium text-slate-700 mb-1">
-                            Fecha <span className="text-red-500">*</span>
+                        <label htmlFor="fecha" className={labelStyle}>
+                            Fecha <span className="text-[#D91E18]">*</span>
                         </label>
                         <input
                             id="fecha"
@@ -250,135 +290,172 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                             value={fecha}
                             onChange={(e) => setFecha(e.target.value)}
                             required
-                            className={`block w-full rounded-lg border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm ${errors.fecha ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''
-                                }`}
+                            className={`${inputStyle} ${errors.fecha ? errorInputStyle : ''}`}
                         />
-                        {errors.fecha && (
-                            <p className="mt-1 text-sm text-red-600">{errors.fecha}</p>
-                        )}
+                        {errors.fecha && <p className="mt-1 text-sm text-red-600 font-medium">{errors.fecha}</p>}
                     </div>
 
                     <div>
-                        <label htmlFor="hora" className="block text-sm font-medium text-slate-700 mb-1">
-                            Hora
-                        </label>
+                        <label htmlFor="hora" className={labelStyle}>Hora</label>
                         <input
                             id="hora"
                             type="time"
                             value={hora}
                             onChange={(e) => setHora(e.target.value)}
-                            className="block w-full rounded-lg border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                            className={inputStyle}
                         />
                     </div>
                 </div>
-            </div>
 
-            <div className="space-y-6">
-                <h3 className="text-lg font-medium text-slate-900 border-b border-slate-200 pb-2 flex items-center gap-2">
-                    <MapPin size={20} className="text-slate-400" />
-                    Ubicación
-                </h3>
-
-                <div className="grid grid-cols-1 gap-6">
+                <div className="space-y-6">
                     <div>
-                        <label htmlFor="ubicacion" className="block text-sm font-medium text-slate-700 mb-1">
-                            Ubicación / Polígono
-                        </label>
-                        <input
-                            id="ubicacion"
-                            type="text"
-                            value={ubicacion}
-                            onChange={(e) => setUbicacion(e.target.value)}
-                            placeholder="Ej: Polígono de Tiro 10M - Comité Olímpico Paraguayo"
-                            className="block w-full rounded-lg border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                        />
+                        <label htmlFor="ubicacion" className={labelStyle}>Ubicación / Polígono</label>
+                        <div className="relative">
+                            <MapPin size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                            <input
+                                id="ubicacion"
+                                type="text"
+                                value={ubicacion}
+                                onChange={(e) => setUbicacion(e.target.value)}
+                                placeholder="Ej: COP - Polígono de 10m"
+                                className={`${inputStyle} pl-10`}
+                            />
+                        </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label htmlFor="ubicacion_url" className="block text-sm font-medium text-slate-700 mb-1 flex items-center gap-1.5">
-                                <LinkIcon size={14} className="text-slate-400" />
-                                Link de Ubicación (Google Maps)
-                            </label>
+                    <div>
+                        <label htmlFor="ubicacion_url" className={labelStyle}>Link Google Maps</label>
+                        <div className="relative">
+                            <LinkIcon size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                             <input
                                 id="ubicacion_url"
                                 type="url"
                                 value={ubicacionUrl}
                                 onChange={(e) => setUbicacionUrl(e.target.value)}
                                 placeholder="https://maps.app.goo.gl/..."
-                                className={`block w-full rounded-lg border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm ${errors.ubicacion_url ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''
-                                    }`}
+                                className={`${inputStyle} pl-10`}
                             />
-                            {errors.ubicacion_url && (
-                                <p className="mt-1 text-sm text-red-600">{errors.ubicacion_url}</p>
-                            )}
-                        </div>
-
-                        <div>
-                            <label htmlFor="imagen_url" className="block text-sm font-medium text-slate-700 mb-1 flex items-center gap-1.5">
-                                <ImageIcon size={14} className="text-slate-400" />
-                                URL de Imagen (opcional)
-                            </label>
-                            <input
-                                id="imagen_url"
-                                type="url"
-                                value={imagenUrl}
-                                onChange={(e) => setImagenUrl(e.target.value)}
-                                placeholder="https://example.com/image.jpg"
-                                className={`block w-full rounded-lg border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm ${errors.imagen_url ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''
-                                    }`}
-                            />
-                            {errors.imagen_url && (
-                                <p className="mt-1 text-sm text-red-600">{errors.imagen_url}</p>
-                            )}
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div className="space-y-6">
-                <h3 className="text-lg font-medium text-slate-900 border-b border-slate-200 pb-2 flex items-center gap-2">
-                    <AlignLeft size={20} className="text-slate-400" />
-                    Detalles Adicionales
+            {/* --- Multimedia & Description --- */}
+            <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
+                <h3 className={sectionHeaderStyle}>
+                    <ImageIcon size={20} className="text-[#D91E18]" />
+                    Multimedia
                 </h3>
 
-                <div>
-                    <label htmlFor="descripcion" className="block text-sm font-medium text-slate-700 mb-1">
-                        Descripción (opcional)
-                    </label>
-                    <textarea
-                        id="descripcion"
-                        value={descripcion}
-                        onChange={(e) => setDescripcion(e.target.value)}
-                        placeholder="Información adicional sobre el evento..."
-                        rows={4}
-                        className="block w-full rounded-lg border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm resize-y"
-                    />
+                <div className="space-y-6">
+                    <div>
+                        <label className={labelStyle}>Imagen del Evento</label>
+                        <div className="flex flex-col md:flex-row gap-4 items-start">
+                            {/* Preview Area */}
+                            <div className="w-full md:w-1/3 aspect-video bg-slate-50 rounded-lg border-2 border-dashed border-slate-200 flex items-center justify-center overflow-hidden relative group">
+                                {imagenUrl ? (
+                                    <>
+                                        <img src={imagenUrl} alt="Preview" className="w-full h-full object-cover" />
+                                        <button
+                                            type="button"
+                                            onClick={() => setImagenUrl('')}
+                                            className="absolute top-2 right-2 bg-white/90 p-1.5 rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-600"
+                                        >
+                                            <X size={16} />
+                                        </button>
+                                    </>
+                                ) : (
+                                    <div className="text-center p-4">
+                                        <ImageIcon size={32} className="mx-auto text-slate-300 mb-2" />
+                                        <p className="text-xs text-slate-400">Sin imagen</p>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Upload Actions */}
+                            <div className="flex-1 space-y-4 w-full">
+                                <div>
+                                    <p className="text-sm text-slate-500 mb-3">Sube una imagen o pega una URL directa.</p>
+
+                                    <div className="flex gap-2">
+                                        <button
+                                            type="button"
+                                            onClick={() => fileInputRef.current?.click()}
+                                            disabled={uploading}
+                                            className="flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+                                        >
+                                            {uploading ? <Loader2 size={16} className="animate-spin" /> : <UploadCloud size={16} />}
+                                            Subir Archivo
+                                        </button>
+                                        <input
+                                            ref={fileInputRef}
+                                            type="file"
+                                            accept="image/*"
+                                            className="hidden"
+                                            onChange={handleFileUpload}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="relative">
+                                    <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                                        <div className="w-full border-t border-slate-200"></div>
+                                    </div>
+                                    <div className="relative flex justify-center">
+                                        <span className="bg-white px-2 text-xs text-slate-400 uppercase">O usa URL</span>
+                                    </div>
+                                </div>
+
+                                <div className="relative">
+                                    <LinkIcon size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                                    <input
+                                        type="url"
+                                        value={imagenUrl}
+                                        onChange={(e) => setImagenUrl(e.target.value)}
+                                        placeholder="https://pagina.com/imagen.jpg"
+                                        className={`${inputStyle} pl-10`}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label htmlFor="descripcion" className={labelStyle}>Descripción Adicional</label>
+                        <textarea
+                            id="descripcion"
+                            value={descripcion}
+                            onChange={(e) => setDescripcion(e.target.value)}
+                            rows={4}
+                            className={`${inputStyle} resize-y`}
+                            placeholder="Detalles sobre inscripciones, requisitos, etc..."
+                        />
+                    </div>
                 </div>
             </div>
 
-            <div className="flex items-center justify-end gap-3 pt-6 border-t border-slate-200">
+            {/* --- Actions --- */}
+            <div className="flex items-center justify-end gap-4 pt-6">
                 <Link
                     href="/admin"
-                    className="inline-flex items-center px-4 py-2 border border-slate-300 rounded-lg shadow-sm text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                    className="px-6 py-2.5 border border-slate-200 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-[#1E3A8A] transition-colors"
                 >
-                    <X size={16} className="mr-2" />
                     Cancelar
                 </Link>
                 <button
                     type="submit"
-                    disabled={loading}
-                    className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={loading || uploading}
+                    className="flex items-center gap-2 px-6 py-2.5 bg-[#D91E18] hover:bg-[#b91c1b] text-white rounded-lg text-sm font-bold shadow-lg shadow-red-900/10 hover:shadow-red-900/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed transform active:scale-95"
                 >
                     {loading ? (
                         <>
-                            <div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2"></div>
+                            <Loader2 size={18} className="animate-spin" />
                             Guardando...
                         </>
                     ) : (
                         <>
-                            <Save size={16} className="mr-2" />
-                            {isEditing ? 'Guardar Cambios' : 'Guardar Evento'}
+                            <Save size={18} />
+                            {isEditing ? 'Guardar Cambios' : 'Crear Evento'}
                         </>
                     )}
                 </button>

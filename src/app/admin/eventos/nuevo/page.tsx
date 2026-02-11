@@ -58,11 +58,7 @@ export default function NuevoEventoPage() {
                         </Link>
                     </div>
 
-                    <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                        <div className="p-6 sm:p-8">
-                            <EventForm />
-                        </div>
-                    </div>
+                    <EventForm />
                 </div>
             </main>
         </div>

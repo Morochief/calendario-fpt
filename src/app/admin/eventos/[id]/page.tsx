@@ -111,11 +111,7 @@ export default function EditarEventoPage({ params }: { params: Promise<{ id: str
                         </Link>
                     </div>
 
-                    <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                        <div className="p-6 sm:p-8">
-                            <EventForm initialData={evento!} isEditing />
-                        </div>
-                    </div>
+                    <EventForm initialData={evento!} isEditing />
                 </div>
             </main>
         </div>
