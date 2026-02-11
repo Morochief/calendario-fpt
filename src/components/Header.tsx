@@ -47,7 +47,7 @@ export default function Header() {
         <header className="header">
             <Link href="/" className="header-logo">
                 <Image
-                    src="/logo.jpg"
+                    src="/logo fpdt.svg"
                     alt="Federación Paraguaya de Tiro"
                     width={36}
                     height={36}

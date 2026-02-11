@@ -69,7 +69,7 @@ export default function LoginPage() {
                         justifyContent: 'center'
                     }}>
                         <Image
-                            src="/logo.jpg"
+                            src="/logo fpdt.svg"
                             alt="FPT Logo"
                             width={56}
                             height={56}

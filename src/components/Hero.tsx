@@ -17,7 +17,7 @@ export default function Hero() {
                 <div className="hero-image-wrapper">
                     <div className="hero-image-container">
                         <Image
-                            src="/logo.jpg"
+                            src="/logo fpdt.svg"
                             alt="Federación Paraguaya de Tiro"
                             fill
                             style={{ objectFit: 'contain' }}
