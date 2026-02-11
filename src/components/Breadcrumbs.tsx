@@ -52,36 +52,28 @@ export default function Breadcrumbs() {
     }
 
     return (
-        <nav className="breadcrumbs" aria-label="Navegación de migas de pan">
-            <ol className="breadcrumb-list">
+        <nav aria-label="Breadcrumb" className="mb-4">
+            <ol className="flex items-center flex-wrap gap-2 text-sm text-slate-500">
                 {breadcrumbs.map((item, index) => {
                     const isLast = index === breadcrumbs.length - 1;
 
                     return (
-                        <li key={index} className="breadcrumb-item">
+                        <li key={index} className="flex items-center gap-2">
                             {!isLast && item.href ? (
                                 <>
                                     <Link
                                         href={item.href}
-                                        className="breadcrumb-link"
-                                        aria-current={undefined}
-                                        style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}
+                                        className="flex items-center gap-1 hover:text-blue-600 transition-colors"
                                     >
                                         {item.icon}
-                                        {item.label}
+                                        <span>{item.label}</span>
                                     </Link>
-                                    <span className="breadcrumb-separator" aria-hidden="true">
-                                        <ChevronRight size={14} />
-                                    </span>
+                                    <ChevronRight size={14} className="text-slate-300" />
                                 </>
                             ) : (
-                                <span
-                                    className="breadcrumb-current"
-                                    aria-current="page"
-                                    style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}
-                                >
+                                <span className="flex items-center gap-1 font-medium text-slate-900">
                                     {item.icon}
-                                    {item.label}
+                                    <span>{item.label}</span>
                                 </span>
                             )}
                         </li>
