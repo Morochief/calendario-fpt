@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ToastProvider } from "@/components/Toast";
+import Watermark from "@/components/Watermark";
 
 export const metadata: Metadata = {
   title: "Calendario 2026 | Federación Paraguaya de Tiro",
@@ -32,9 +33,12 @@ export default function RootLayout({
         <a href="#main-content" className="sr-only">
           Saltar al contenido principal
         </a>
-        <ToastProvider>
-          {children}
-        </ToastProvider>
+        <Watermark />
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          <ToastProvider>
+            {children}
+          </ToastProvider>
+        </div>
       </body>
     </html>
   );

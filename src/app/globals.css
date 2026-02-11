@@ -952,21 +952,7 @@ a {
   opacity: 1;
 }
 
-/* Global Fixed Watermark */
-body::before {
-  content: '';
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 650px;
-  height: 650px;
-  background: url('/logo_cop-removebg-preview.svg') center/contain no-repeat;
-  opacity: 0.04;
-  pointer-events: none;
-  z-index: -1;
-  /* Behind everything */
-}
+
 
 .hero-image-wrapper {
   display: flex;
