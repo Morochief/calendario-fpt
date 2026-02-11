@@ -57,12 +57,12 @@ export default function LoginPage() {
                 {/* Branding Header */}
                 <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
                     <div style={{
-                        width: '80px',
-                        height: '80px',
+                        width: '120px',
+                        height: '120px',
                         background: 'white',
                         borderRadius: '50%',
-                        boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
-                        padding: '0.75rem',
+                        boxShadow: '0 8px 30px rgba(0,0,0,0.08)',
+                        padding: '1rem',
                         margin: '0 auto 1.5rem',
                         display: 'flex',
                         alignItems: 'center',
@@ -71,8 +71,8 @@ export default function LoginPage() {
                         <Image
                             src="/logo fpdt.svg"
                             alt="FPT Logo"
-                            width={56}
-                            height={56}
+                            width={90}
+                            height={90}
                             style={{ objectFit: 'contain' }}
                         />
                     </div>
