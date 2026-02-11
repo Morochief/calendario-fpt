@@ -10,6 +10,7 @@ import AnnualCalendar from '@/components/AnnualCalendar';
 import { createClient } from '@/lib/supabase';
 import { Modalidad, EventoConModalidad, MESES } from '@/lib/types';
 import { AlertTriangle } from 'lucide-react';
+import SectionTitle from '@/components/SectionTitle';
 
 type ViewType = 'mensual' | 'anual';
 
@@ -107,7 +108,12 @@ export default function CalendarPage() {
       <Hero />
       <main className="main" id="calendario">
         <div className="calendar-header">
-          <h2 className="section-title">Calendario de Eventos</h2>
+          <SectionTitle
+            title="Calendario de Eventos"
+            subtitle="Temporada Oficial 2026"
+            type="institucional"
+            className="mb-0" // Override margin if needed by layout
+          />
 
           <div className="view-toggle">
             <button
