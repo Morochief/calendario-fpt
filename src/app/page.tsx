@@ -8,6 +8,7 @@ import MonthCard from '@/components/MonthCard';
 import AnnualCalendar from '@/components/AnnualCalendar';
 import { createClient } from '@/lib/supabase';
 import { Modalidad, EventoConModalidad, MESES } from '@/lib/types';
+import { AlertTriangle } from 'lucide-react';
 
 type ViewType = 'mensual' | 'anual';
 
@@ -27,7 +28,6 @@ export default function CalendarPage() {
     try {
       const supabase = createClient();
 
-      // Cargar modalidades
       const { data: modalidadesData, error: modError } = await supabase
         .from('modalidades')
         .select('*')
@@ -36,7 +36,6 @@ export default function CalendarPage() {
       if (modError) throw modError;
       setModalidades(modalidadesData || []);
 
-      // Cargar eventos con su modalidad y tipo de evento
       const { data: eventosData, error: evError } = await supabase
         .from('eventos')
         .select(`
@@ -56,7 +55,6 @@ export default function CalendarPage() {
     }
   }
 
-  // Filtrar eventos por modalidad seleccionada
   const eventosFiltrados = selectedModalidad
     ? eventos.filter(e => e.modalidad_id === selectedModalidad)
     : eventos;
@@ -79,10 +77,19 @@ export default function CalendarPage() {
       <>
         <Header />
         <main className="main">
-          <div className="admin-card" style={{ textAlign: 'center', padding: '3rem' }}>
-            <h2 style={{ color: '#DC2626', marginBottom: '1rem' }}>⚠️ Error de Configuración</h2>
-            <p style={{ marginBottom: '1.5rem' }}>{error}</p>
-            <p style={{ fontSize: '0.875rem', color: '#6B7280' }}>
+          <div style={{
+            textAlign: 'center',
+            padding: '4rem 2rem',
+            background: '#FFFFFF',
+            borderRadius: '16px',
+            border: '1px solid rgba(0,0,0,0.06)'
+          }}>
+            <AlertTriangle size={32} strokeWidth={1.5} style={{ color: '#A3A3A3', marginBottom: '1rem' }} />
+            <h2 style={{ color: '#171717', marginBottom: '0.75rem', fontSize: '1.125rem', fontWeight: 600, letterSpacing: '-0.03em' }}>
+              Error de Configuración
+            </h2>
+            <p style={{ marginBottom: '1.25rem', color: '#737373', fontSize: '0.875rem', lineHeight: 1.6 }}>{error}</p>
+            <p style={{ fontSize: '0.8125rem', color: '#A3A3A3', lineHeight: 1.6 }}>
               Asegúrate de configurar las variables de entorno NEXT_PUBLIC_SUPABASE_URL y
               NEXT_PUBLIC_SUPABASE_ANON_KEY en tu archivo .env.local
             </p>
@@ -101,7 +108,6 @@ export default function CalendarPage() {
           <h2 className="section-title">Calendario de Eventos</h2>
 
           <div className="view-toggle">
-            {/* Using standard text labels for clarity without emojis */}
             <button
               className={`view-btn ${vista === 'mensual' ? 'active' : ''}`}
               onClick={() => setVista('mensual')}

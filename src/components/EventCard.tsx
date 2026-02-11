@@ -13,16 +13,15 @@ export default function EventCard({ evento }: EventCardProps) {
     const mes = fecha.toLocaleDateString('es-ES', { month: 'short' });
     const diaSemana = fecha.toLocaleDateString('es-ES', { weekday: 'long' });
 
-    // Usar tipos_evento si existe, sino fallback al campo tipo
     const tipoNombre = evento.tipos_evento?.nombre || evento.tipo || '';
-    const tipoColor = evento.tipos_evento?.color || '#6B7280';
+    const tipoColor = evento.tipos_evento?.color || '#737373';
     const hasImage = !!evento.imagen_url;
 
     return (
         <div
             className={`event-card ${hasImage ? 'has-image' : ''}`}
             style={{
-                borderLeftColor: evento.modalidades?.color || '#DC2626',
+                borderLeftColor: evento.modalidades?.color || '#171717',
             }}
         >
             {hasImage && (
@@ -39,7 +38,7 @@ export default function EventCard({ evento }: EventCardProps) {
             )}
 
             <div className="event-content" style={{ padding: '1.25rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
+                <div style={{ marginBottom: '0.375rem' }}>
                     <div className="event-date">
                         {diaSemana}, {dia} de {mes}
                     </div>
@@ -49,20 +48,20 @@ export default function EventCard({ evento }: EventCardProps) {
 
                 <div className="event-meta">
                     {evento.hora && (
-                        <span><Clock size={14} /> {evento.hora.slice(0, 5)}</span>
+                        <span><Clock size={13} strokeWidth={1.5} /> {evento.hora.slice(0, 5)}</span>
                     )}
 
                     {tipoNombre && (
                         <span
                             style={{
                                 display: 'inline-block',
-                                padding: '0.2rem 0.6rem',
+                                padding: '0.15rem 0.5rem',
                                 borderRadius: '4px',
-                                fontSize: '0.7rem',
+                                fontSize: '0.6875rem',
                                 fontWeight: 500,
-                                background: `${tipoColor}15`,
+                                background: `${tipoColor}0A`,
                                 color: tipoColor,
-                                border: `1px solid ${tipoColor}30`
+                                border: `1px solid ${tipoColor}15`
                             }}
                         >
                             {tipoNombre}
@@ -71,31 +70,32 @@ export default function EventCard({ evento }: EventCardProps) {
                 </div>
 
                 {evento.ubicacion && (
-                    <div className="event-location-row" style={{ marginTop: '0.75rem', fontSize: '0.9rem', color: '#4B5563', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                        <MapPin size={15} className="flex-shrink-0" />
+                    <div style={{ marginTop: '0.75rem', fontSize: '0.8125rem', color: '#737373', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                        <MapPin size={14} strokeWidth={1.5} className="flex-shrink-0" />
                         <span style={{ lineHeight: 1.4 }}>{evento.ubicacion}</span>
                     </div>
                 )}
 
                 {evento.modalidades && (
-                    <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #f3f4f6' }}>
+                    <div style={{ marginTop: '0.875rem', paddingTop: '0.875rem', borderTop: '1px solid rgba(0,0,0,0.04)' }}>
                         <span
                             className="event-modalidad"
                             style={{
                                 background: 'transparent',
                                 color: evento.modalidades.color,
                                 padding: 0,
-                                fontSize: '0.8rem',
-                                fontWeight: 600
+                                fontSize: '0.75rem',
+                                fontWeight: 500
                             }}
                         >
                             <span
                                 className="dot"
                                 style={{
                                     background: evento.modalidades.color,
-                                    width: '6px',
-                                    height: '6px',
+                                    width: '5px',
+                                    height: '5px',
                                     borderRadius: '50%',
+                                    display: 'inline-block',
                                 }}
                             />
                             {evento.modalidades.nombre}
@@ -106,15 +106,14 @@ export default function EventCard({ evento }: EventCardProps) {
                 {evento.descripcion && (
                     <p style={{
                         marginTop: '0.75rem',
-                        fontSize: '0.875rem',
-                        color: '#6B7280',
-                        lineHeight: 1.5
+                        fontSize: '0.8125rem',
+                        color: '#737373',
+                        lineHeight: 1.6
                     }}>
                         {evento.descripcion}
                     </p>
                 )}
 
-                {/* Botón de Cómo Llegar (Solo si hay URL) */}
                 {evento.ubicacion_url && (
                     <a
                         href={evento.ubicacion_url}
@@ -126,20 +125,20 @@ export default function EventCard({ evento }: EventCardProps) {
                             alignItems: 'center',
                             justifyContent: 'center',
                             gap: '0.5rem',
-                            marginTop: '1.25rem',
+                            marginTop: '1rem',
                             width: '100%',
-                            padding: '0.6rem',
-                            background: '#F9FAFB',
-                            color: '#374151',
-                            borderRadius: '6px',
+                            padding: '0.5rem',
+                            background: 'transparent',
+                            color: '#171717',
+                            borderRadius: '8px',
                             textDecoration: 'none',
-                            fontSize: '0.875rem',
+                            fontSize: '0.8125rem',
                             fontWeight: 500,
-                            border: '1px solid #E5E7EB',
-                            transition: 'all 0.2s'
+                            border: '1px solid rgba(0,0,0,0.06)',
+                            transition: 'all 0.25s ease'
                         }}
                     >
-                        <Map size={16} />
+                        <Map size={15} strokeWidth={1.5} />
                         Cómo llegar
                     </a>
                 )}

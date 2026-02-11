@@ -14,7 +14,6 @@ export default function ModalityFilter({ modalidades, selected, onSelect }: Moda
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
-    // Close on click outside
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -42,28 +41,28 @@ export default function ModalityFilter({ modalidades, selected, onSelect }: Moda
                     {selectedModality ? (
                         <>
                             <span
-                                className="dot"
                                 style={{
                                     background: selectedModality.color,
-                                    width: '8px', height: '8px', borderRadius: '50%', display: 'inline-block'
+                                    width: '6px', height: '6px', borderRadius: '50%', display: 'inline-block'
                                 }}
                             />
                             {selectedModality.nombre}
                         </>
                     ) : (
                         <>
-                            <Filter size={18} className="text-gray-500" />
+                            <Filter size={16} strokeWidth={1.5} style={{ color: '#A3A3A3' }} />
                             <span>Explorar por Modalidad</span>
                         </>
                     )}
                 </div>
 
                 <ChevronDown
-                    size={16}
+                    size={14}
+                    strokeWidth={1.5}
                     style={{
                         transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
                         transition: 'transform 0.2s ease',
-                        opacity: 0.5
+                        opacity: 0.35
                     }}
                 />
             </button>
@@ -74,13 +73,13 @@ export default function ModalityFilter({ modalidades, selected, onSelect }: Moda
                         className={`dropdown-item ${selected === null ? 'selected' : ''}`}
                         onClick={() => handleSelect(null)}
                     >
-                        <div style={{ width: '20px', display: 'flex', justifyContent: 'center' }}>
-                            {selected === null && <Check size={14} />}
+                        <div style={{ width: '18px', display: 'flex', justifyContent: 'center' }}>
+                            {selected === null && <Check size={13} strokeWidth={1.5} />}
                         </div>
                         Todas las modalidades
                     </button>
 
-                    <div style={{ height: '1px', background: 'rgba(0,0,0,0.05)', margin: '0.25rem 0' }} />
+                    <div style={{ height: '1px', background: 'rgba(0,0,0,0.04)', margin: '0.25rem 0' }} />
 
                     {modalidades.map((mod) => (
                         <button
@@ -90,12 +89,12 @@ export default function ModalityFilter({ modalidades, selected, onSelect }: Moda
                         >
                             <span
                                 className="dot"
-                                style={{ background: mod.color }}
+                                style={{ background: mod.color, width: '6px', height: '6px', borderRadius: '50%', display: 'inline-block' }}
                             />
                             {mod.nombre}
                             {selected === mod.id && (
                                 <div style={{ marginLeft: 'auto' }}>
-                                    <Check size={14} />
+                                    <Check size={13} strokeWidth={1.5} />
                                 </div>
                             )}
                         </button>

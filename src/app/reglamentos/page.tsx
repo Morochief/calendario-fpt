@@ -35,38 +35,38 @@ export default function PublicReglamentosPage() {
     }
 
     return (
-        <div style={{ minHeight: '100vh', background: '#f8fafc', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ minHeight: '100vh', background: '#FAFAFA', display: 'flex', flexDirection: 'column' }}>
             <Header />
-            <main style={{ flexGrow: 1, padding: '48px 16px', maxWidth: '1100px', margin: '0 auto', width: '100%' }}>
+            <main style={{ flexGrow: 1, padding: '3.5rem 1.25rem', maxWidth: '1120px', margin: '0 auto', width: '100%' }}>
                 {/* Hero Section */}
-                <div style={{ textAlign: 'center', marginBottom: '48px' }}>
+                <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
                     <div style={{
-                        width: '64px',
-                        height: '64px',
-                        background: '#dbeafe',
-                        borderRadius: '16px',
+                        width: '56px',
+                        height: '56px',
+                        background: 'rgba(0,0,0,0.03)',
+                        borderRadius: '14px',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        margin: '0 auto 20px'
+                        margin: '0 auto 1.25rem'
                     }}>
-                        <BookOpen size={32} style={{ color: '#2563eb' }} />
+                        <BookOpen size={26} strokeWidth={1.5} style={{ color: '#737373' }} />
                     </div>
                     <h1 style={{
-                        fontSize: '2rem',
-                        fontWeight: 700,
-                        color: '#0f172a',
-                        margin: '0 0 12px',
-                        letterSpacing: '-0.025em'
+                        fontSize: '1.75rem',
+                        fontWeight: 600,
+                        color: '#171717',
+                        margin: '0 0 0.75rem',
+                        letterSpacing: '-0.03em'
                     }}>
                         Reglamentos y Documentos
                     </h1>
                     <p style={{
-                        color: '#64748b',
-                        fontSize: '1.05rem',
-                        maxWidth: '600px',
+                        color: '#A3A3A3',
+                        fontSize: '0.9375rem',
+                        maxWidth: '520px',
                         margin: '0 auto',
-                        lineHeight: 1.6
+                        lineHeight: 1.7
                     }}>
                         Accede a la documentación oficial, reglamentos técnicos y normativas vigentes de la Federación Paraguaya de Tiro.
                     </p>
@@ -77,14 +77,11 @@ export default function PublicReglamentosPage() {
                     <div style={{
                         display: 'grid',
                         gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-                        gap: '20px'
+                        gap: '1.25rem'
                     }}>
                         {[1, 2, 3].map(i => (
-                            <div key={i} style={{
-                                background: '#e2e8f0',
-                                borderRadius: '12px',
+                            <div key={i} className="skeleton" style={{
                                 height: '200px',
-                                animation: 'pulse 1.5s infinite'
                             }}></div>
                         ))}
                     </div>
@@ -92,27 +89,27 @@ export default function PublicReglamentosPage() {
                     /* Empty State */
                     <div style={{
                         textAlign: 'center',
-                        padding: '60px 20px',
+                        padding: '4rem 2rem',
                         background: 'white',
                         borderRadius: '16px',
-                        border: '1px solid #e2e8f0'
+                        border: '1px solid rgba(0,0,0,0.06)'
                     }}>
                         <div style={{
-                            width: '80px',
-                            height: '80px',
-                            background: '#f1f5f9',
+                            width: '64px',
+                            height: '64px',
+                            background: 'rgba(0,0,0,0.03)',
                             borderRadius: '50%',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            margin: '0 auto 20px'
+                            margin: '0 auto 1.25rem'
                         }}>
-                            <FileText size={36} style={{ color: '#94a3b8' }} />
+                            <FileText size={28} strokeWidth={1.5} style={{ color: '#A3A3A3' }} />
                         </div>
-                        <h3 style={{ fontWeight: 600, color: '#0f172a', margin: '0 0 8px', fontSize: '1.2rem' }}>
+                        <h3 style={{ fontWeight: 600, color: '#171717', margin: '0 0 0.5rem', fontSize: '1.0625rem', letterSpacing: '-0.01em' }}>
                             No hay documentos disponibles
                         </h3>
-                        <p style={{ color: '#64748b', margin: 0 }}>
+                        <p style={{ color: '#A3A3A3', margin: 0, fontSize: '0.875rem' }}>
                             Disculpa las molestias, vuelve a revisar pronto.
                         </p>
                     </div>
@@ -121,48 +118,49 @@ export default function PublicReglamentosPage() {
                     <div style={{
                         display: 'grid',
                         gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-                        gap: '20px'
+                        gap: '1.25rem'
                     }}>
                         {reglamentos.map(reg => (
                             <div
                                 key={reg.id}
                                 style={{
                                     background: 'white',
-                                    borderRadius: '12px',
-                                    padding: '24px',
-                                    border: '1px solid #e2e8f0',
-                                    boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+                                    borderRadius: '14px',
+                                    padding: '1.75rem',
+                                    border: '1px solid rgba(0,0,0,0.06)',
                                     display: 'flex',
                                     flexDirection: 'column',
                                     justifyContent: 'space-between',
-                                    minHeight: '200px'
+                                    minHeight: '200px',
+                                    transition: 'box-shadow 0.25s ease, border-color 0.25s ease'
                                 }}
                             >
                                 <div>
                                     <div style={{
-                                        width: '48px',
-                                        height: '48px',
-                                        background: '#dbeafe',
+                                        width: '44px',
+                                        height: '44px',
+                                        background: 'rgba(0,0,0,0.03)',
                                         borderRadius: '10px',
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'center',
-                                        marginBottom: '16px'
+                                        marginBottom: '1.125rem'
                                     }}>
-                                        <FileText size={24} style={{ color: '#2563eb' }} />
+                                        <FileText size={20} strokeWidth={1.5} style={{ color: '#737373' }} />
                                     </div>
                                     <h3 style={{
                                         fontWeight: 600,
-                                        color: '#0f172a',
-                                        margin: '0 0 8px',
-                                        fontSize: '1.05rem',
-                                        lineHeight: 1.4
+                                        color: '#171717',
+                                        margin: '0 0 0.5rem',
+                                        fontSize: '0.9375rem',
+                                        lineHeight: 1.5,
+                                        letterSpacing: '-0.01em'
                                     }}>
                                         {reg.titulo}
                                     </h3>
                                     <p style={{
-                                        color: '#94a3b8',
-                                        fontSize: '0.85rem',
+                                        color: '#A3A3A3',
+                                        fontSize: '0.75rem',
                                         margin: 0
                                     }}>
                                         Publicado: {new Date(reg.created_at).toLocaleDateString('es-ES', {
@@ -181,20 +179,21 @@ export default function PublicReglamentosPage() {
                                         display: 'inline-flex',
                                         alignItems: 'center',
                                         justifyContent: 'center',
-                                        gap: '8px',
+                                        gap: '0.5rem',
                                         width: '100%',
-                                        padding: '10px 16px',
-                                        background: '#f1f5f9',
-                                        color: '#475569',
+                                        padding: '0.5rem 1rem',
+                                        background: 'transparent',
+                                        color: '#171717',
                                         borderRadius: '8px',
-                                        fontSize: '0.9rem',
+                                        fontSize: '0.8125rem',
                                         fontWeight: 500,
                                         textDecoration: 'none',
-                                        border: '1px solid #e2e8f0',
-                                        marginTop: '16px'
+                                        border: '1px solid rgba(0,0,0,0.06)',
+                                        marginTop: '1.25rem',
+                                        transition: 'all 0.2s ease'
                                     }}
                                 >
-                                    <Download size={16} />
+                                    <Download size={15} strokeWidth={1.5} />
                                     Descargar PDF
                                 </a>
                             </div>

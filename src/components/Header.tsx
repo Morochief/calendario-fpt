@@ -7,13 +7,14 @@ import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase';
 import { useToast } from '@/components/Toast';
 import UserDropdown from './UserDropdown';
-import { Calendar, FileText, Users, Settings } from 'lucide-react';
+import { Calendar, FileText, Users, Settings, Menu, X } from 'lucide-react';
 
 export default function Header() {
     const pathname = usePathname();
     const router = useRouter();
     const { showToast } = useToast();
     const [user, setUser] = useState<{ email?: string } | null>(null);
+    const [menuOpen, setMenuOpen] = useState(false);
     const isAdmin = pathname?.startsWith('/admin');
 
     useEffect(() => {
@@ -29,6 +30,11 @@ export default function Header() {
         return () => subscription.unsubscribe();
     }, []);
 
+    // Close mobile menu on route change
+    useEffect(() => {
+        setMenuOpen(false);
+    }, [pathname]);
+
     async function handleLogout() {
         const supabase = createClient();
         await supabase.auth.signOut();
@@ -37,19 +43,14 @@ export default function Header() {
         router.refresh();
     }
 
-    const getLinkStyle = (isActive: boolean) => ({
-        background: isActive ? 'rgba(255,255,255,0.1)' : 'transparent',
-        opacity: isActive ? 1 : 0.8
-    });
-
     return (
         <header className="header">
             <Link href="/" className="header-logo">
                 <Image
                     src="/logo.jpg"
                     alt="Federación Paraguaya de Tiro"
-                    width={48}
-                    height={48}
+                    width={36}
+                    height={36}
                     style={{ objectFit: 'contain', borderRadius: '50%' }}
                 />
                 <div className="header-title">
@@ -57,24 +58,34 @@ export default function Header() {
                     <span>Federación Paraguaya de Tiro</span>
                 </div>
             </Link>
-            <nav className="header-nav">
-                <Link href="/" style={getLinkStyle(!isAdmin && pathname !== '/reglamentos' && pathname !== '/tiradores')}>
-                    <Calendar size={18} />
+
+            <button
+                className="header-menu-toggle"
+                onClick={() => setMenuOpen(!menuOpen)}
+                aria-label={menuOpen ? 'Cerrar menú' : 'Abrir menú'}
+                aria-expanded={menuOpen}
+            >
+                {menuOpen ? <X size={20} strokeWidth={1.5} /> : <Menu size={20} strokeWidth={1.5} />}
+            </button>
+
+            <nav className={`header-nav ${menuOpen ? 'open' : ''}`}>
+                <Link href="/">
+                    <Calendar size={16} strokeWidth={1.5} />
                     <span>Calendario</span>
                 </Link>
-                <Link href="/reglamentos" style={getLinkStyle(pathname === '/reglamentos')}>
-                    <FileText size={18} />
+                <Link href="/reglamentos">
+                    <FileText size={16} strokeWidth={1.5} />
                     <span>Reglamentos</span>
                 </Link>
-                <Link href="/tiradores" style={getLinkStyle(pathname === '/tiradores')}>
-                    <Users size={18} />
+                <Link href="/tiradores">
+                    <Users size={16} strokeWidth={1.5} />
                     <span>Tiradores</span>
                 </Link>
                 {user ? (
                     <UserDropdown email={user.email} onLogout={handleLogout} />
                 ) : (
-                    <Link href="/admin" style={getLinkStyle(isAdmin)}>
-                        <Settings size={18} />
+                    <Link href="/admin">
+                        <Settings size={16} strokeWidth={1.5} />
                         <span>Admin</span>
                     </Link>
                 )}

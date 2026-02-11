@@ -12,45 +12,45 @@ export default function ShooterCard({ name, division, category, club }: ShooterC
     return (
         <div style={{
             background: 'white',
-            borderRadius: '0.5rem',
+            borderRadius: '14px',
             padding: '1.5rem',
-            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-            border: '1px solid #e5e7eb',
+            border: '1px solid rgba(0,0,0,0.06)',
             display: 'flex',
             flexDirection: 'column',
-            gap: '0.5rem'
+            gap: '0.5rem',
+            transition: 'box-shadow 0.25s ease, border-color 0.25s ease'
         }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
                 <div style={{
-                    width: '40px',
-                    height: '40px',
-                    background: '#f3f4f6',
+                    width: '38px',
+                    height: '38px',
+                    background: 'rgba(0,0,0,0.03)',
                     borderRadius: '50%',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    color: '#DC2626'
+                    color: '#737373'
                 }}>
-                    <Target size={20} />
+                    <Target size={18} strokeWidth={1.5} />
                 </div>
                 <div>
-                    <h3 style={{ margin: 0, fontSize: '1.125rem', fontWeight: 600, color: '#111827' }}>{name}</h3>
-                    <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>Tirador FPT</span>
+                    <h3 style={{ margin: 0, fontSize: '0.9375rem', fontWeight: 600, color: '#171717', letterSpacing: '-0.01em' }}>{name}</h3>
+                    <span style={{ fontSize: '0.75rem', color: '#A3A3A3' }}>Tirador FPT</span>
                 </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', fontSize: '0.875rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', fontSize: '0.8125rem' }}>
                 <div>
-                    <span style={{ display: 'block', color: '#9ca3af', fontSize: '0.75rem' }}>División</span>
-                    <span style={{ color: '#374151', fontWeight: 500 }}>{division}</span>
+                    <span style={{ display: 'block', color: '#A3A3A3', fontSize: '0.6875rem', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.125rem' }}>División</span>
+                    <span style={{ color: '#171717', fontWeight: 500 }}>{division}</span>
                 </div>
                 <div>
-                    <span style={{ display: 'block', color: '#9ca3af', fontSize: '0.75rem' }}>Categoría</span>
-                    <span style={{ color: '#374151', fontWeight: 500 }}>{category}</span>
+                    <span style={{ display: 'block', color: '#A3A3A3', fontSize: '0.6875rem', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.125rem' }}>Categoría</span>
+                    <span style={{ color: '#171717', fontWeight: 500 }}>{category}</span>
                 </div>
                 <div style={{ gridColumn: 'span 2' }}>
-                    <span style={{ display: 'block', color: '#9ca3af', fontSize: '0.75rem' }}>Club</span>
-                    <span style={{ color: '#374151', fontWeight: 500 }}>{club}</span>
+                    <span style={{ display: 'block', color: '#A3A3A3', fontSize: '0.6875rem', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.125rem' }}>Club</span>
+                    <span style={{ color: '#171717', fontWeight: 500 }}>{club}</span>
                 </div>
             </div>
         </div>
