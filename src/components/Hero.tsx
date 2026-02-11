@@ -20,6 +20,7 @@ export default function Hero() {
                             src="/logo fpdt.svg"
                             alt="Federación Paraguaya de Tiro"
                             fill
+                            unoptimized
                             style={{ objectFit: 'contain' }}
                             priority
                             className="hero-logo"

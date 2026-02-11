@@ -73,6 +73,7 @@ export default function LoginPage() {
                             alt="FPT Logo"
                             width={90}
                             height={90}
+                            unoptimized
                             style={{ objectFit: 'contain' }}
                         />
                     </div>

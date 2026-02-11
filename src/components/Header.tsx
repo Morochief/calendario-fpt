@@ -49,8 +49,9 @@ export default function Header() {
                 <Image
                     src="/logo fpdt.svg"
                     alt="Federación Paraguaya de Tiro"
-                    width={44}
-                    height={44}
+                    width={56}
+                    height={56}
+                    unoptimized
                     style={{ objectFit: 'contain' }}
                 />
                 <div className="header-title">
