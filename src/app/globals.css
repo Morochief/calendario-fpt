@@ -928,16 +928,7 @@ a {
   border-bottom: 1px solid var(--color-border);
 }
 
-/* COP Watermark */
-.hero-watermark {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1;
-  pointer-events: none;
-  user-select: none;
-}
+/* COP Watermark removed from Hero local scope */
 
 .hero-content {
   text-align: center;
@@ -961,23 +952,20 @@ a {
   opacity: 1;
 }
 
-/* Global COP Watermark for content areas */
-.main-content-area {
-  position: relative;
-}
-
-.main-content-area::before {
+/* Global Fixed Watermark */
+body::before {
   content: '';
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 600px;
-  height: 600px;
+  width: 650px;
+  height: 650px;
   background: url('/logo_cop-removebg-preview.svg') center/contain no-repeat;
   opacity: 0.04;
   pointer-events: none;
-  z-index: 0;
+  z-index: -1;
+  /* Behind everything */
 }
 
 .hero-image-wrapper {

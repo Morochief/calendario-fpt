@@ -13,21 +13,7 @@ export default function Hero() {
 
     return (
         <section className="hero-section">
-            {/* COP Watermark Background */}
-            <div className="hero-watermark" aria-hidden="true">
-                <img
-                    src="/logo_cop-removebg-preview.svg"
-                    alt=""
-                    style={{
-                        width: '600px',
-                        height: '600px',
-                        objectFit: 'contain',
-                        opacity: 0.05,
-                        userSelect: 'none',
-                        pointerEvents: 'none',
-                    }}
-                />
-            </div>
+
 
             <div className="hero-content">
                 <div className="hero-image-wrapper">
