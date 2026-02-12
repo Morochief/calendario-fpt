@@ -31,7 +31,7 @@ export default function EventCard({ evento }: EventCardProps) {
                         backgroundImage: `url(${evento.imagen_url})`,
                         height: '140px',
                         backgroundSize: 'cover',
-                        backgroundPosition: 'center',
+                        backgroundPosition: evento.imagen_position || 'center',
                         width: '100%'
                     }}
                 />

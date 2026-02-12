@@ -14,6 +14,7 @@ export type Evento = {
     ubicacion: string | null;
     ubicacion_url: string | null;
     imagen_url: string | null;
+    imagen_position?: string;
     descripcion: string | null;
     tipo?: string;
     created_at: string;

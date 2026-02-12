@@ -40,6 +40,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
         initialData?.ubicacion_url || ''
     );
     const [imagenUrl, setImagenUrl] = useState(initialData?.imagen_url || '');
+    const [imagenPosition, setImagenPosition] = useState(initialData?.imagen_position || 'center');
     const [descripcion, setDescripcion] = useState(initialData?.descripcion || '');
     const [tipoEventoId, setTipoEventoId] = useState(initialData?.tipo_evento_id || '');
 
@@ -56,6 +57,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
             setUbicacion(initialData.ubicacion || '');
             setUbicacionUrl(initialData.ubicacion_url || '');
             setImagenUrl(initialData.imagen_url || '');
+            setImagenPosition(initialData.imagen_position || 'center');
             setDescripcion(initialData.descripcion || '');
             setTipoEventoId(initialData.tipo_evento_id || '');
         }
@@ -147,6 +149,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
             ubicacion: ubicacion || null,
             ubicacion_url: ubicacionUrl || null,
             imagen_url: imagenUrl || null,
+            imagen_position: imagenPosition,
             descripcion: descripcion || null,
             tipo_evento_id: tipoEventoId || null,
         };
@@ -362,7 +365,13 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                             <div className="w-full md:w-1/3 aspect-video bg-bg-elite rounded-lg border-2 border-dashed border-border-elite flex items-center justify-center overflow-hidden relative group hover:border-cop-blue transition-colors">
                                 {imagenUrl ? (
                                     <>
-                                        <img src={imagenUrl} alt="Visualización previa del evento" className="w-full h-full object-cover" />
+                                        <div
+                                            className="w-full h-full bg-cover bg-no-repeat transition-all duration-300"
+                                            style={{
+                                                backgroundImage: `url(${imagenUrl})`,
+                                                backgroundPosition: imagenPosition
+                                            }}
+                                        />
                                         <button
                                             type="button"
                                             onClick={() => setImagenUrl('')}
@@ -385,7 +394,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                                 <div>
                                     <p className="text-sm text-text-muted mb-3">Sube una imagen (JPG, PNG) o pega una URL directa.</p>
 
-                                    <div className="flex gap-2">
+                                    <div className="flex gap-2 mb-4">
                                         <button
                                             type="button"
                                             onClick={() => fileInputRef.current?.click()}
@@ -405,6 +414,31 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                                             aria-label="Subir archivo de imagen"
                                         />
                                     </div>
+
+                                    {/* Position Control */}
+                                    {imagenUrl && (
+                                        <div className="bg-bg-elite p-3 rounded-lg border border-border-elite">
+                                            <span className="text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2 block">Ajustar Enfoque</span>
+                                            <div className="flex flex-wrap gap-2">
+                                                {['top', 'center', 'bottom', 'left', 'right'].map((pos) => (
+                                                    <button
+                                                        key={pos}
+                                                        type="button"
+                                                        onClick={() => setImagenPosition(pos)}
+                                                        className={`px-3 py-1.5 text-xs font-medium rounded-md border transition-all ${imagenPosition === pos
+                                                            ? 'bg-cop-blue text-white border-cop-blue shadow-sm'
+                                                            : 'bg-white text-slate-600 border-slate-200 hover:border-cop-blue/50 hover:text-cop-blue'
+                                                            }`}
+                                                    >
+                                                        {pos === 'top' ? 'Arriba' :
+                                                            pos === 'center' ? 'Centro' :
+                                                                pos === 'bottom' ? 'Abajo' :
+                                                                    pos === 'left' ? 'Izq' : 'Der'}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="relative">

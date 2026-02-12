@@ -74,6 +74,7 @@ export const eventoSchema = z.object({
     imagen_url: z.string().url('Debe ser una URL válida').or(z.literal(''))
         .nullable().optional()
         .transform(val => val === '' ? null : val),
+    imagen_position: z.string().optional().default('center'),
     descripcion: z.string().max(1000).nullable().optional(),
     tipo: z.string().max(50).nullable().optional(), // Legacy field
     created_at: z.string().optional(),
