@@ -195,17 +195,17 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
         }
     }
 
-    // Styles for Elite Palette
-    const labelStyle = "block text-sm font-semibold text-[#1E3A8A] mb-1.5"; // Blue Headers
-    const inputStyle = `block w-full rounded-lg border-slate-200 shadow-sm focus:border-[#1E3A8A] focus:ring-[#1E3A8A]/20 sm:text-sm py-2.5 transition-all`;
-    const errorInputStyle = "border-red-300 focus:border-red-500 focus:ring-red-500";
+    // Styles for Elite Palette (Explicit Hex for Safety)
+    const labelStyle = "block text-sm font-semibold text-[#1E3A8A] mb-1.5";
+    const inputStyle = `block w-full rounded-lg border-slate-200 shadow-sm focus:border-[#1E3A8A] focus:ring-[#1E3A8A]/20 sm:text-sm py-2.5 transition-all text-slate-700 bg-white`;
+    const errorInputStyle = "border-red-300 focus:border-red-500 focus:ring-red-500 bg-red-50";
     const sectionHeaderStyle = "text-lg font-bold text-[#1E3A8A] flex items-center gap-2 mb-6 pb-2 border-b border-slate-100";
 
     return (
         <form onSubmit={handleSubmit} noValidate className="space-y-8 animate-in fade-in duration-500">
 
             {/* --- General Information --- */}
-            <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
+            <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
                 <h3 className={sectionHeaderStyle}>
                     <AlignLeft size={20} className="text-[#D91E18]" />
                     Información General
@@ -273,7 +273,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
             </div>
 
             {/* --- Date & Location --- */}
-            <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
+            <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
                 <h3 className={sectionHeaderStyle}>
                     <Calendar size={20} className="text-[#D91E18]" />
                     Fecha y Ubicación
@@ -341,7 +341,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
             </div>
 
             {/* --- Multimedia & Description --- */}
-            <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
+            <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
                 <h3 className={sectionHeaderStyle}>
                     <ImageIcon size={20} className="text-[#D91E18]" />
                     Multimedia
@@ -349,17 +349,18 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
 
                 <div className="space-y-6">
                     <div>
-                        <label className={labelStyle}>Imagen del Evento</label>
+                        <span className={labelStyle}>Imagen del Evento</span>
                         <div className="flex flex-col md:flex-row gap-4 items-start">
                             {/* Preview Area */}
-                            <div className="w-full md:w-1/3 aspect-video bg-slate-50 rounded-lg border-2 border-dashed border-slate-200 flex items-center justify-center overflow-hidden relative group">
+                            <div className="w-full md:w-1/3 aspect-video bg-slate-50 rounded-lg border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden relative group hover:border-[#1E3A8A] transition-colors">
                                 {imagenUrl ? (
                                     <>
-                                        <img src={imagenUrl} alt="Preview" className="w-full h-full object-cover" />
+                                        <img src={imagenUrl} alt="Visualización previa del evento" className="w-full h-full object-cover" />
                                         <button
                                             type="button"
                                             onClick={() => setImagenUrl('')}
-                                            className="absolute top-2 right-2 bg-white/90 p-1.5 rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-600"
+                                            className="absolute top-2 right-2 bg-white/90 p-1.5 rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-600 focus:opacity-100"
+                                            aria-label="Eliminar imagen"
                                         >
                                             <X size={16} />
                                         </button>
@@ -375,24 +376,26 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                             {/* Upload Actions */}
                             <div className="flex-1 space-y-4 w-full">
                                 <div>
-                                    <p className="text-sm text-slate-500 mb-3">Sube una imagen o pega una URL directa.</p>
+                                    <p className="text-sm text-slate-500 mb-3">Sube una imagen (JPG, PNG) o pega una URL directa.</p>
 
                                     <div className="flex gap-2">
                                         <button
                                             type="button"
                                             onClick={() => fileInputRef.current?.click()}
                                             disabled={uploading}
-                                            className="flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+                                            className="flex items-center gap-2 px-4 py-2 bg-[#F9FBFF] hover:bg-slate-100 text-[#1E3A8A] border border-slate-200 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
                                         >
                                             {uploading ? <Loader2 size={16} className="animate-spin" /> : <UploadCloud size={16} />}
                                             Subir Archivo
                                         </button>
                                         <input
+                                            id="file-upload"
                                             ref={fileInputRef}
                                             type="file"
                                             accept="image/*"
                                             className="hidden"
                                             onChange={handleFileUpload}
+                                            aria-label="Subir archivo de imagen"
                                         />
                                     </div>
                                 </div>
@@ -406,15 +409,19 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                                     </div>
                                 </div>
 
-                                <div className="relative">
-                                    <LinkIcon size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                                    <input
-                                        type="url"
-                                        value={imagenUrl}
-                                        onChange={(e) => setImagenUrl(e.target.value)}
-                                        placeholder="https://pagina.com/imagen.jpg"
-                                        className={`${inputStyle} pl-10`}
-                                    />
+                                <div>
+                                    <label htmlFor="imagen-url-input" className="sr-only">URL de la imagen</label>
+                                    <div className="relative">
+                                        <LinkIcon size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                                        <input
+                                            id="imagen-url-input"
+                                            type="url"
+                                            value={imagenUrl}
+                                            onChange={(e) => setImagenUrl(e.target.value)}
+                                            placeholder="https://pagina.com/imagen.jpg"
+                                            className={`${inputStyle} pl-10`}
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         </div>
