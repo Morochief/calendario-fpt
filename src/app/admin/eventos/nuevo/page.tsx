@@ -31,38 +31,38 @@ export default function NuevoEventoPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#F9FBFF] flex flex-col">
+            <div className="min-h-screen bg-bg-elite flex flex-col">
                 <Header />
                 <div className="flex-grow flex items-center justify-center">
-                    <Loader2 size={48} className="text-[#1E3A8A] animate-spin" />
+                    <Loader2 size={48} className="text-cop-blue animate-spin" />
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-[#F9FBFF] flex flex-col font-sans text-[#1E3A8A]">
+        <div className="min-h-screen bg-bg-elite flex flex-col font-sans text-text-elite">
             <Header />
-            <main className="flex-grow py-12 px-4 sm:px-6 lg:px-8">
+            <main className="flex-grow py-12 px-4 sm:px-6 lg:px-8 animate-page-enter">
                 <div className="max-w-4xl mx-auto space-y-8">
                     <Breadcrumbs />
 
-                    <div className="flex items-center justify-between border-b border-slate-300 pb-6">
+                    <div className="flex items-center justify-between border-b border-border-elite pb-6">
                         <div>
-                            <h1 className="text-3xl font-bold text-[#1E3A8A] tracking-tight">Nuevo Evento</h1>
-                            <p className="text-slate-500 mt-1 text-sm">Ingresa los detalles para crear una nueva competencia.</p>
+                            <h1 className="text-3xl font-bold text-text-elite tracking-tight">Nuevo Evento</h1>
+                            <p className="text-text-secondary mt-1 text-sm">Ingresa los detalles para crear una nueva competencia.</p>
                         </div>
 
                         <Link
                             href="/admin"
-                            className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-[#1E3A8A] transition-colors bg-white px-4 py-2 rounded-lg border border-slate-300 shadow-sm hover:border-blue-200"
+                            className="btn btn-secondary shadow-sm"
                         >
                             <ArrowLeft size={18} />
                             Volver
                         </Link>
                     </div>
 
-                    <div className="bg-white rounded-xl shadow-sm border border-slate-300 p-8">
+                    <div className="bg-surface rounded-xl shadow-elite-sm border border-border-elite p-8">
                         <EventForm />
                     </div>
                 </div>

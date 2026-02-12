@@ -195,26 +195,26 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
         }
     }
 
-    // Styles for Elite Palette (Explicit Hex for Safety)
-    const labelStyle = "block text-sm font-semibold text-[#1E3A8A] mb-1.5";
-    const inputStyle = `block w-full rounded-lg border-slate-200 shadow-sm focus:border-[#1E3A8A] focus:ring-[#1E3A8A]/20 sm:text-sm py-2.5 transition-all text-slate-700 bg-white`;
-    const errorInputStyle = "border-red-300 focus:border-red-500 focus:ring-red-500 bg-red-50";
-    const sectionHeaderStyle = "text-lg font-bold text-[#1E3A8A] flex items-center gap-2 mb-6 pb-2 border-b border-slate-100";
+    // Styles for Elite Palette
+    const labelStyle = "block text-sm font-medium text-text-elite mb-1.5";
+    const inputStyle = `block w-full rounded-elite-sm border-border-elite shadow-elite-xs focus:border-cop-blue focus:ring-1 focus:ring-cop-blue/20 sm:text-sm py-2.5 transition-all text-text-secondary bg-surface hover:border-border-hover`;
+    const errorInputStyle = "border-status-error focus:border-status-error focus:ring-status-error bg-status-error-bg";
+    const sectionHeaderStyle = "text-lg font-bold text-text-elite flex items-center gap-2 mb-6 pb-2 border-b border-border-elite";
 
     return (
         <form onSubmit={handleSubmit} noValidate className="space-y-8 animate-in fade-in duration-500">
 
             {/* --- General Information --- */}
-            <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+            <div className="bg-surface p-6 rounded-xl border border-border-elite shadow-elite-sm">
                 <h3 className={sectionHeaderStyle}>
-                    <AlignLeft size={20} className="text-[#D91E18]" />
+                    <AlignLeft size={20} className="text-fpt-red" />
                     Información General
                 </h3>
 
                 <div className="grid grid-cols-1 gap-6">
                     <div>
                         <label htmlFor="titulo" className={labelStyle}>
-                            Título del evento <span className="text-[#D91E18]">*</span>
+                            Título del evento <span className="text-fpt-red">*</span>
                         </label>
                         <input
                             id="titulo"
@@ -226,7 +226,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                             required
                             className={`${inputStyle} ${errors.titulo ? errorInputStyle : ''}`}
                         />
-                        {errors.titulo && <p className="mt-1 text-sm text-red-600 font-medium">{errors.titulo}</p>}
+                        {errors.titulo && <p className="mt-1 text-sm text-status-error font-medium">{errors.titulo}</p>}
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -237,7 +237,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                         ) : (
                             <div>
                                 <label htmlFor="modalidad" className={labelStyle}>
-                                    Modalidad <span className="text-[#D91E18]">*</span>
+                                    Modalidad <span className="text-fpt-red">*</span>
                                 </label>
                                 <select
                                     id="modalidad"
@@ -256,7 +256,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
 
                         <div>
                             <label htmlFor="tipo" className={labelStyle}>
-                                Tipo de evento <span className="text-[#D91E18]">*</span>
+                                Tipo de evento <span className="text-fpt-red">*</span>
                             </label>
                             <select
                                 id="tipo"
@@ -276,16 +276,16 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
             </div>
 
             {/* --- Date & Location --- */}
-            <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+            <div className="bg-surface p-6 rounded-xl border border-border-elite shadow-elite-sm">
                 <h3 className={sectionHeaderStyle}>
-                    <Calendar size={20} className="text-[#D91E18]" />
+                    <Calendar size={20} className="text-fpt-red" />
                     Fecha y Ubicación
                 </h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <div>
                         <label htmlFor="fecha" className={labelStyle}>
-                            Fecha <span className="text-[#D91E18]">*</span>
+                            Fecha <span className="text-fpt-red">*</span>
                         </label>
                         <input
                             id="fecha"
@@ -296,7 +296,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                             required
                             className={`${inputStyle} ${errors.fecha ? errorInputStyle : ''}`}
                         />
-                        {errors.fecha && <p className="mt-1 text-sm text-red-600 font-medium">{errors.fecha}</p>}
+                        {errors.fecha && <p className="mt-1 text-sm text-status-error font-medium">{errors.fecha}</p>}
                     </div>
 
                     <div>
@@ -316,7 +316,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                     <div>
                         <label htmlFor="ubicacion" className={labelStyle}>Ubicación / Polígono</label>
                         <div className="relative">
-                            <MapPin size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                            <MapPin size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
                             <input
                                 id="ubicacion"
                                 name="ubicacion"
@@ -332,7 +332,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                     <div>
                         <label htmlFor="ubicacion_url" className={labelStyle}>Link Google Maps</label>
                         <div className="relative">
-                            <LinkIcon size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                            <LinkIcon size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
                             <input
                                 id="ubicacion_url"
                                 name="ubicacion_url"
@@ -348,9 +348,9 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
             </div>
 
             {/* --- Multimedia & Description --- */}
-            <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+            <div className="bg-surface p-6 rounded-xl border border-border-elite shadow-elite-sm">
                 <h3 className={sectionHeaderStyle}>
-                    <ImageIcon size={20} className="text-[#D91E18]" />
+                    <ImageIcon size={20} className="text-fpt-red" />
                     Multimedia
                 </h3>
 
@@ -359,14 +359,14 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                         <span className={labelStyle}>Imagen del Evento</span>
                         <div className="flex flex-col md:flex-row gap-4 items-start">
                             {/* Preview Area */}
-                            <div className="w-full md:w-1/3 aspect-video bg-slate-50 rounded-lg border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden relative group hover:border-[#1E3A8A] transition-colors">
+                            <div className="w-full md:w-1/3 aspect-video bg-bg-elite rounded-lg border-2 border-dashed border-border-elite flex items-center justify-center overflow-hidden relative group hover:border-cop-blue transition-colors">
                                 {imagenUrl ? (
                                     <>
                                         <img src={imagenUrl} alt="Visualización previa del evento" className="w-full h-full object-cover" />
                                         <button
                                             type="button"
                                             onClick={() => setImagenUrl('')}
-                                            className="absolute top-2 right-2 bg-white/90 p-1.5 rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-600 focus:opacity-100"
+                                            className="absolute top-2 right-2 bg-white/90 p-1.5 rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity hover:text-status-error focus:opacity-100"
                                             aria-label="Eliminar imagen"
                                         >
                                             <X size={16} />
@@ -374,8 +374,8 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                                     </>
                                 ) : (
                                     <div className="text-center p-4">
-                                        <ImageIcon size={32} className="mx-auto text-slate-300 mb-2" />
-                                        <p className="text-xs text-slate-400">Sin imagen</p>
+                                        <ImageIcon size={32} className="mx-auto text-text-muted mb-2" />
+                                        <p className="text-xs text-text-muted">Sin imagen</p>
                                     </div>
                                 )}
                             </div>
@@ -383,14 +383,14 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                             {/* Upload Actions */}
                             <div className="flex-1 space-y-4 w-full">
                                 <div>
-                                    <p className="text-sm text-slate-500 mb-3">Sube una imagen (JPG, PNG) o pega una URL directa.</p>
+                                    <p className="text-sm text-text-muted mb-3">Sube una imagen (JPG, PNG) o pega una URL directa.</p>
 
                                     <div className="flex gap-2">
                                         <button
                                             type="button"
                                             onClick={() => fileInputRef.current?.click()}
                                             disabled={uploading}
-                                            className="flex items-center gap-2 px-4 py-2 bg-[#F9FBFF] hover:bg-slate-100 text-[#1E3A8A] border border-slate-200 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+                                            className="flex items-center gap-2 px-4 py-2 bg-bg-elite hover:bg-slate-100 text-cop-blue border border-border-elite rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
                                         >
                                             {uploading ? <Loader2 size={16} className="animate-spin" /> : <UploadCloud size={16} />}
                                             Subir Archivo
@@ -409,17 +409,17 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
 
                                 <div className="relative">
                                     <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                                        <div className="w-full border-t border-slate-200"></div>
+                                        <div className="w-full border-t border-border-elite"></div>
                                     </div>
                                     <div className="relative flex justify-center">
-                                        <span className="bg-white px-2 text-xs text-slate-400 uppercase">O usa URL</span>
+                                        <span className="bg-surface px-2 text-xs text-text-muted uppercase">O usa URL</span>
                                     </div>
                                 </div>
 
                                 <div>
                                     <label htmlFor="imagen-url-input" className="sr-only">URL de la imagen</label>
                                     <div className="relative">
-                                        <LinkIcon size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                                        <LinkIcon size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
                                         <input
                                             id="imagen-url-input"
                                             type="url"
@@ -452,14 +452,14 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
             <div className="flex items-center justify-end gap-4 pt-6">
                 <Link
                     href="/admin"
-                    className="px-6 py-2.5 border border-slate-200 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-[#1E3A8A] transition-colors"
+                    className="btn btn-secondary shadow-elite-xs"
                 >
                     Cancelar
                 </Link>
                 <button
                     type="submit"
                     disabled={loading || uploading}
-                    className="flex items-center gap-2 px-6 py-2.5 bg-[#D91E18] hover:bg-[#b91c1b] text-white rounded-lg text-sm font-bold shadow-lg shadow-red-900/10 hover:shadow-red-900/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed transform active:scale-95"
+                    className="btn btn-primary shadow-btn-red hover:shadow-btn-red-hover active:scale-95 px-6"
                 >
                     {loading ? (
                         <>
