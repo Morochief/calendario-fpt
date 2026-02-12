@@ -218,6 +218,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                         </label>
                         <input
                             id="titulo"
+                            name="titulo"
                             type="text"
                             value={titulo}
                             onChange={(e) => setTitulo(e.target.value)}
@@ -240,6 +241,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                                 </label>
                                 <select
                                     id="modalidad"
+                                    name="modalidad_id"
                                     value={modalidadId}
                                     onChange={(e) => setModalidadId(e.target.value)}
                                     required
@@ -258,6 +260,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                             </label>
                             <select
                                 id="tipo"
+                                name="tipo_evento_id"
                                 value={tipoEventoId}
                                 onChange={(e) => setTipoEventoId(e.target.value)}
                                 required
@@ -286,6 +289,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                         </label>
                         <input
                             id="fecha"
+                            name="fecha"
                             type="date"
                             value={fecha}
                             onChange={(e) => setFecha(e.target.value)}
@@ -299,6 +303,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                         <label htmlFor="hora" className={labelStyle}>Hora</label>
                         <input
                             id="hora"
+                            name="hora"
                             type="time"
                             value={hora}
                             onChange={(e) => setHora(e.target.value)}
@@ -314,6 +319,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                             <MapPin size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                             <input
                                 id="ubicacion"
+                                name="ubicacion"
                                 type="text"
                                 value={ubicacion}
                                 onChange={(e) => setUbicacion(e.target.value)}
@@ -329,6 +335,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                             <LinkIcon size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                             <input
                                 id="ubicacion_url"
+                                name="ubicacion_url"
                                 type="url"
                                 value={ubicacionUrl}
                                 onChange={(e) => setUbicacionUrl(e.target.value)}

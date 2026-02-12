@@ -345,6 +345,8 @@ export default function AdminPage() {
                             <div className="relative w-full sm:w-auto group">
                                 <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-hover:text-[#1E3A8A] transition-colors z-10" />
                                 <input placeholder="Buscar eventos..."
+                                    id="search-events"
+                                    name="search"
                                     className="pl-10 pr-4 py-2.5 w-full sm:w-72 rounded-lg border border-slate-300 bg-white shadow-sm focus:border-[#1E3A8A] focus:ring-1 focus:ring-[#1E3A8A] text-sm transition-all outline-none"
                                     type="text"
                                     value={searchTerm}
@@ -360,6 +362,8 @@ export default function AdminPage() {
 
                             {/* Filtro por estado */}
                             <select
+                                id="filter-estado"
+                                name="estado"
                                 value={filterEstado}
                                 onChange={(e) => setFilterEstado(e.target.value)}
                                 className="px-3 py-1.5 rounded-lg border border-slate-300 bg-white text-xs text-slate-600 font-medium focus:border-[#1E3A8A] focus:ring-1 focus:ring-[#1E3A8A] outline-none cursor-pointer"
@@ -371,6 +375,8 @@ export default function AdminPage() {
 
                             {/* Filtro por modalidad */}
                             <select
+                                id="filter-modalidad"
+                                name="modalidad"
                                 value={filterModalidad}
                                 onChange={(e) => setFilterModalidad(e.target.value)}
                                 className="px-3 py-1.5 rounded-lg border border-slate-300 bg-white text-xs text-slate-600 font-medium focus:border-[#1E3A8A] focus:ring-1 focus:ring-[#1E3A8A] outline-none cursor-pointer"
@@ -381,6 +387,8 @@ export default function AdminPage() {
 
                             {/* Filtro por tipo */}
                             <select
+                                id="filter-tipo"
+                                name="tipo"
                                 value={filterTipo}
                                 onChange={(e) => setFilterTipo(e.target.value)}
                                 className="px-3 py-1.5 rounded-lg border border-slate-300 bg-white text-xs text-slate-600 font-medium focus:border-[#1E3A8A] focus:ring-1 focus:ring-[#1E3A8A] outline-none cursor-pointer"
