@@ -66,6 +66,13 @@ export type TipoEvento = {
     color: string;
 };
 
+export type Categoria = {
+    id: string;
+    nombre: string;
+    descripcion: string | null;
+    created_at?: string;
+};
+
 export const TIPOS_EVENTO_INICIALES = [
     { nombre: 'Puntuable', color: '#DC2626' },
     { nombre: 'Jornada de Cero', color: '#6366F1' },
