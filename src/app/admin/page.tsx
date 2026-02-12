@@ -202,7 +202,7 @@ export default function AdminPage() {
                     </div>
                     <div className="flex items-center gap-3">
                         {/* Botón exportar (Placeholder) */}
-                        <button className="inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-600 px-5 py-3 rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-all font-semibold active:scale-95 text-sm"
+                        <button className="inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-600 px-5 py-3 rounded-lg border border-slate-300 shadow-sm hover:shadow-md transition-all font-semibold active:scale-95 text-sm"
                             title="Exportar eventos" onClick={() => showToast('Funcionalidad de exportación en desarrollo', 'info')}>
                             <Download size={18} />
                             Exportar
@@ -218,7 +218,7 @@ export default function AdminPage() {
                 {/* ========== KPI CARDS ========== */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                     {/* KPI: Total Eventos */}
-                    <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                    <div className="bg-white p-5 rounded-xl border border-slate-300 shadow-sm">
                         <div className="flex items-center justify-between mb-3">
                             <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Eventos</span>
                             <div className="p-2 bg-blue-50 rounded-lg">
@@ -230,7 +230,7 @@ export default function AdminPage() {
                     </div>
 
                     {/* KPI: Inscripciones */}
-                    <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                    <div className="bg-white p-5 rounded-xl border border-slate-300 shadow-sm">
                         <div className="flex items-center justify-between mb-3">
                             <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Inscripciones</span>
                             <div className="p-2 bg-green-50 rounded-lg">
@@ -245,7 +245,7 @@ export default function AdminPage() {
                     </div>
 
                     {/* KPI: Próximo Evento */}
-                    <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                    <div className="bg-white p-5 rounded-xl border border-slate-300 shadow-sm">
                         <div className="flex items-center justify-between mb-3">
                             <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Próximo</span>
                             <div className="p-2 bg-amber-50 rounded-lg">
@@ -268,7 +268,7 @@ export default function AdminPage() {
                     </div>
 
                     {/* KPI: Modalidades Activas */}
-                    <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                    <div className="bg-white p-5 rounded-xl border border-slate-300 shadow-sm">
                         <div className="flex items-center justify-between mb-3">
                             <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Modalidades</span>
                             <div className="p-2 bg-purple-50 rounded-lg">
@@ -282,7 +282,7 @@ export default function AdminPage() {
 
                 {/* ========== CARDS: INSCRIPCIONES + CONFIGURACIÓN ========== */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-                    <Link className="group bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex items-center gap-5 hover:border-blue-200"
+                    <Link className="group bg-white p-6 rounded-xl border border-slate-300 shadow-sm hover:shadow-md transition-all flex items-center gap-5 hover:border-blue-200"
                         href="/admin/inscripciones">
                         <div className="p-4 bg-green-50 text-green-700 rounded-xl group-hover:scale-110 transition-transform">
                             <Users size={32} strokeWidth={1.5} />
@@ -295,28 +295,28 @@ export default function AdminPage() {
                         <span className="ml-auto bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">{kpiInscripciones}</span>
                     </Link>
 
-                    <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm col-span-1 md:col-span-2 lg:col-span-2">
+                    <div className="bg-white p-6 rounded-xl border border-slate-300 shadow-sm col-span-1 md:col-span-2 lg:col-span-2">
                         <h3 className="font-bold text-[#1E3A8A] text-xl mb-6 flex items-center gap-3">
                             <Settings size={22} className="text-slate-400" strokeWidth={1.5} />
                             Configuración
                         </h3>
                         <div className="flex flex-wrap gap-4">
-                            <Link className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#F9FBFF] hover:bg-slate-100 text-slate-600 rounded-lg border border-slate-200 transition-colors font-medium text-sm hover:border-gray-300"
+                            <Link className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#F9FBFF] hover:bg-slate-100 text-slate-600 rounded-lg border border-slate-300 transition-colors font-medium text-sm hover:border-gray-300"
                                 href="/admin/modalidades">
                                 <ClipboardList size={18} strokeWidth={1.5} />
                                 Modalidades
                             </Link>
-                            <Link className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#F9FBFF] hover:bg-slate-100 text-slate-600 rounded-lg border border-slate-200 transition-colors font-medium text-sm hover:border-gray-300"
+                            <Link className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#F9FBFF] hover:bg-slate-100 text-slate-600 rounded-lg border border-slate-300 transition-colors font-medium text-sm hover:border-gray-300"
                                 href="/admin/tipos-evento">
                                 <Filter size={18} strokeWidth={1.5} />
                                 Tipos
                             </Link>
-                            <Link className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#F9FBFF] hover:bg-slate-100 text-slate-600 rounded-lg border border-slate-200 transition-colors font-medium text-sm hover:border-gray-300"
+                            <Link className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#F9FBFF] hover:bg-slate-100 text-slate-600 rounded-lg border border-slate-300 transition-colors font-medium text-sm hover:border-gray-300"
                                 href="/admin/reglamentos">
                                 <BookOpen size={18} strokeWidth={1.5} />
                                 Reglamentos
                             </Link>
-                            <Link className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#F9FBFF] hover:bg-slate-100 text-slate-600 rounded-lg border border-slate-200 transition-colors font-medium text-sm hover:border-gray-300"
+                            <Link className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#F9FBFF] hover:bg-slate-100 text-slate-600 rounded-lg border border-slate-300 transition-colors font-medium text-sm hover:border-gray-300"
                                 href="/admin/categorias">
                                 <ClipboardList size={18} strokeWidth={1.5} />
                                 Categorías
@@ -326,13 +326,13 @@ export default function AdminPage() {
                 </div>
 
                 {/* ========== TABLA DE EVENTOS ========== */}
-                <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div className="bg-white rounded-xl shadow-sm border border-slate-300 overflow-hidden">
 
                     {/* Header de tabla con búsqueda + Filtros */}
-                    <div className="p-6 border-b border-slate-200 bg-[#F9FBFF]/50">
+                    <div className="p-6 border-b border-slate-300 bg-[#F9FBFF]/50">
                         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
                             <div className="flex items-center gap-4">
-                                <div className="p-2.5 bg-white rounded-lg border border-slate-200 shadow-sm">
+                                <div className="p-2.5 bg-white rounded-lg border border-slate-300 shadow-sm">
                                     <Calendar size={22} className="text-[#1E3A8A]" />
                                 </div>
                                 <div>
@@ -345,7 +345,7 @@ export default function AdminPage() {
                             <div className="relative w-full sm:w-auto group">
                                 <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-hover:text-[#1E3A8A] transition-colors z-10" />
                                 <input placeholder="Buscar eventos..."
-                                    className="pl-10 pr-4 py-2.5 w-full sm:w-72 rounded-lg border border-slate-200 bg-white shadow-sm focus:border-[#1E3A8A] focus:ring-1 focus:ring-[#1E3A8A] text-sm transition-all outline-none"
+                                    className="pl-10 pr-4 py-2.5 w-full sm:w-72 rounded-lg border border-slate-300 bg-white shadow-sm focus:border-[#1E3A8A] focus:ring-1 focus:ring-[#1E3A8A] text-sm transition-all outline-none"
                                     type="text"
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
@@ -362,7 +362,7 @@ export default function AdminPage() {
                             <select
                                 value={filterEstado}
                                 onChange={(e) => setFilterEstado(e.target.value)}
-                                className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-xs text-slate-600 font-medium focus:border-[#1E3A8A] focus:ring-1 focus:ring-[#1E3A8A] outline-none cursor-pointer"
+                                className="px-3 py-1.5 rounded-lg border border-slate-300 bg-white text-xs text-slate-600 font-medium focus:border-[#1E3A8A] focus:ring-1 focus:ring-[#1E3A8A] outline-none cursor-pointer"
                             >
                                 <option value="">Estado (Todos)</option>
                                 <option value="activo">🟢 Activo</option>
@@ -373,7 +373,7 @@ export default function AdminPage() {
                             <select
                                 value={filterModalidad}
                                 onChange={(e) => setFilterModalidad(e.target.value)}
-                                className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-xs text-slate-600 font-medium focus:border-[#1E3A8A] focus:ring-1 focus:ring-[#1E3A8A] outline-none cursor-pointer"
+                                className="px-3 py-1.5 rounded-lg border border-slate-300 bg-white text-xs text-slate-600 font-medium focus:border-[#1E3A8A] focus:ring-1 focus:ring-[#1E3A8A] outline-none cursor-pointer"
                             >
                                 <option value="">Modalidad (Todas)</option>
                                 {uniqueModalidades.map(m => <option key={m} value={m}>{m}</option>)}
@@ -383,7 +383,7 @@ export default function AdminPage() {
                             <select
                                 value={filterTipo}
                                 onChange={(e) => setFilterTipo(e.target.value)}
-                                className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-xs text-slate-600 font-medium focus:border-[#1E3A8A] focus:ring-1 focus:ring-[#1E3A8A] outline-none cursor-pointer"
+                                className="px-3 py-1.5 rounded-lg border border-slate-300 bg-white text-xs text-slate-600 font-medium focus:border-[#1E3A8A] focus:ring-1 focus:ring-[#1E3A8A] outline-none cursor-pointer"
                             >
                                 <option value="">Tipo (Todos)</option>
                                 {uniqueTipos.map(t => <option key={t} value={t}>{t}</option>)}
@@ -411,7 +411,7 @@ export default function AdminPage() {
                     {/* Tabla */}
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm text-left">
-                            <thead className="text-xs text-slate-500 uppercase bg-[#F9FBFF] border-b border-slate-200">
+                            <thead className="text-xs text-slate-500 uppercase bg-[#F9FBFF] border-b border-slate-300">
                                 <tr>
                                     <th className="px-4 py-4 w-12">
                                         <input type="checkbox" className="rounded border-slate-300 text-[#1E3A8A] focus:ring-[#1E3A8A] cursor-pointer" />
@@ -468,7 +468,7 @@ export default function AdminPage() {
                                                             Activo
                                                         </span>
                                                     ) : (
-                                                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 border border-slate-200">
+                                                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 border border-slate-300">
                                                             <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
                                                             Finalizado
                                                         </span>
@@ -523,7 +523,7 @@ export default function AdminPage() {
                     </div>
 
                     {/* Paginación */}
-                    <div className="px-6 py-4 border-t border-slate-200 bg-[#F9FBFF]/50">
+                    <div className="px-6 py-4 border-t border-slate-300 bg-[#F9FBFF]/50">
                         <Pagination
                             currentPage={currentPage}
                             totalPages={totalPages}
