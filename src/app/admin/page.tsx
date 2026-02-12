@@ -161,32 +161,32 @@ export default function AdminPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#F9FBFF] flex flex-col">
+            <div className="min-h-screen bg-bg-elite flex flex-col">
                 <Header />
                 <div className="flex-grow flex items-center justify-center">
-                    <Loader2 size={48} className="text-[#1E3A8A] animate-spin" />
+                    <Loader2 size={48} className="text-cop-blue animate-spin" />
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-[#F9FBFF] flex flex-col font-sans text-[#1E3A8A]">
+        <div className="min-h-screen bg-bg-elite flex flex-col font-sans text-text-elite">
             <Header />
-            <main className="flex-grow py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
+            <main className="flex-grow py-12 px-4 sm:px-6 lg:px-8 max-w-main mx-auto w-full animate-page-enter">
 
                 {/* ========== BREADCRUMB ========== */}
                 <nav aria-label="Breadcrumb" className="mb-4">
-                    <ol className="flex items-center flex-wrap gap-2 text-sm text-slate-500">
+                    <ol className="flex items-center flex-wrap gap-2 text-sm text-text-muted">
                         <li className="flex items-center gap-2">
-                            <Link className="flex items-center gap-1 hover:text-blue-600 transition-colors" href="/">
+                            <Link className="flex items-center gap-1 hover:text-cop-blue transition-colors" href="/">
                                 <Home size={14} />
                                 <span>Inicio</span>
                             </Link>
                             <ChevronRight size={14} className="text-slate-300" />
                         </li>
                         <li className="flex items-center gap-2">
-                            <span className="flex items-center gap-1 font-medium text-slate-900">
+                            <span className="flex items-center gap-1 font-medium text-text-elite">
                                 <Settings size={14} />
                                 <span>Admin</span>
                             </span>
@@ -197,17 +197,17 @@ export default function AdminPage() {
                 {/* ========== HEADER CON ACCIONES ========== */}
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 my-10">
                     <div>
-                        <h1 className="text-4xl font-bold text-[#1E3A8A] tracking-tight">Panel de Administración</h1>
-                        <p className="text-slate-500 mt-2 text-lg font-light">Gestiona eventos, inscripciones y configuraciones del sistema.</p>
+                        <h1 className="text-4xl font-bold text-text-elite tracking-tight">Panel de Administración</h1>
+                        <p className="text-text-secondary mt-2 text-lg font-light">Gestiona eventos, inscripciones y configuraciones del sistema.</p>
                     </div>
                     <div className="flex items-center gap-3">
                         {/* Botón exportar (Placeholder) */}
-                        <button className="inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-600 px-5 py-3 rounded-lg border border-slate-300 shadow-sm hover:shadow-md transition-all font-semibold active:scale-95 text-sm"
+                        <button className="btn btn-secondary shadow-elite-sm hover:shadow-elite-md active:scale-95"
                             title="Exportar eventos" onClick={() => showToast('Funcionalidad de exportación en desarrollo', 'info')}>
                             <Download size={18} />
                             Exportar
                         </button>
-                        <Link className="inline-flex items-center gap-2 bg-[#D91E18] hover:bg-[#b91c1b] text-white px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all font-semibold active:scale-95"
+                        <Link className="btn btn-primary shadow-btn-red hover:shadow-btn-red-hover active:scale-95"
                             href="/admin/eventos/nuevo">
                             <Plus size={20} />
                             Nuevo Evento
@@ -216,107 +216,107 @@ export default function AdminPage() {
                 </div>
 
                 {/* ========== KPI CARDS ========== */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8 stagger-children">
                     {/* KPI: Total Eventos */}
-                    <div className="bg-white p-5 rounded-xl border border-slate-300 shadow-sm">
+                    <div className="admin-stat-card">
                         <div className="flex items-center justify-between mb-3">
-                            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Eventos</span>
+                            <span className="admin-stat-label">Eventos</span>
                             <div className="p-2 bg-blue-50 rounded-lg">
-                                <Calendar size={16} className="text-[#1E3A8A]" />
+                                <Calendar size={16} className="text-cop-blue" />
                             </div>
                         </div>
-                        <p className="text-3xl font-bold text-[#1E3A8A]">{kpiTotal}</p>
-                        <p className="text-xs text-slate-400 mt-1">Total programados</p>
+                        <p className="admin-stat-value">{kpiTotal}</p>
+                        <p className="text-xs text-text-muted mt-1">Total programados</p>
                     </div>
 
                     {/* KPI: Inscripciones */}
-                    <div className="bg-white p-5 rounded-xl border border-slate-300 shadow-sm">
+                    <div className="admin-stat-card">
                         <div className="flex items-center justify-between mb-3">
-                            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Inscripciones</span>
+                            <span className="admin-stat-label">Inscripciones</span>
                             <div className="p-2 bg-green-50 rounded-lg">
-                                <Users size={16} className="text-green-600" />
+                                <Users size={16} className="text-status-success" />
                             </div>
                         </div>
-                        <p className="text-3xl font-bold text-[#1E3A8A]">{kpiInscripciones}</p>
+                        <p className="admin-stat-value">{kpiInscripciones}</p>
                         <div className="flex items-center gap-1 mt-1">
                             {/* Dummy indicator */}
-                            <span className="text-xs text-green-500 font-medium">+3 esta semana</span>
+                            <span className="text-xs text-status-success font-medium">+3 esta semana</span>
                         </div>
                     </div>
 
                     {/* KPI: Próximo Evento */}
-                    <div className="bg-white p-5 rounded-xl border border-slate-300 shadow-sm">
+                    <div className="admin-stat-card">
                         <div className="flex items-center justify-between mb-3">
-                            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Próximo</span>
+                            <span className="admin-stat-label">Próximo</span>
                             <div className="p-2 bg-amber-50 rounded-lg">
-                                <Calendar size={16} className="text-amber-600" />
+                                <Calendar size={16} className="text-status-warning" />
                             </div>
                         </div>
                         {nextEvent ? (
                             <>
-                                <p className="text-lg font-bold text-[#1E3A8A] leading-tight">
+                                <p className="text-lg font-bold text-text-elite leading-tight">
                                     {new Date(nextEvent.fecha + 'T12:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })}
                                 </p>
-                                <p className="text-xs text-slate-400 mt-1 truncate" title={nextEvent.titulo}>{nextEvent.titulo}</p>
+                                <p className="text-xs text-text-muted mt-1 truncate" title={nextEvent.titulo}>{nextEvent.titulo}</p>
                             </>
                         ) : (
                             <>
                                 <p className="text-lg font-bold text-slate-300 leading-tight">--</p>
-                                <p className="text-xs text-slate-400 mt-1">Sin eventos futuros</p>
+                                <p className="text-xs text-text-muted mt-1">Sin eventos futuros</p>
                             </>
                         )}
                     </div>
 
                     {/* KPI: Modalidades Activas */}
-                    <div className="bg-white p-5 rounded-xl border border-slate-300 shadow-sm">
+                    <div className="admin-stat-card">
                         <div className="flex items-center justify-between mb-3">
-                            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Modalidades</span>
+                            <span className="admin-stat-label">Modalidades</span>
                             <div className="p-2 bg-purple-50 rounded-lg">
                                 <ClipboardList size={16} className="text-purple-600" />
                             </div>
                         </div>
-                        <p className="text-3xl font-bold text-[#1E3A8A]">{kpiModalidadesCount}</p>
-                        <p className="text-xs text-slate-400 mt-1">Tipos utilizados</p>
+                        <p className="admin-stat-value">{kpiModalidadesCount}</p>
+                        <p className="text-xs text-text-muted mt-1">Tipos utilizados</p>
                     </div>
                 </div>
 
                 {/* ========== CARDS: INSCRIPCIONES + CONFIGURACIÓN ========== */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-                    <Link className="group bg-white p-6 rounded-xl border border-slate-300 shadow-sm hover:shadow-md transition-all flex items-center gap-5 hover:border-blue-200"
+                    <Link className="group bg-surface p-6 rounded-xl border border-border-elite shadow-elite-sm hover:shadow-elite-md transition-all flex items-center gap-5 hover:border-cop-blue/30"
                         href="/admin/inscripciones">
-                        <div className="p-4 bg-green-50 text-green-700 rounded-xl group-hover:scale-110 transition-transform">
+                        <div className="p-4 bg-green-50 text-status-success rounded-xl group-hover:scale-110 transition-transform">
                             <Users size={32} strokeWidth={1.5} />
                         </div>
                         <div>
-                            <h3 className="font-bold text-[#1E3A8A] text-xl">Inscripciones</h3>
-                            <p className="text-slate-400 text-sm mt-1">Ver lista de tiradores</p>
+                            <h3 className="font-bold text-text-elite text-xl">Inscripciones</h3>
+                            <p className="text-text-muted text-sm mt-1">Ver lista de tiradores</p>
                         </div>
                         {/* Badge con contador */}
-                        <span className="ml-auto bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">{kpiInscripciones}</span>
+                        <span className="ml-auto bg-status-success-bg text-status-success-text text-xs font-bold px-2.5 py-1 rounded-full">{kpiInscripciones}</span>
                     </Link>
 
-                    <div className="bg-white p-6 rounded-xl border border-slate-300 shadow-sm col-span-1 md:col-span-2 lg:col-span-2">
-                        <h3 className="font-bold text-[#1E3A8A] text-xl mb-6 flex items-center gap-3">
-                            <Settings size={22} className="text-slate-400" strokeWidth={1.5} />
+                    <div className="bg-surface p-6 rounded-xl border border-border-elite shadow-elite-sm col-span-1 md:col-span-2 lg:col-span-2">
+                        <h3 className="font-bold text-text-elite text-xl mb-6 flex items-center gap-3">
+                            <Settings size={22} className="text-text-muted" strokeWidth={1.5} />
                             Configuración
                         </h3>
                         <div className="flex flex-wrap gap-4">
-                            <Link className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#F9FBFF] hover:bg-slate-100 text-slate-600 rounded-lg border border-slate-300 transition-colors font-medium text-sm hover:border-gray-300"
+                            <Link className="inline-flex items-center gap-2 px-5 py-2.5 bg-bg-elite hover:bg-slate-100 text-text-secondary rounded-lg border border-border-elite transition-colors font-medium text-sm hover:border-border-hover"
                                 href="/admin/modalidades">
                                 <ClipboardList size={18} strokeWidth={1.5} />
                                 Modalidades
                             </Link>
-                            <Link className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#F9FBFF] hover:bg-slate-100 text-slate-600 rounded-lg border border-slate-300 transition-colors font-medium text-sm hover:border-gray-300"
+                            <Link className="inline-flex items-center gap-2 px-5 py-2.5 bg-bg-elite hover:bg-slate-100 text-text-secondary rounded-lg border border-border-elite transition-colors font-medium text-sm hover:border-border-hover"
                                 href="/admin/tipos-evento">
                                 <Filter size={18} strokeWidth={1.5} />
                                 Tipos
                             </Link>
-                            <Link className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#F9FBFF] hover:bg-slate-100 text-slate-600 rounded-lg border border-slate-300 transition-colors font-medium text-sm hover:border-gray-300"
+                            <Link className="inline-flex items-center gap-2 px-5 py-2.5 bg-bg-elite hover:bg-slate-100 text-text-secondary rounded-lg border border-border-elite transition-colors font-medium text-sm hover:border-border-hover"
                                 href="/admin/reglamentos">
                                 <BookOpen size={18} strokeWidth={1.5} />
                                 Reglamentos
                             </Link>
-                            <Link className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#F9FBFF] hover:bg-slate-100 text-slate-600 rounded-lg border border-slate-300 transition-colors font-medium text-sm hover:border-gray-300"
+                            <Link className="inline-flex items-center gap-2 px-5 py-2.5 bg-bg-elite hover:bg-slate-100 text-text-secondary rounded-lg border border-border-elite transition-colors font-medium text-sm hover:border-border-hover"
                                 href="/admin/categorias">
                                 <ClipboardList size={18} strokeWidth={1.5} />
                                 Categorías
@@ -326,28 +326,28 @@ export default function AdminPage() {
                 </div>
 
                 {/* ========== TABLA DE EVENTOS ========== */}
-                <div className="bg-white rounded-xl shadow-sm border border-slate-300 overflow-hidden">
+                <div className="bg-surface rounded-xl shadow-elite-sm border border-border-elite overflow-hidden">
 
                     {/* Header de tabla con búsqueda + Filtros */}
-                    <div className="p-6 border-b border-slate-300 bg-[#F9FBFF]/50">
+                    <div className="p-6 border-b border-border-elite bg-bg-elite/50">
                         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
                             <div className="flex items-center gap-4">
-                                <div className="p-2.5 bg-white rounded-lg border border-slate-300 shadow-sm">
-                                    <Calendar size={22} className="text-[#1E3A8A]" />
+                                <div className="p-2.5 bg-surface rounded-lg border border-border-elite shadow-elite-xs">
+                                    <Calendar size={22} className="text-cop-blue" />
                                 </div>
                                 <div>
-                                    <h3 className="font-bold text-[#1E3A8A] text-lg">Eventos Programados</h3>
-                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 mt-1">
+                                    <h3 className="font-bold text-text-elite text-lg">Eventos Programados</h3>
+                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-cop-blue mt-1">
                                         {eventos.length} total
                                     </span>
                                 </div>
                             </div>
                             <div className="relative w-full sm:w-auto group">
-                                <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-hover:text-[#1E3A8A] transition-colors z-10" />
+                                <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted group-hover:text-cop-blue transition-colors z-10" />
                                 <input placeholder="Buscar eventos..."
                                     id="search-events"
                                     name="search"
-                                    className="pl-10 pr-4 py-2.5 w-full sm:w-72 rounded-lg border border-slate-300 bg-white shadow-sm focus:border-[#1E3A8A] focus:ring-1 focus:ring-[#1E3A8A] text-sm transition-all outline-none"
+                                    className="pl-10 pr-4 py-2.5 w-full sm:w-72 rounded-lg border border-border-elite bg-surface shadow-elite-xs focus:border-cop-blue focus:ring-1 focus:ring-cop-blue text-sm transition-all outline-none"
                                     type="text"
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
@@ -358,7 +358,7 @@ export default function AdminPage() {
 
                         {/* Filtros avanzados */}
                         <div className="flex flex-wrap items-center gap-3 pt-3 border-t border-slate-100">
-                            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider mr-1">Filtros:</span>
+                            <span className="text-xs font-semibold text-text-muted uppercase tracking-wider mr-1">Filtros:</span>
 
                             {/* Filtro por estado */}
                             <select
@@ -366,7 +366,7 @@ export default function AdminPage() {
                                 name="estado"
                                 value={filterEstado}
                                 onChange={(e) => setFilterEstado(e.target.value)}
-                                className="px-3 py-1.5 rounded-lg border border-slate-300 bg-white text-xs text-slate-600 font-medium focus:border-[#1E3A8A] focus:ring-1 focus:ring-[#1E3A8A] outline-none cursor-pointer"
+                                className="px-3 py-1.5 rounded-lg border border-border-elite bg-surface text-xs text-text-secondary font-medium focus:border-cop-blue focus:ring-1 focus:ring-cop-blue outline-none cursor-pointer"
                             >
                                 <option value="">Estado (Todos)</option>
                                 <option value="activo">🟢 Activo</option>
@@ -379,7 +379,7 @@ export default function AdminPage() {
                                 name="modalidad"
                                 value={filterModalidad}
                                 onChange={(e) => setFilterModalidad(e.target.value)}
-                                className="px-3 py-1.5 rounded-lg border border-slate-300 bg-white text-xs text-slate-600 font-medium focus:border-[#1E3A8A] focus:ring-1 focus:ring-[#1E3A8A] outline-none cursor-pointer"
+                                className="px-3 py-1.5 rounded-lg border border-border-elite bg-surface text-xs text-text-secondary font-medium focus:border-cop-blue focus:ring-1 focus:ring-cop-blue outline-none cursor-pointer"
                             >
                                 <option value="">Modalidad (Todas)</option>
                                 {uniqueModalidades.map(m => <option key={m} value={m}>{m}</option>)}
@@ -391,7 +391,7 @@ export default function AdminPage() {
                                 name="tipo"
                                 value={filterTipo}
                                 onChange={(e) => setFilterTipo(e.target.value)}
-                                className="px-3 py-1.5 rounded-lg border border-slate-300 bg-white text-xs text-slate-600 font-medium focus:border-[#1E3A8A] focus:ring-1 focus:ring-[#1E3A8A] outline-none cursor-pointer"
+                                className="px-3 py-1.5 rounded-lg border border-border-elite bg-surface text-xs text-text-secondary font-medium focus:border-cop-blue focus:ring-1 focus:ring-cop-blue outline-none cursor-pointer"
                             >
                                 <option value="">Tipo (Todos)</option>
                                 {uniqueTipos.map(t => <option key={t} value={t}>{t}</option>)}
@@ -406,7 +406,7 @@ export default function AdminPage() {
                                         setFilterModalidad('');
                                         setFilterTipo('');
                                     }}
-                                    className="px-3 py-1.5 text-xs text-slate-400 hover:text-[#D91E18] font-medium transition-colors flex items-center gap-1"
+                                    className="px-3 py-1.5 text-xs text-text-muted hover:text-fpt-red font-medium transition-colors flex items-center gap-1"
                                     title="Limpiar filtros"
                                 >
                                     <Trash2 size={12} />
@@ -418,25 +418,25 @@ export default function AdminPage() {
 
                     {/* Tabla */}
                     <div className="overflow-x-auto">
-                        <table className="w-full text-sm text-left">
-                            <thead className="text-xs text-slate-500 uppercase bg-[#F9FBFF] border-b border-slate-300">
+                        <table className="admin-table">
+                            <thead>
                                 <tr>
                                     <th className="px-4 py-4 w-12">
-                                        <input type="checkbox" className="rounded border-slate-300 text-[#1E3A8A] focus:ring-[#1E3A8A] cursor-pointer" />
+                                        <input type="checkbox" className="admin-checkbox" />
                                     </th>
-                                    <th className="px-6 py-4 font-semibold tracking-wider">Fecha</th>
-                                    <th className="px-6 py-4 font-semibold tracking-wider">Título</th>
-                                    <th className="px-6 py-4 font-semibold tracking-wider">Estado</th>
-                                    <th className="px-6 py-4 font-semibold tracking-wider">Modalidad</th>
-                                    <th className="px-6 py-4 font-semibold tracking-wider">Tipo</th>
-                                    <th className="px-6 py-4 font-semibold tracking-wider text-center">Inscritos</th>
-                                    <th className="px-6 py-4 font-semibold tracking-wider text-right">Acciones</th>
+                                    <th className="sortable">Fecha</th>
+                                    <th className="sortable">Título</th>
+                                    <th>Estado</th>
+                                    <th>Modalidad</th>
+                                    <th>Tipo</th>
+                                    <th className="text-center">Inscritos</th>
+                                    <th className="text-right">Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-slate-200">
+                            <tbody>
                                 {paginatedEventos.length === 0 ? (
                                     <tr>
-                                        <td colSpan={8} className="px-6 py-12 text-center text-slate-400">
+                                        <td colSpan={8} className="px-6 py-12 text-center text-text-muted">
                                             No se encontraron eventos con estos filtros.
                                         </td>
                                     </tr>
@@ -447,13 +447,13 @@ export default function AdminPage() {
                                         const isNext = nextEvent?.id === evento.id;
 
                                         return (
-                                            <tr key={evento.id} className="hover:bg-[#F9FBFF] transition-colors group">
+                                            <tr key={evento.id} className="group">
                                                 <td className="px-4 py-5">
-                                                    <input type="checkbox" className="rounded border-slate-300 text-[#1E3A8A] focus:ring-[#1E3A8A] cursor-pointer" />
+                                                    <input type="checkbox" className="admin-checkbox" />
                                                 </td>
                                                 <td className="px-6 py-5 whitespace-nowrap">
                                                     <div className="flex flex-col">
-                                                        <span className="text-slate-700 font-medium">
+                                                        <span className="text-text-secondary font-medium">
                                                             {fecha.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })}
                                                         </span>
                                                         {isNext && (
@@ -465,19 +465,19 @@ export default function AdminPage() {
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-5">
-                                                    <Link href={`/admin/eventos/${evento.id}/editar`} className="font-semibold text-[#1E3A8A] text-base hover:underline">
+                                                    <Link href={`/admin/eventos/${evento.id}/editar`} className="font-semibold text-text-elite text-base hover:text-cop-blue transition-colors">
                                                         {evento.titulo}
                                                     </Link>
                                                 </td>
                                                 <td className="px-6 py-5">
                                                     {status === 'activo' ? (
-                                                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-100">
-                                                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                                        <span className="status-badge status-active">
+                                                            <span className="status-dot"></span>
                                                             Activo
                                                         </span>
                                                     ) : (
-                                                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 border border-slate-300">
-                                                            <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                                                        <span className="status-badge status-closed">
+                                                            <span className="status-dot"></span>
                                                             Finalizado
                                                         </span>
                                                     )}
@@ -504,18 +504,18 @@ export default function AdminPage() {
                                                     </span>
                                                 </td>
                                                 <td className="px-6 py-5 text-center">
-                                                    <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-50 text-[#1E3A8A] font-bold text-xs border border-blue-100">
+                                                    <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-50 text-cop-blue font-bold text-xs border border-blue-100">
                                                         {evento.inscripciones?.[0]?.count || 0}
                                                     </span>
                                                 </td>
                                                 <td className="px-6 py-5 text-right">
-                                                    <div className="flex justify-end gap-1 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-                                                        <Link href={`/admin/eventos/${evento.id}/editar`} className="p-2 text-slate-400 hover:text-[#1E3A8A] hover:bg-blue-50 rounded-lg transition-all" title="Editar">
+                                                    <div className="admin-actions justify-end">
+                                                        <Link href={`/admin/eventos/${evento.id}/editar`} className="btn-icon" title="Editar">
                                                             <Edit size={18} />
                                                         </Link>
                                                         <button
                                                             onClick={() => handleDelete(evento.id)}
-                                                            className="p-2 text-slate-400 hover:text-[#D91E18] hover:bg-red-50 rounded-lg transition-all"
+                                                            className="btn-icon danger"
                                                             title="Eliminar"
                                                         >
                                                             <Trash2 size={18} />
@@ -531,7 +531,7 @@ export default function AdminPage() {
                     </div>
 
                     {/* Paginación */}
-                    <div className="px-6 py-4 border-t border-slate-300 bg-[#F9FBFF]/50">
+                    <div className="px-6 py-4 border-t border-border-elite bg-bg-elite/50">
                         <Pagination
                             currentPage={currentPage}
                             totalPages={totalPages}
