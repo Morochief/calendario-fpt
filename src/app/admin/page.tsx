@@ -350,19 +350,28 @@ export default function AdminPage() {
                 </div>
 
                 {/* ========== TABLA DE EVENTOS ========== */}
-                <div className="bg-surface rounded-2xl shadow-sm border border-border-elite overflow-hidden">
+                {/* ========== TABLA DE EVENTOS ========== */}
+                <div className="bg-surface rounded-[16px] border border-[rgba(30,58,138,0.08)] shadow-[0_4px_6px_-1px_rgba(0,0,0,0.02),0_2px_4px_-1px_rgba(0,0,0,0.02)] relative overflow-hidden animate-fade-in-up group" style={{ animationDelay: '0.2s' }}>
+
+                    {/* Decorative Top Bar */}
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cop-blue via-blue-500 to-cop-blue opacity-80"></div>
 
                     {/* Header de tabla con búsqueda + Filtros */}
-                    <div className="p-6 border-b border-border-elite bg-slate-50/50 backdrop-blur-sm">
+                    <div className="p-6 border-b border-border-elite bg-white/50 backdrop-blur-sm">
                         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 mb-5">
                             <div className="flex items-center gap-4">
-                                <div className="p-3 bg-white rounded-xl border border-border-elite shadow-sm">
-                                    <Calendar size={24} className="text-cop-blue" />
+                                <div className="p-3 bg-slate-50 rounded-xl border border-slate-100 shadow-sm group-hover:bg-blue-50 group-hover:border-blue-100 transition-all duration-300">
+                                    <Calendar size={24} className="text-slate-400 group-hover:text-cop-blue transition-colors duration-300" strokeWidth={2} />
                                 </div>
                                 <div>
-                                    <h3 className="font-bold text-text-elite text-xl tracking-tight">Eventos Programados</h3>
+                                    <h3 className="font-bold text-text-elite text-xl tracking-tight flex items-center gap-2">
+                                        Eventos Programados
+                                    </h3>
                                     <span className="inline-flex items-center gap-1.5 mt-1">
-                                        <span className="w-2 h-2 rounded-full bg-cop-blue"></span>
+                                        <span className="relative flex h-2 w-2">
+                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cop-blue opacity-75"></span>
+                                            <span className="relative inline-flex rounded-full h-2 w-2 bg-cop-blue"></span>
+                                        </span>
                                         <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">{eventos.length} total</span>
                                     </span>
                                 </div>
