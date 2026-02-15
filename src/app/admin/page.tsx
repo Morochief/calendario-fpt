@@ -21,7 +21,8 @@ import {
     Loader2,
     Download,
     ChevronRight,
-    Home
+    Home,
+    ChevronDown
 } from 'lucide-react';
 
 import { createClient } from '@/lib/supabase';
@@ -377,62 +378,64 @@ export default function AdminPage() {
                                 </div>
                             </div>
                             <div className="relative w-full sm:w-auto group">
-                                <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted group-hover:text-cop-blue transition-colors z-10" />
+                                <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted group-hover:text-cop-blue transition-colors duration-300 z-10" />
                                 <input placeholder="Buscar eventos..."
                                     id="search-events"
                                     name="search"
-                                    className="pl-10 pr-4 py-3 w-full sm:w-80 rounded-xl border border-border-elite bg-white shadow-sm focus:border-cop-blue focus:ring-2 focus:ring-cop-blue/10 text-sm transition-all outline-none font-medium"
+                                    className="pl-10 pr-4 py-3 w-full sm:w-80 rounded-xl border border-slate-200 bg-slate-50 shadow-sm focus:border-cop-blue focus:ring-4 focus:ring-cop-blue/10 focus:bg-white hover:border-cop-blue/50 hover:bg-white text-sm transition-all duration-300 outline-none font-medium text-text-elite placeholder:text-text-muted/70"
                                     type="text"
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
-                                    style={{ paddingLeft: '2.5rem' }}
                                 />
                             </div>
                         </div>
 
                         {/* Filtros avanzados */}
-                        <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-slate-200/60">
-                            <span className="text-xs font-bold text-text-muted uppercase tracking-wider mr-2 flex items-center gap-1">
+                        <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-slate-100">
+                            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mr-2 flex items-center gap-1.5 bg-slate-50 px-2 py-1 rounded-md border border-slate-100">
                                 <Filter size={12} />
                                 Filtros:
                             </span>
 
                             {/* Filtro por estado */}
-                            <select
-                                id="filter-estado"
-                                name="estado"
-                                value={filterEstado}
-                                onChange={(e) => setFilterEstado(e.target.value)}
-                                className="px-4 py-2 rounded-lg border border-border-elite bg-white text-xs text-text-secondary font-semibold focus:border-cop-blue focus:ring-2 focus:ring-cop-blue/10 outline-none cursor-pointer shadow-sm hover:border-gray-300 transition-colors"
-                            >
-                                <option value="">Estado (Todos)</option>
-                                <option value="activo">🟢 Activo</option>
-                                <option value="finalizado">⚫ Finalizado</option>
-                            </select>
+                            <div className="relative group/select">
+                                <select
+                                    className="pl-3 pr-8 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-text-secondary focus:outline-none focus:border-cop-blue focus:ring-2 focus:ring-cop-blue/10 hover:border-cop-blue/50 hover:shadow-md transition-all duration-200 appearance-none cursor-pointer min-w-[140px]"
+                                    value={filterEstado}
+                                    onChange={(e) => setFilterEstado(e.target.value)}
+                                >
+                                    <option value="">Estado (Todos)</option>
+                                    <option value="activo">🟢 Activo</option>
+                                    <option value="finalizado">⚫ Finalizado</option>
+                                </select>
+                                <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 group-hover/select:text-cop-blue transition-colors pointer-events-none" size={14} />
+                            </div>
 
                             {/* Filtro por modalidad */}
-                            <select
-                                id="filter-modalidad"
-                                name="modalidad"
-                                value={filterModalidad}
-                                onChange={(e) => setFilterModalidad(e.target.value)}
-                                className="px-4 py-2 rounded-lg border border-border-elite bg-white text-xs text-text-secondary font-semibold focus:border-cop-blue focus:ring-2 focus:ring-cop-blue/10 outline-none cursor-pointer shadow-sm hover:border-gray-300 transition-colors"
-                            >
-                                <option value="">Modalidad (Todas)</option>
-                                {uniqueModalidades.map(m => <option key={m} value={m}>{m}</option>)}
-                            </select>
+                            <div className="relative group/select">
+                                <select
+                                    className="pl-3 pr-8 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-text-secondary focus:outline-none focus:border-cop-blue focus:ring-2 focus:ring-cop-blue/10 hover:border-cop-blue/50 hover:shadow-md transition-all duration-200 appearance-none cursor-pointer min-w-[140px]"
+                                    value={filterModalidad}
+                                    onChange={(e) => setFilterModalidad(e.target.value)}
+                                >
+                                    <option value="">Modalidad (Todas)</option>
+                                    {uniqueModalidades.map(m => <option key={m} value={m}>{m}</option>)}
+                                </select>
+                                <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 group-hover/select:text-cop-blue transition-colors pointer-events-none" size={14} />
+                            </div>
 
                             {/* Filtro por tipo */}
-                            <select
-                                id="filter-tipo"
-                                name="tipo"
-                                value={filterTipo}
-                                onChange={(e) => setFilterTipo(e.target.value)}
-                                className="px-4 py-2 rounded-lg border border-border-elite bg-white text-xs text-text-secondary font-semibold focus:border-cop-blue focus:ring-2 focus:ring-cop-blue/10 outline-none cursor-pointer shadow-sm hover:border-gray-300 transition-colors"
-                            >
-                                <option value="">Tipo (Todos)</option>
-                                {uniqueTipos.map(t => <option key={t} value={t}>{t}</option>)}
-                            </select>
+                            <div className="relative group/select">
+                                <select
+                                    className="pl-3 pr-8 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-text-secondary focus:outline-none focus:border-cop-blue focus:ring-2 focus:ring-cop-blue/10 hover:border-cop-blue/50 hover:shadow-md transition-all duration-200 appearance-none cursor-pointer min-w-[140px]"
+                                    value={filterTipo}
+                                    onChange={(e) => setFilterTipo(e.target.value)}
+                                >
+                                    <option value="">Tipo (Todos)</option>
+                                    {uniqueTipos.map(t => <option key={t} value={t}>{t}</option>)}
+                                </select>
+                                <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 group-hover/select:text-cop-blue transition-colors pointer-events-none" size={14} />
+                            </div>
 
                             {/* Botón limpiar filtros */}
                             {(filterEstado || filterModalidad || filterTipo || searchTerm) && (
