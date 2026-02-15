@@ -382,7 +382,7 @@ export default function AdminPage() {
                                 <input placeholder="Buscar eventos..."
                                     id="search-events"
                                     name="search"
-                                    className="pl-12 pr-4 py-3 w-full sm:w-80 rounded-xl border border-slate-200 bg-white shadow-sm focus:border-cop-blue focus:ring-4 focus:ring-cop-blue/10 hover:border-cop-blue/50 hover:shadow-md text-sm transition-all duration-300 outline-none font-medium text-text-elite placeholder:text-slate-400"
+                                    className="pl-14 pr-4 py-3 w-full sm:w-80 rounded-xl border border-slate-200 bg-white shadow-sm focus:border-cop-blue focus:ring-4 focus:ring-cop-blue/10 hover:border-cop-blue/50 hover:shadow-md text-sm transition-all duration-300 outline-none font-medium text-text-elite placeholder:text-slate-400"
                                     type="text"
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
