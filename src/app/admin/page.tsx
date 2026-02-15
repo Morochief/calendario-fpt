@@ -316,34 +316,34 @@ export default function AdminPage() {
                             </div>
                             Configuración
                         </h3>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 relative z-10 w-full">
-                            <Link className="flex items-center gap-3 px-5 py-4 bg-white hover:bg-white text-text-secondary rounded-xl border border-slate-200 transition-all duration-200 font-semibold text-sm hover:border-cop-blue hover:shadow-lg hover:-translate-y-1 active:scale-95 group/link"
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 relative z-10 w-full">
+                            <Link className="flex flex-col items-center justify-center gap-3 p-4 bg-white hover:bg-white text-text-secondary rounded-xl border border-slate-200 transition-all duration-200 font-semibold text-sm hover:border-cop-blue hover:shadow-lg hover:-translate-y-1 active:scale-95 group/link h-full"
                                 href="/admin/modalidades">
-                                <div className="p-2 bg-slate-50 rounded-lg group-hover/link:bg-blue-50 transition-colors">
-                                    <ClipboardList size={20} className="text-slate-400 group-hover/link:text-cop-blue transition-colors" />
+                                <div className="p-3 bg-slate-50 rounded-full group-hover/link:bg-blue-50 transition-colors">
+                                    <ClipboardList size={24} className="text-slate-400 group-hover/link:text-cop-blue transition-colors" />
                                 </div>
-                                <span className="group-hover/link:text-cop-blue transition-colors">Modalidades</span>
+                                <span className="group-hover/link:text-cop-blue transition-colors text-center">Modalidades</span>
                             </Link>
-                            <Link className="flex items-center gap-3 px-5 py-4 bg-white hover:bg-white text-text-secondary rounded-xl border border-slate-200 transition-all duration-200 font-semibold text-sm hover:border-cop-blue hover:shadow-lg hover:-translate-y-1 active:scale-95 group/link"
+                            <Link className="flex flex-col items-center justify-center gap-3 p-4 bg-white hover:bg-white text-text-secondary rounded-xl border border-slate-200 transition-all duration-200 font-semibold text-sm hover:border-cop-blue hover:shadow-lg hover:-translate-y-1 active:scale-95 group/link h-full"
                                 href="/admin/tipos-evento">
-                                <div className="p-2 bg-slate-50 rounded-lg group-hover/link:bg-blue-50 transition-colors">
-                                    <Filter size={20} className="text-slate-400 group-hover/link:text-cop-blue transition-colors" />
+                                <div className="p-3 bg-slate-50 rounded-full group-hover/link:bg-blue-50 transition-colors">
+                                    <Filter size={24} className="text-slate-400 group-hover/link:text-cop-blue transition-colors" />
                                 </div>
-                                <span className="group-hover/link:text-cop-blue transition-colors">Tipos de Evento</span>
+                                <span className="group-hover/link:text-cop-blue transition-colors text-center">Tipos de Evento</span>
                             </Link>
-                            <Link className="flex items-center gap-3 px-5 py-4 bg-white hover:bg-white text-text-secondary rounded-xl border border-slate-200 transition-all duration-200 font-semibold text-sm hover:border-cop-blue hover:shadow-lg hover:-translate-y-1 active:scale-95 group/link"
+                            <Link className="flex flex-col items-center justify-center gap-3 p-4 bg-white hover:bg-white text-text-secondary rounded-xl border border-slate-200 transition-all duration-200 font-semibold text-sm hover:border-cop-blue hover:shadow-lg hover:-translate-y-1 active:scale-95 group/link h-full"
                                 href="/admin/reglamentos">
-                                <div className="p-2 bg-slate-50 rounded-lg group-hover/link:bg-blue-50 transition-colors">
-                                    <BookOpen size={20} className="text-slate-400 group-hover/link:text-cop-blue transition-colors" />
+                                <div className="p-3 bg-slate-50 rounded-full group-hover/link:bg-blue-50 transition-colors">
+                                    <BookOpen size={24} className="text-slate-400 group-hover/link:text-cop-blue transition-colors" />
                                 </div>
-                                <span className="group-hover/link:text-cop-blue transition-colors">Reglamentos</span>
+                                <span className="group-hover/link:text-cop-blue transition-colors text-center">Reglamentos</span>
                             </Link>
-                            <Link className="flex items-center gap-3 px-5 py-4 bg-white hover:bg-white text-text-secondary rounded-xl border border-slate-200 transition-all duration-200 font-semibold text-sm hover:border-cop-blue hover:shadow-lg hover:-translate-y-1 active:scale-95 group/link"
+                            <Link className="flex flex-col items-center justify-center gap-3 p-4 bg-white hover:bg-white text-text-secondary rounded-xl border border-slate-200 transition-all duration-200 font-semibold text-sm hover:border-cop-blue hover:shadow-lg hover:-translate-y-1 active:scale-95 group/link h-full"
                                 href="/admin/categorias">
-                                <div className="p-2 bg-slate-50 rounded-lg group-hover/link:bg-blue-50 transition-colors">
-                                    <ClipboardList size={20} className="text-slate-400 group-hover/link:text-cop-blue transition-colors" />
+                                <div className="p-3 bg-slate-50 rounded-full group-hover/link:bg-blue-50 transition-colors">
+                                    <ClipboardList size={24} className="text-slate-400 group-hover/link:text-cop-blue transition-colors" />
                                 </div>
-                                <span className="group-hover/link:text-cop-blue transition-colors">Categorías</span>
+                                <span className="group-hover/link:text-cop-blue transition-colors text-center">Categorías</span>
                             </Link>
                         </div>
                     </div>
