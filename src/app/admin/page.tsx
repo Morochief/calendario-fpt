@@ -284,6 +284,9 @@ export default function AdminPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
                     <Link className="group bg-surface p-8 rounded-2xl border border-border-elite shadow-sm hover:shadow-xl transition-all duration-300 flex items-center gap-6 hover:border-green-500/50 relative overflow-hidden"
                         href="/admin/inscripciones">
+                        {/* Hover Bar Effect */}
+                        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 to-green-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out origin-left"></div>
+
                         <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity transform translate-x-8 -translate-y-8 pointer-events-none">
                             <Users size={150} className="text-green-600" />
                         </div>
