@@ -282,7 +282,8 @@ export default function AdminPage() {
 
                 {/* ========== CARDS: INSCRIPCIONES + CONFIGURACIÓN ========== */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-                    <Link className="group bg-surface p-8 rounded-2xl border border-border-elite shadow-sm hover:shadow-xl transition-all duration-300 flex items-center gap-6 hover:border-green-500/50 relative overflow-hidden"
+                    <Link className="group bg-surface p-6 rounded-[16px] border border-[rgba(30,58,138,0.08)] shadow-[0_4px_6px_-1px_rgba(0,0,0,0.02),0_2px_4px_-1px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_25px_-5px_rgba(30,58,138,0.08),0_10px_10px_-5px_rgba(30,58,138,0.03)] hover:border-green-500/50 hover:-translate-y-1 transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] flex items-center gap-6 relative overflow-hidden h-full"
+                        style={{ borderRadius: 'var(--radius-lg)' }}
                         href="/admin/inscripciones">
                         {/* Hover Bar Effect */}
                         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 to-green-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out origin-left"></div>
