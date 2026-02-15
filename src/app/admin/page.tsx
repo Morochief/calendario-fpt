@@ -282,20 +282,20 @@ export default function AdminPage() {
 
                 {/* ========== CARDS: INSCRIPCIONES + CONFIGURACIÓN ========== */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-                    <Link className="group bg-surface p-8 rounded-2xl border border-border-elite shadow-sm hover:shadow-xl transition-all duration-300 flex items-center gap-6 hover:border-cop-blue/30 relative overflow-hidden"
+                    <Link className="group bg-surface p-8 rounded-2xl border border-border-elite shadow-sm hover:shadow-xl transition-all duration-300 flex items-center gap-6 hover:border-status-success/30 relative overflow-hidden"
                         href="/admin/inscripciones">
-                        <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity transform translate-x-4 -translate-y-4">
-                            <Users size={120} />
+                        <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity transform translate-x-8 -translate-y-8 pointer-events-none">
+                            <Users size={150} />
                         </div>
-                        <div className="p-5 bg-green-50 text-status-success rounded-2xl group-hover:scale-110 transition-transform shadow-sm">
+                        <div className="p-4 bg-green-50 text-status-success rounded-xl group-hover:scale-110 transition-transform shadow-sm relative z-10">
                             <Users size={32} strokeWidth={2} />
                         </div>
                         <div className="z-10">
-                            <h3 className="font-bold text-text-elite text-xl">Inscripciones</h3>
-                            <p className="text-text-muted text-sm mt-1 font-medium">Ver lista de tiradores</p>
+                            <h3 className="font-bold text-text-elite text-xl group-hover:text-status-success transition-colors">Inscripciones</h3>
+                            <p className="text-text-muted text-sm mt-1 font-medium group-hover:text-text-secondary transition-colors">Ver lista de tiradores</p>
                         </div>
                         {/* Badge con contador */}
-                        <span className="ml-auto bg-status-success text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm z-10 group-hover:scale-110 transition-transform">{kpiInscripciones}</span>
+                        <span className="ml-auto bg-green-100 text-status-success text-xs font-bold px-3 py-1 rounded-full shadow-sm z-10 group-hover:bg-status-success group-hover:text-white transition-colors">{kpiInscripciones}</span>
                     </Link>
 
                     <div className="bg-surface p-8 rounded-2xl border border-border-elite shadow-sm col-span-1 md:col-span-2 lg:col-span-2 relative overflow-hidden">
