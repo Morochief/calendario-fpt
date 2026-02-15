@@ -384,7 +384,8 @@ export default function AdminPage() {
                                 <input placeholder="Buscar eventos..."
                                     id="search-events"
                                     name="search"
-                                    className="w-full py-3 pr-4 bg-transparent border-none outline-none focus:outline-none focus:ring-0 active:outline-none text-sm font-medium text-text-elite placeholder:text-slate-400 appearance-none"
+                                    style={{ boxShadow: 'none', border: 'none', outline: 'none' }}
+                                    className="w-full py-3 pr-4 bg-transparent !border-none !outline-none !shadow-none !ring-0 focus:!border-none focus:!outline-none focus:!ring-0 active:!outline-none text-sm font-medium text-text-elite placeholder:text-slate-400 appearance-none"
                                     type="text"
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
