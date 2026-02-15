@@ -308,26 +308,34 @@ export default function AdminPage() {
                             </div>
                             Configuración
                         </h3>
-                        <div className="flex flex-wrap gap-4 relative z-10">
-                            <Link className="inline-flex items-center gap-2 px-6 py-3 bg-white hover:bg-slate-50 text-text-secondary rounded-xl border border-border-elite transition-all font-semibold text-sm hover:border-cop-blue/50 hover:shadow-md hover:-translate-y-1 active:scale-95 group"
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 relative z-10 w-full">
+                            <Link className="flex items-center gap-3 px-5 py-4 bg-white hover:bg-white text-text-secondary rounded-xl border border-slate-200 transition-all duration-200 font-semibold text-sm hover:border-cop-blue hover:shadow-lg hover:-translate-y-1 active:scale-95 group"
                                 href="/admin/modalidades">
-                                <ClipboardList size={18} strokeWidth={2} className="text-slate-400 group-hover:text-cop-blue transition-colors" />
-                                Modalidades
+                                <div className="p-2 bg-slate-50 rounded-lg group-hover:bg-blue-50 transition-colors">
+                                    <ClipboardList size={20} className="text-slate-400 group-hover:text-cop-blue transition-colors" />
+                                </div>
+                                <span className="group-hover:text-cop-blue transition-colors">Modalidades</span>
                             </Link>
-                            <Link className="inline-flex items-center gap-2 px-6 py-3 bg-white hover:bg-slate-50 text-text-secondary rounded-xl border border-border-elite transition-all font-semibold text-sm hover:border-cop-blue/50 hover:shadow-md hover:-translate-y-1 active:scale-95 group"
+                            <Link className="flex items-center gap-3 px-5 py-4 bg-white hover:bg-white text-text-secondary rounded-xl border border-slate-200 transition-all duration-200 font-semibold text-sm hover:border-cop-blue hover:shadow-lg hover:-translate-y-1 active:scale-95 group"
                                 href="/admin/tipos-evento">
-                                <Filter size={18} strokeWidth={2} className="text-slate-400 group-hover:text-cop-blue transition-colors" />
-                                Tipos
+                                <div className="p-2 bg-slate-50 rounded-lg group-hover:bg-blue-50 transition-colors">
+                                    <Filter size={20} className="text-slate-400 group-hover:text-cop-blue transition-colors" />
+                                </div>
+                                <span className="group-hover:text-cop-blue transition-colors">Tipos de Evento</span>
                             </Link>
-                            <Link className="inline-flex items-center gap-2 px-6 py-3 bg-white hover:bg-slate-50 text-text-secondary rounded-xl border border-border-elite transition-all font-semibold text-sm hover:border-cop-blue/50 hover:shadow-md hover:-translate-y-1 active:scale-95 group"
+                            <Link className="flex items-center gap-3 px-5 py-4 bg-white hover:bg-white text-text-secondary rounded-xl border border-slate-200 transition-all duration-200 font-semibold text-sm hover:border-cop-blue hover:shadow-lg hover:-translate-y-1 active:scale-95 group"
                                 href="/admin/reglamentos">
-                                <BookOpen size={18} strokeWidth={2} className="text-slate-400 group-hover:text-cop-blue transition-colors" />
-                                Reglamentos
+                                <div className="p-2 bg-slate-50 rounded-lg group-hover:bg-blue-50 transition-colors">
+                                    <BookOpen size={20} className="text-slate-400 group-hover:text-cop-blue transition-colors" />
+                                </div>
+                                <span className="group-hover:text-cop-blue transition-colors">Reglamentos</span>
                             </Link>
-                            <Link className="inline-flex items-center gap-2 px-6 py-3 bg-white hover:bg-slate-50 text-text-secondary rounded-xl border border-border-elite transition-all font-semibold text-sm hover:border-cop-blue/50 hover:shadow-md hover:-translate-y-1 active:scale-95 group"
+                            <Link className="flex items-center gap-3 px-5 py-4 bg-white hover:bg-white text-text-secondary rounded-xl border border-slate-200 transition-all duration-200 font-semibold text-sm hover:border-cop-blue hover:shadow-lg hover:-translate-y-1 active:scale-95 group"
                                 href="/admin/categorias">
-                                <ClipboardList size={18} strokeWidth={2} className="text-slate-400 group-hover:text-cop-blue transition-colors" />
-                                Categorías
+                                <div className="p-2 bg-slate-50 rounded-lg group-hover:bg-blue-50 transition-colors">
+                                    <ClipboardList size={20} className="text-slate-400 group-hover:text-cop-blue transition-colors" />
+                                </div>
+                                <span className="group-hover:text-cop-blue transition-colors">Categorías</span>
                             </Link>
                         </div>
                     </div>
@@ -528,8 +536,8 @@ export default function AdminPage() {
                                                 </td>
                                                 <td className="px-6 py-5 text-center">
                                                     <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full font-bold text-xs border shadow-sm transition-transform group-hover:scale-110 ${(evento.inscripciones?.[0]?.count || 0) > 0
-                                                            ? 'bg-blue-50 text-cop-blue border-blue-100'
-                                                            : 'bg-slate-50 text-slate-400 border-slate-100'
+                                                        ? 'bg-blue-50 text-cop-blue border-blue-100'
+                                                        : 'bg-slate-50 text-slate-400 border-slate-100'
                                                         }`}>
                                                         {evento.inscripciones?.[0]?.count || 0}
                                                     </span>
