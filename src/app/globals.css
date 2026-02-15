@@ -32,13 +32,13 @@
   /* ===== IMPROVED: Elevation System with blue tint ===== */
   --shadow-xs: 0 1px 2px rgba(30, 58, 138, 0.04);
   --shadow-sm: 0 1px 4px rgba(30, 58, 138, 0.06),
-               0 1px 2px rgba(30, 58, 138, 0.04);
+    0 1px 2px rgba(30, 58, 138, 0.04);
   --shadow-md: 0 4px 16px rgba(30, 58, 138, 0.08),
-               0 2px 4px rgba(30, 58, 138, 0.04);
+    0 2px 4px rgba(30, 58, 138, 0.04);
   --shadow-lg: 0 8px 32px rgba(30, 58, 138, 0.10),
-               0 4px 8px rgba(30, 58, 138, 0.06);
+    0 4px 8px rgba(30, 58, 138, 0.06);
   --shadow-xl: 0 16px 48px rgba(30, 58, 138, 0.12),
-               0 8px 16px rgba(30, 58, 138, 0.06);
+    0 8px 16px rgba(30, 58, 138, 0.06);
 
   /* ===== NEW: Glow effects ===== */
   --glow-blue: 0 0 0 3px rgba(30, 58, 138, 0.08);
@@ -385,6 +385,7 @@ a {
     opacity: 0;
     transform: translateY(-6px) scale(0.98);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -573,13 +574,11 @@ a {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    105deg,
-    transparent 40%,
-    rgba(255, 255, 255, 0.15) 45%,
-    rgba(255, 255, 255, 0.15) 55%,
-    transparent 60%
-  );
+  background: linear-gradient(105deg,
+      transparent 40%,
+      rgba(255, 255, 255, 0.15) 45%,
+      rgba(255, 255, 255, 0.15) 55%,
+      transparent 60%);
   transform: translateX(-100%);
   transition: transform 0.5s ease;
 }
@@ -828,31 +827,41 @@ a {
 }
 
 /* ===== IMPROVED: Table with zebra + transitions ===== */
+/* ===== IMPROVED: Table with spacing & floating effect ===== */
 .admin-table {
   width: 100%;
   border-collapse: separate;
-  border-spacing: 0;
+  /* Required for border-radius on rows */
+  border-spacing: 0 0.5rem;
+  /* Space between rows */
+  margin-top: -0.5rem;
+  /* Offset the first gap */
 }
 
 .admin-table th,
 .admin-table td {
-  padding: 1rem;
+  padding: 1.25rem 1.5rem;
+  /* More generous padding */
   text-align: left;
-  border-bottom: 1px solid var(--color-border);
   white-space: nowrap;
   transition: all var(--transition-fast);
+  border: none;
+  /* Removed default borders */
 }
 
 .admin-table th {
   font-weight: 600;
-  color: var(--color-text-secondary);
+  color: var(--color-text-muted);
   font-size: 0.75rem;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  background: rgba(30, 58, 138, 0.02);
+  letter-spacing: 0.06em;
+  background: transparent;
+  /* Transparent header */
   position: sticky;
   top: 0;
   z-index: 5;
+  padding-bottom: 1rem;
+  /* Visual separation */
 }
 
 /* ===== NEW: Sortable column headers ===== */
@@ -894,32 +903,50 @@ a {
   transform: rotate(180deg);
 }
 
-/* ===== NEW: Zebra striping ===== */
-.admin-table tbody tr:nth-child(even) {
-  background: rgba(30, 58, 138, 0.015);
+/* ===== NEW: Card-like Rows ===== */
+.admin-table tbody tr {
+  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
+  background: var(--color-surface);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+  /* Subtle row shadow */
+  border-radius: 12px;
 }
 
-/* ===== IMPROVED: Row hover with left accent ===== */
-.admin-table tbody tr {
-  transition: all var(--transition-fast);
-  position: relative;
+/* Fix for border-radius on table rows (applied to cells) */
+.admin-table tbody tr td:first-child {
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+}
+
+.admin-table tbody tr td:last-child {
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
 }
 
 .admin-table tbody tr::before {
   content: '';
   position: absolute;
   left: 0;
-  top: 0;
-  bottom: 0;
-  width: 3px;
+  top: 12px;
+  bottom: 12px;
+  width: 4px;
   background: var(--color-fpt-red);
   transform: scaleY(0);
-  transition: transform var(--transition-fast) var(--ease-smooth);
-  border-radius: 0 2px 2px 0;
+  transition: transform 0.2s var(--ease-bounce);
+  border-radius: 0 4px 4px 0;
+  z-index: 1;
 }
 
 .admin-table tbody tr:hover {
-  background: rgba(30, 58, 138, 0.03);
+  background: #fff;
+  transform: translateY(-2px) scale(1.005);
+  /* Slight pop */
+  box-shadow:
+    0 10px 15px -3px rgba(30, 58, 138, 0.08),
+    0 4px 6px -2px rgba(30, 58, 138, 0.04);
+  z-index: 10;
+  /* Bring to front */
 }
 
 .admin-table tbody tr:hover::before {
@@ -979,6 +1006,7 @@ a {
     opacity: 0;
     transform: translateY(16px) scale(0.97);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -1019,11 +1047,27 @@ a {
 }
 
 @keyframes shakeIn {
-  0%, 100% { transform: translateX(0); }
-  20% { transform: translateX(-6px); }
-  40% { transform: translateX(5px); }
-  60% { transform: translateX(-3px); }
-  80% { transform: translateX(2px); }
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  20% {
+    transform: translateX(-6px);
+  }
+
+  40% {
+    transform: translateX(5px);
+  }
+
+  60% {
+    transform: translateX(-3px);
+  }
+
+  80% {
+    transform: translateX(2px);
+  }
 }
 
 .success-message {
@@ -1042,6 +1086,7 @@ a {
     opacity: 0;
     transform: translateY(-8px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -1409,6 +1454,7 @@ a {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -1416,12 +1462,19 @@ a {
 }
 
 @keyframes bounce {
-  0%, 20%, 50%, 80%, 100% {
+
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
     transform: translateY(0);
   }
+
   40% {
     transform: translateY(6px);
   }
+
   60% {
     transform: translateY(3px);
   }
@@ -1536,6 +1589,7 @@ a {
     transform: translateX(110%);
     opacity: 0;
   }
+
   to {
     transform: translateX(0);
     opacity: 1;
@@ -1547,6 +1601,7 @@ a {
     transform: translateX(0);
     opacity: 1;
   }
+
   to {
     transform: translateX(110%);
     opacity: 0;
@@ -1558,12 +1613,10 @@ a {
    ======================================== */
 
 .skeleton {
-  background: linear-gradient(
-    90deg,
-    rgba(30, 58, 138, 0.04) 25%,
-    rgba(30, 58, 138, 0.08) 50%,
-    rgba(30, 58, 138, 0.04) 75%
-  );
+  background: linear-gradient(90deg,
+      rgba(30, 58, 138, 0.04) 25%,
+      rgba(30, 58, 138, 0.08) 50%,
+      rgba(30, 58, 138, 0.04) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s ease infinite;
   border-radius: var(--radius-sm);
@@ -1573,6 +1626,7 @@ a {
   0% {
     background-position: 200% 0;
   }
+
   100% {
     background-position: -200% 0;
   }
@@ -1692,8 +1746,17 @@ a {
 }
 
 @keyframes emptyPulse {
-  0%, 100% { transform: scale(1); opacity: 0.6; }
-  50% { transform: scale(1.05); opacity: 0.8; }
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
 }
 
 .empty-state-title {
@@ -1996,15 +2059,26 @@ a.user-dropdown-item,
    Admin-specific enhancements
    ======================================== */
 
-/* ===== NEW: Stat cards / KPI tiles ===== */
+/* ===== NEW: Stat cards / KPI tiles — Premium Depth ===== */
 .admin-stat-card {
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: 1.25rem;
+  border: 1px solid rgba(30, 58, 138, 0.08);
+  /* Lighter, more subtle border */
+  border-radius: var(--radius-lg);
+  /* More rounded */
+  padding: 1.5rem;
+  /* More breathing room */
   transition: all var(--transition-normal) var(--ease-smooth);
   position: relative;
   overflow: hidden;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.02),
+    0 2px 4px -1px rgba(0, 0, 0, 0.02);
+  /* Very subtle base shadow */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
 }
 
 .admin-stat-card::before {
@@ -2013,17 +2087,23 @@ a.user-dropdown-item,
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
-  background: var(--color-cop-blue);
+  height: 4px;
+  /* Slightly thicker accent */
+  background: linear-gradient(90deg, var(--color-cop-blue), #3b82f6);
+  /* Gradient accent */
   transform: scaleX(0);
   transform-origin: left;
-  transition: transform var(--transition-normal) var(--ease-smooth);
+  transition: transform 0.4s var(--ease-bounce);
 }
 
 .admin-stat-card:hover {
-  box-shadow: var(--shadow-md);
-  border-color: var(--color-border-hover);
-  transform: translateY(-2px);
+  box-shadow:
+    0 20px 25px -5px rgba(30, 58, 138, 0.08),
+    0 10px 10px -5px rgba(30, 58, 138, 0.03);
+  /* Deep premium shadow on hover */
+  border-color: rgba(30, 58, 138, 0.15);
+  transform: translateY(-4px);
+  /* Lift effect */
 }
 
 .admin-stat-card:hover::before {
@@ -2031,20 +2111,32 @@ a.user-dropdown-item,
 }
 
 .admin-stat-value {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--color-cop-blue);
-  letter-spacing: -0.03em;
-  line-height: 1.1;
+  font-size: 2.5rem;
+  /* Larger number */
+  font-weight: 800;
+  /* Bolder */
+  color: var(--color-text);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+  background: linear-gradient(180deg, var(--color-text) 0%, var(--color-cop-blue) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  /* Gradient text */
+  margin-top: auto;
+  /* Push to bottom if needed */
 }
 
 .admin-stat-label {
   font-size: 0.75rem;
-  color: var(--color-text-muted);
+  color: var(--color-text-secondary);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  font-weight: 500;
-  margin-top: 0.25rem;
+  letter-spacing: 0.08em;
+  /* Wider tracking */
+  font-weight: 600;
+  margin-bottom: 1rem;
+  opacity: 0.8;
 }
 
 /* ===== NEW: Status badges with pulse ===== */
@@ -2097,9 +2189,12 @@ a.user-dropdown-item,
 }
 
 @keyframes statusPulse {
-  0%, 100% {
+
+  0%,
+  100% {
     box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
   }
+
   50% {
     box-shadow: 0 0 0 5px rgba(34, 197, 94, 0.05);
   }
@@ -2293,6 +2388,7 @@ a.user-dropdown-item,
   from {
     transform: scale(0);
   }
+
   to {
     transform: scale(1);
   }
@@ -2321,18 +2417,21 @@ a.user-dropdown-item,
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.3) 50%,
-    transparent 100%
-  );
+  background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.3) 50%,
+      transparent 100%);
   animation: progressShine 1.5s ease-in-out infinite;
 }
 
 @keyframes progressShine {
-  from { transform: translateX(-100%); }
-  to { transform: translateX(100%); }
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(100%);
+  }
 }
 
 /* ===== NEW: Confirm dialog overlay ===== */
@@ -2350,8 +2449,13 @@ a.user-dropdown-item,
 }
 
 @keyframes overlayIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 .admin-dialog {
@@ -2369,6 +2473,7 @@ a.user-dropdown-item,
     opacity: 0;
     transform: scale(0.9) translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: scale(1) translateY(0);
@@ -2406,6 +2511,7 @@ a.user-dropdown-item,
       opacity: 0;
       transform: translateY(-8px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);
@@ -2613,6 +2719,7 @@ a.user-dropdown-item,
     opacity: 0;
     transform: translateY(12px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -2620,24 +2727,48 @@ a.user-dropdown-item,
 }
 
 /* ===== Staggered children animation ===== */
-.stagger-children > * {
+.stagger-children>* {
   animation: staggerIn 0.3s ease-out both;
 }
 
-.stagger-children > *:nth-child(1) { animation-delay: 0ms; }
-.stagger-children > *:nth-child(2) { animation-delay: 50ms; }
-.stagger-children > *:nth-child(3) { animation-delay: 100ms; }
-.stagger-children > *:nth-child(4) { animation-delay: 150ms; }
-.stagger-children > *:nth-child(5) { animation-delay: 200ms; }
-.stagger-children > *:nth-child(6) { animation-delay: 250ms; }
-.stagger-children > *:nth-child(7) { animation-delay: 300ms; }
-.stagger-children > *:nth-child(8) { animation-delay: 350ms; }
+.stagger-children>*:nth-child(1) {
+  animation-delay: 0ms;
+}
+
+.stagger-children>*:nth-child(2) {
+  animation-delay: 50ms;
+}
+
+.stagger-children>*:nth-child(3) {
+  animation-delay: 100ms;
+}
+
+.stagger-children>*:nth-child(4) {
+  animation-delay: 150ms;
+}
+
+.stagger-children>*:nth-child(5) {
+  animation-delay: 200ms;
+}
+
+.stagger-children>*:nth-child(6) {
+  animation-delay: 250ms;
+}
+
+.stagger-children>*:nth-child(7) {
+  animation-delay: 300ms;
+}
+
+.stagger-children>*:nth-child(8) {
+  animation-delay: 350ms;
+}
 
 @keyframes staggerIn {
   from {
     opacity: 0;
     transform: translateY(8px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
