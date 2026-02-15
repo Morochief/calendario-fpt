@@ -377,14 +377,14 @@ export default function AdminPage() {
                                     </span>
                                 </div>
                             </div>
-                            <div className="relative w-full sm:w-80 group/search flex items-center bg-white border border-slate-200 rounded-xl shadow-sm focus-within:border-cop-blue focus-within:ring-4 focus-within:ring-cop-blue/10 hover:border-cop-blue/50 hover:shadow-md transition-all duration-300">
+                            <div className="relative w-full sm:w-80 group/search flex items-center bg-white border border-slate-200 rounded-xl shadow-sm focus-within:border-cop-blue/60 focus-within:shadow-[0_0_0_4px_rgba(30,58,138,0.1)] hover:border-cop-blue/40 hover:shadow-md transition-all duration-300">
                                 <div className="pl-4 pr-3 text-slate-400 group-focus-within/search:text-cop-blue transition-colors duration-300 pointer-events-none">
                                     <Search size={20} />
                                 </div>
                                 <input placeholder="Buscar eventos..."
                                     id="search-events"
                                     name="search"
-                                    className="w-full py-3 pr-4 bg-transparent border-none outline-none text-sm font-medium text-text-elite placeholder:text-slate-400 focus:ring-0"
+                                    className="w-full py-3 pr-4 bg-transparent border-none outline-none focus:outline-none focus:ring-0 active:outline-none text-sm font-medium text-text-elite placeholder:text-slate-400 appearance-none"
                                     type="text"
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
