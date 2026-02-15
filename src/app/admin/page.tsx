@@ -5,12 +5,14 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import Breadcrumbs from '@/components/Breadcrumbs';
+import AdminFilterDropdown from '@/components/AdminFilterDropdown';
 import Pagination from '@/components/Pagination';
 import { useToast } from '@/components/Toast';
 import {
     Plus,
     Calendar,
     Users,
+    FileText,
     Settings,
     ClipboardList,
     Filter,
@@ -22,7 +24,9 @@ import {
     Download,
     ChevronRight,
     Home,
-    ChevronDown
+    ChevronDown,
+    Activity,
+    Tag
 } from 'lucide-react';
 
 import { createClient } from '@/lib/supabase';
@@ -395,50 +399,55 @@ export default function AdminPage() {
 
                         {/* Filtros avanzados */}
                         <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-slate-100">
-                            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mr-2 flex items-center gap-1.5 bg-slate-50 px-2 py-1 rounded-md border border-slate-100">
-                                <Filter size={12} />
-                                Filtros:
-                            </span>
 
                             {/* Filtro por estado */}
-                            <div className="relative group/select">
-                                <select
-                                    className="pl-3 pr-8 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-text-secondary focus:outline-none focus:border-cop-blue focus:ring-2 focus:ring-cop-blue/10 hover:border-cop-blue/50 hover:shadow-md transition-all duration-200 appearance-none cursor-pointer min-w-[140px]"
-                                    value={filterEstado}
-                                    onChange={(e) => setFilterEstado(e.target.value)}
-                                >
-                                    <option value="">Estado (Todos)</option>
-                                    <option value="activo">🟢 Activo</option>
-                                    <option value="finalizado">⚫ Finalizado</option>
-                                </select>
-                                <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 group-hover/select:text-cop-blue transition-colors pointer-events-none" size={14} />
-                            </div>
+                            <AdminFilterDropdown
+                                label="Estado"
+                                icon={Activity}
+                                value={filterEstado}
+                                onChange={setFilterEstado}
+                                options={[
+                                    { value: 'todos', label: 'Todos los estados' },
+                                    { value: 'activo', label: 'Activos', color: '#22C55E' },
+                                    { value: 'finalizado', label: 'Finalizados', color: '#64748B' },
+                                    { value: 'cancelado', label: 'Cancelados', color: '#EF4444' }
+                                ]}
+                            />
 
                             {/* Filtro por modalidad */}
-                            <div className="relative group/select">
-                                <select
-                                    className="pl-3 pr-8 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-text-secondary focus:outline-none focus:border-cop-blue focus:ring-2 focus:ring-cop-blue/10 hover:border-cop-blue/50 hover:shadow-md transition-all duration-200 appearance-none cursor-pointer min-w-[140px]"
-                                    value={filterModalidad}
-                                    onChange={(e) => setFilterModalidad(e.target.value)}
-                                >
-                                    <option value="">Modalidad (Todas)</option>
-                                    {uniqueModalidades.map(m => <option key={m} value={m}>{m}</option>)}
-                                </select>
-                                <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 group-hover/select:text-cop-blue transition-colors pointer-events-none" size={14} />
-                            </div>
+                            <AdminFilterDropdown
+                                label="Modalidad"
+                                icon={Filter}
+                                value={filterModalidad}
+                                onChange={setFilterModalidad}
+                                options={[
+                                    { value: 'todas', label: 'Todas las modalidades' },
+                                    ...uniqueModalidades.filter(Boolean).map(m => ({
+                                        value: m || '',
+                                        label: m || '',
+                                        // Match color if possible, hard to get from string array.
+                                        // Ideally we need the full object but uniqueModalidades is string[].
+                                        // For now no color dot is fine or generic blue.
+                                        color: '#3B82F6'
+                                    }))
+                                ]}
+                            />
 
                             {/* Filtro por tipo */}
-                            <div className="relative group/select">
-                                <select
-                                    className="pl-3 pr-8 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-text-secondary focus:outline-none focus:border-cop-blue focus:ring-2 focus:ring-cop-blue/10 hover:border-cop-blue/50 hover:shadow-md transition-all duration-200 appearance-none cursor-pointer min-w-[140px]"
-                                    value={filterTipo}
-                                    onChange={(e) => setFilterTipo(e.target.value)}
-                                >
-                                    <option value="">Tipo (Todos)</option>
-                                    {uniqueTipos.map(t => <option key={t} value={t}>{t}</option>)}
-                                </select>
-                                <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 group-hover/select:text-cop-blue transition-colors pointer-events-none" size={14} />
-                            </div>
+                            <AdminFilterDropdown
+                                label="Tipo"
+                                icon={Tag}
+                                value={filterTipo}
+                                onChange={setFilterTipo}
+                                options={[
+                                    { value: 'todos', label: 'Todos los tipos' },
+                                    ...uniqueTipos.filter(Boolean).map(t => ({
+                                        value: t || '',
+                                        label: t || '',
+                                        color: '#8B5CF6'
+                                    }))
+                                ]}
+                            />
 
                             {/* Botón limpiar filtros */}
                             {(filterEstado || filterModalidad || filterTipo || searchTerm) && (
