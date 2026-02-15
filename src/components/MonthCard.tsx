@@ -1,7 +1,9 @@
 'use client';
 
 import { MESES, EventoConModalidad } from '@/lib/types';
-import EventCard from './EventCard';
+import EventRow from './EventRow';
+import EventModal from './EventModal';
+import { useState } from 'react';
 
 interface MonthCardProps {
     mes: typeof MESES[number];
@@ -10,6 +12,8 @@ interface MonthCardProps {
 }
 
 export default function MonthCard({ mes, mesIndex, eventos }: MonthCardProps) {
+    const [selectedEvent, setSelectedEvent] = useState<EventoConModalidad | null>(null);
+
     // Filtrar eventos de este mes (mesIndex es 0-based, pero enero = 1, feb = 2...)
     // El array MESES es de enero a noviembre, así que mesIndex 0 = enero = mes 1
     const eventosDelMes = eventos.filter(e => {
@@ -18,21 +22,34 @@ export default function MonthCard({ mes, mesIndex, eventos }: MonthCardProps) {
     }).sort((a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime());
 
     return (
-        <div className="month-card">
-            <div className="month-header">
-                {mes} 2026
+        <>
+            <div className="month-card">
+                <div className="month-header">
+                    {mes} 2026
+                </div>
+                <div className="month-content">
+                    {eventosDelMes.length === 0 ? (
+                        <div className="month-empty">
+                            Sin eventos programados
+                        </div>
+                    ) : (
+                        eventosDelMes.map(evento => (
+                            <EventRow
+                                key={evento.id}
+                                evento={evento}
+                                onClick={() => setSelectedEvent(evento)}
+                            />
+                        ))
+                    )}
+                </div>
             </div>
-            <div className="month-content">
-                {eventosDelMes.length === 0 ? (
-                    <div className="month-empty">
-                        Sin eventos programados
-                    </div>
-                ) : (
-                    eventosDelMes.map(evento => (
-                        <EventCard key={evento.id} evento={evento} />
-                    ))
-                )}
-            </div>
-        </div>
+
+            {selectedEvent && (
+                <EventModal
+                    evento={selectedEvent}
+                    onClose={() => setSelectedEvent(null)}
+                />
+            )}
+        </>
     );
 }
