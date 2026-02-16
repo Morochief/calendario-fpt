@@ -8,9 +8,10 @@ import { SelectEmptyState } from '@/components/EmptyState';
 import { createClient } from '@/lib/supabase';
 import { Modalidad, TipoEvento, Club } from '@/lib/types';
 import { eventoCreateSchema, EventoInput } from '@/lib/schemas';
-import { Save, X, Calendar, MapPin, Link as LinkIcon, Image as ImageIcon, AlignLeft, UploadCloud, Loader2, Building2 } from 'lucide-react';
+import { Save, X, Calendar, MapPin, Link as LinkIcon, Image as ImageIcon, AlignLeft, UploadCloud, Loader2, Building2, Tag } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import EliteButton from '@/components/ui/EliteButton';
+import EliteSelect from '@/components/ui/EliteSelect';
 
 interface EventFormProps {
     initialData?: Partial<EventoInput> & { id?: string };
@@ -187,69 +188,61 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                         {modalidades.length === 0 ? (
                             <SelectEmptyState entityName="modalidades" createHref="/admin/modalidades" />
                         ) : (
-                            <div className="relative">
-                                <select
-                                    id="modalidad"
-                                    value={modalidadId}
-                                    onChange={(e) => setModalidadId(e.target.value)}
-                                    className={cn(
-                                        "w-full px-5 py-3.5 rounded-xl bg-slate-50 border-2 border-transparent outline-none appearance-none",
-                                        "text-slate-800 font-bold transition-all duration-300 focus:bg-white focus:border-cop-blue/20 focus:shadow-lg focus:shadow-blue-900/5",
-                                        errors.modalidad_id && "border-fpt-red/30"
-                                    )}
-                                >
-                                    {modalidades.map(m => <option key={m.id} value={m.id}>{m.nombre}</option>)}
-                                </select>
-                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                                    <AlignLeft size={16} />
-                                </div>
-                            </div>
+                            <EliteSelect
+                                label="Modalidad"
+                                value={modalidadId}
+                                onChange={setModalidadId}
+                                options={modalidades.map(m => ({
+                                    value: m.id,
+                                    label: m.nombre,
+                                    color: m.color
+                                }))}
+                                error={errors.modalidad_id}
+                                placeholder="Seleccionar modalidad"
+                                icon={AlignLeft}
+                            />
                         )}
                     </div>
 
                     {/* Tipo */}
                     <div className="group">
-                        <label htmlFor="tipo" className="block text-sm font-bold text-cop-blue/70 mb-2 ml-1 transition-colors group-focus-within:text-cop-blue">
-                            Tipo de evento <span className="text-fpt-red">*</span>
+                        <label htmlFor="tipo" className="block text-sm font-bold text-cop-blue/70 mb-2 ml-1 transition-colors group-focus-within:text-cop-blue uppercase tracking-wider">
+                            Tipo de evento <span className="text-fpt-red font-black">*</span>
                         </label>
-                        <div className="relative">
-                            <select
-                                id="tipo"
-                                value={tipoEventoId}
-                                onChange={(e) => setTipoEventoId(e.target.value)}
-                                className={cn(
-                                    "w-full px-5 py-3.5 rounded-xl bg-slate-50 border-2 border-transparent outline-none appearance-none",
-                                    "text-slate-800 font-bold transition-all duration-300 focus:bg-white focus:border-cop-blue/20 focus:shadow-lg focus:shadow-blue-900/5",
-                                    errors.tipo_evento_id && "border-fpt-red/30"
-                                )}>
-                                {tiposEvento.map(t => <option key={t.id} value={t.id}>{t.nombre}</option>)}
-                            </select>
-                            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                                <AlignLeft size={16} />
-                            </div>
-                        </div>
+                        <EliteSelect
+                            label="Tipo de Evento"
+                            value={tipoEventoId}
+                            onChange={setTipoEventoId}
+                            options={tiposEvento.map(t => ({
+                                value: t.id,
+                                label: t.nombre
+                            }))}
+                            error={errors.tipo_evento_id}
+                            placeholder="Seleccionar tipo"
+                            icon={Tag}
+                        />
                     </div>
 
                     {/* Club Organizador */}
                     {clubes.length > 0 && (
                         <div className="md:col-span-2 group">
-                            <label htmlFor="club" className="block text-sm font-bold text-cop-blue/70 mb-2 ml-1 transition-colors group-focus-within:text-cop-blue">
+                            <label htmlFor="club" className="block text-sm font-bold text-cop-blue/70 mb-2 ml-1 transition-colors group-focus-within:text-cop-blue uppercase tracking-wider">
                                 <Building2 size={14} className="inline mr-1 -mt-0.5" /> Club Organizador
                             </label>
-                            <div className="relative">
-                                <select
-                                    id="club"
-                                    value={clubId}
-                                    onChange={(e) => setClubId(e.target.value)}
-                                    className="w-full px-5 py-3.5 rounded-xl bg-slate-50 border-2 border-transparent outline-none appearance-none text-slate-800 font-bold transition-all duration-300 focus:bg-white focus:border-cop-blue/20"
-                                >
-                                    <option value="">— Sin club asignado —</option>
-                                    {clubes.map(c => <option key={c.id} value={c.id}>{c.nombre} ({c.siglas})</option>)}
-                                </select>
-                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                                    <Building2 size={16} />
-                                </div>
-                            </div>
+                            <EliteSelect
+                                label="Club Organizador"
+                                value={clubId}
+                                onChange={setClubId}
+                                options={[
+                                    { value: '', label: '— Sin club asignado —' },
+                                    ...clubes.map(c => ({
+                                        value: c.id,
+                                        label: `${c.nombre} (${c.siglas})`
+                                    }))
+                                ]}
+                                placeholder="Seleccionar club"
+                                icon={Building2}
+                            />
                         </div>
                     )}
                 </div>
