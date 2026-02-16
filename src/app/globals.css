@@ -2920,36 +2920,40 @@ a.user-dropdown-item,
    Admin Form Inputs — Premium Styling
    ======================================== */
 
-/* Admin Form Inputs — Modern SaaS */
+/* Admin Form Inputs — Aggressive Verification */
 .admin-input {
   display: block;
   width: 100%;
-  padding: 0.625rem 0.875rem;
-  /* Taller, py-2.5 */
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-  color: #1e293b;
-  /* slate-800 */
+  padding: 0.75rem 1rem;
+  /* Even larger */
+  font-size: 0.95rem;
+  /* Larger text */
+  line-height: 1.5;
+  color: #0f172a;
+  /* slate-900 */
   background-color: #fff;
-  border: 1px solid #cbd5e1;
-  /* slate-300 */
+  border: 2px solid #94a3b8;
+  /* slate-400 (visible gray) */
   border-radius: 8px;
-  /* rounded-lg */
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  /* Visible shadow */
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   outline: none;
 }
 
 .admin-input:hover {
-  border-color: #94a3b8;
-  /* slate-400 */
+  border-color: #64748b;
+  /* slate-500 */
+  background-color: #f8fafc;
 }
 
 .admin-input:focus {
-  border-color: #3b82f6;
-  /* blue-500 */
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
-  /* Ring effect */
+  border-color: #2563eb;
+  /* blue-600 */
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
+  /* Big ring */
+  transform: translateY(-2px);
+  /* Lift effect */
 }
 
 /* Color Picker Container SaaS */
