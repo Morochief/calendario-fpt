@@ -15,6 +15,8 @@ interface EventFormProps {
     isEditing?: boolean;
 }
 
+import EliteButton from '@/components/ui/EliteButton';
+
 export default function EventForm({ initialData, isEditing = false }: EventFormProps) {
     const [modalidades, setModalidades] = useState<Modalidad[]>([]);
     const [tiposEvento, setTiposEvento] = useState<TipoEvento[]>([]);
@@ -140,19 +142,25 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
     }
 
     return (
-        <form onSubmit={handleSubmit} noValidate style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+        <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-10">
 
             {/* ═══════ INFORMACIÓN GENERAL ═══════ */}
-            <div className="admin-card">
-                <div className="admin-card-header blue">
-                    <div className="icon-box"><AlignLeft size={16} /></div>
-                    <h3>Información General</h3>
-                </div>
-                <div className="admin-card-body" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                    {/* Título */}
+            <section className="space-y-6">
+                <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
+                    <div className="w-10 h-10 rounded-xl bg-cop-blue/10 flex items-center justify-center text-cop-blue">
+                        <AlignLeft size={20} />
+                    </div>
                     <div>
-                        <label htmlFor="titulo" className="admin-label">
-                            Título del evento <span className="required">*</span>
+                        <h3 className="text-lg font-black text-cop-blue leading-none">Información General</h3>
+                        <p className="text-[11px] text-slate-400 font-bold uppercase tracking-wider mt-1.5">Datos principales de la competencia</p>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {/* Título */}
+                    <div className="md:col-span-2 group">
+                        <label htmlFor="titulo" className="block text-sm font-bold text-cop-blue/70 mb-2 ml-1 transition-colors group-focus-within:text-cop-blue">
+                            Título del evento <span className="text-fpt-red">*</span>
                         </label>
                         <input
                             id="titulo"
@@ -161,302 +169,322 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                             onChange={(e) => setTitulo(e.target.value)}
                             placeholder="Ej: Torneo Apertura 2026"
                             maxLength={120}
-                            className={`admin-input ${errors.titulo ? 'error' : ''}`}
+                            className={cn(
+                                "w-full px-5 py-3.5 rounded-xl bg-slate-50 border-2 border-transparent",
+                                "text-slate-800 font-semibold placeholder:text-slate-300 placeholder:font-medium",
+                                "transition-all duration-300 focus:bg-white focus:border-cop-blue/20 focus:shadow-lg focus:shadow-blue-900/5 outline-none",
+                                errors.titulo && "border-fpt-red/30 bg-fpt-red-[4px]"
+                            )}
                         />
-                        {errors.titulo && <p style={{ color: '#D91E18', fontSize: '0.8125rem', marginTop: '0.375rem', fontWeight: 500 }}>{errors.titulo}</p>}
+                        {errors.titulo && <p className="text-fpt-red text-[11px] font-bold mt-2 ml-1 uppercase tracking-tight">{errors.titulo}</p>}
                     </div>
 
-                    {/* Modalidad + Tipo */}
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
+                    {/* Modalidad */}
+                    <div className="group">
+                        <label htmlFor="modalidad" className="block text-sm font-bold text-cop-blue/70 mb-2 ml-1 transition-colors group-focus-within:text-cop-blue">
+                            Modalidad <span className="text-fpt-red">*</span>
+                        </label>
                         {modalidades.length === 0 ? (
-                            <div style={{ gridColumn: 'span 2' }}>
-                                <SelectEmptyState entityName="modalidades" createHref="/admin/modalidades" />
-                            </div>
+                            <SelectEmptyState entityName="modalidades" createHref="/admin/modalidades" />
                         ) : (
-                            <div>
-                                <label htmlFor="modalidad" className="admin-label">
-                                    Modalidad <span className="required">*</span>
-                                </label>
+                            <div className="relative">
                                 <select
                                     id="modalidad"
                                     value={modalidadId}
                                     onChange={(e) => setModalidadId(e.target.value)}
-                                    className={`admin-input ${errors.modalidad_id ? 'error' : ''}`}
+                                    className={cn(
+                                        "w-full px-5 py-3.5 rounded-xl bg-slate-50 border-2 border-transparent outline-none appearance-none",
+                                        "text-slate-800 font-bold transition-all duration-300 focus:bg-white focus:border-cop-blue/20 focus:shadow-lg focus:shadow-blue-900/5",
+                                        errors.modalidad_id && "border-fpt-red/30"
+                                    )}
                                 >
                                     {modalidades.map(m => <option key={m.id} value={m.id}>{m.nombre}</option>)}
                                 </select>
+                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                    <AlignLeft size={16} />
+                                </div>
                             </div>
                         )}
-                        <div>
-                            <label htmlFor="tipo" className="admin-label">
-                                Tipo de evento <span className="required">*</span>
-                            </label>
+                    </div>
+
+                    {/* Tipo */}
+                    <div className="group">
+                        <label htmlFor="tipo" className="block text-sm font-bold text-cop-blue/70 mb-2 ml-1 transition-colors group-focus-within:text-cop-blue">
+                            Tipo de evento <span className="text-fpt-red">*</span>
+                        </label>
+                        <div className="relative">
                             <select
                                 id="tipo"
                                 value={tipoEventoId}
                                 onChange={(e) => setTipoEventoId(e.target.value)}
-                                className={`admin-input ${errors.tipo_evento_id ? 'error' : ''}`}
-                            >
+                                className={cn(
+                                    "w-full px-5 py-3.5 rounded-xl bg-slate-50 border-2 border-transparent outline-none appearance-none",
+                                    "text-slate-800 font-bold transition-all duration-300 focus:bg-white focus:border-cop-blue/20 focus:shadow-lg focus:shadow-blue-900/5",
+                                    errors.tipo_evento_id && "border-fpt-red/30"
+                                )}>
                                 {tiposEvento.map(t => <option key={t.id} value={t.id}>{t.nombre}</option>)}
                             </select>
+                            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                <AlignLeft size={16} />
+                            </div>
                         </div>
                     </div>
 
                     {/* Club Organizador */}
                     {clubes.length > 0 && (
-                        <div>
-                            <label htmlFor="club" className="admin-label">
-                                <Building2 size={14} className="inline mr-1" /> Club Organizador
+                        <div className="md:col-span-2 group">
+                            <label htmlFor="club" className="block text-sm font-bold text-cop-blue/70 mb-2 ml-1 transition-colors group-focus-within:text-cop-blue">
+                                <Building2 size={14} className="inline mr-1 -mt-0.5" /> Club Organizador
                             </label>
-                            <select
-                                id="club"
-                                value={clubId}
-                                onChange={(e) => setClubId(e.target.value)}
-                                className="admin-input"
-                            >
-                                <option value="">— Sin club asignado —</option>
-                                {clubes.map(c => <option key={c.id} value={c.id}>{c.nombre} ({c.siglas})</option>)}
-                            </select>
+                            <div className="relative">
+                                <select
+                                    id="club"
+                                    value={clubId}
+                                    onChange={(e) => setClubId(e.target.value)}
+                                    className="w-full px-5 py-3.5 rounded-xl bg-slate-50 border-2 border-transparent outline-none appearance-none text-slate-800 font-bold transition-all duration-300 focus:bg-white focus:border-cop-blue/20"
+                                >
+                                    <option value="">— Sin club asignado —</option>
+                                    {clubes.map(c => <option key={c.id} value={c.id}>{c.nombre} ({c.siglas})</option>)}
+                                </select>
+                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                    <Building2 size={16} />
+                                </div>
+                            </div>
                         </div>
                     )}
                 </div>
-            </div>
+            </section>
 
             {/* ═══════ FECHA Y UBICACIÓN ═══════ */}
-            <div className="admin-card">
-                <div className="admin-card-header blue">
-                    <div className="icon-box"><Calendar size={16} /></div>
-                    <h3>Fecha y Ubicación</h3>
+            <section className="space-y-6">
+                <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
+                    <div className="w-10 h-10 rounded-xl bg-cop-blue/10 flex items-center justify-center text-cop-blue">
+                        <Calendar size={20} />
+                    </div>
+                    <div>
+                        <h3 className="text-lg font-black text-cop-blue leading-none">Fecha y Ubicación</h3>
+                        <p className="text-[11px] text-slate-400 font-bold uppercase tracking-wider mt-1.5">Cronograma y coordenadas del evento</p>
+                    </div>
                 </div>
-                <div className="admin-card-body" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                    {/* Fecha + Hora */}
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
-                        <div>
-                            <label htmlFor="fecha" className="admin-label">
-                                Fecha <span className="required">*</span>
-                            </label>
-                            <input
-                                id="fecha"
-                                type="date"
-                                value={fecha}
-                                onChange={(e) => setFecha(e.target.value)}
-                                className={`admin-input ${errors.fecha ? 'error' : ''}`}
-                            />
-                            {errors.fecha && <p style={{ color: '#D91E18', fontSize: '0.8125rem', marginTop: '0.375rem', fontWeight: 500 }}>{errors.fecha}</p>}
-                        </div>
-                        <div>
-                            <label htmlFor="hora" className="admin-label">Hora</label>
-                            <input
-                                id="hora"
-                                type="time"
-                                value={hora}
-                                onChange={(e) => setHora(e.target.value)}
-                                className="admin-input"
-                            />
-                        </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {/* Fecha */}
+                    <div className="group">
+                        <label htmlFor="fecha" className="block text-sm font-bold text-cop-blue/70 mb-2 ml-1">
+                            Fecha <span className="text-fpt-red">*</span>
+                        </label>
+                        <input
+                            id="fecha"
+                            type="date"
+                            value={fecha}
+                            onChange={(e) => setFecha(e.target.value)}
+                            className={cn(
+                                "w-full px-5 py-3.5 rounded-xl bg-slate-50 border-2 border-transparent outline-none",
+                                "text-slate-800 font-bold transition-all duration-300 focus:bg-white focus:border-cop-blue/20",
+                                errors.fecha && "border-fpt-red/30"
+                            )}
+                        />
+                        {errors.fecha && <p className="text-fpt-red text-[11px] font-bold mt-2 ml-1 uppercase tracking-tight">{errors.fecha}</p>}
+                    </div>
+
+                    {/* Hora */}
+                    <div className="group">
+                        <label htmlFor="hora" className="block text-sm font-bold text-cop-blue/70 mb-2 ml-1">Hora</label>
+                        <input
+                            id="hora"
+                            type="time"
+                            value={hora}
+                            onChange={(e) => setHora(e.target.value)}
+                            className="w-full px-5 py-3.5 rounded-xl bg-slate-50 border-2 border-transparent outline-none text-slate-800 font-bold transition-all duration-300 focus:bg-white focus:border-cop-blue/20"
+                        />
                     </div>
 
                     {/* Ubicación */}
-                    <div>
-                        <label htmlFor="ubicacion" className="admin-label">Ubicación / Polígono</label>
-                        <div style={{ position: 'relative' }}>
-                            <MapPin size={16} style={{ position: 'absolute', left: '0.875rem', top: '50%', transform: 'translateY(-50%)', color: '#94A3B8', pointerEvents: 'none' }} />
+                    <div className="group">
+                        <label htmlFor="ubicacion" className="block text-sm font-bold text-cop-blue/70 mb-2 ml-1">Ubicación / Polígono</label>
+                        <div className="relative">
+                            <MapPin size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
                             <input
                                 id="ubicacion"
                                 type="text"
                                 value={ubicacion}
                                 onChange={(e) => setUbicacion(e.target.value)}
                                 placeholder="Ej: COP - Polígono de 10m"
-                                className="admin-input"
-                                style={{ paddingLeft: '2.5rem' }}
+                                className="w-full pl-12 pr-5 py-3.5 rounded-xl bg-slate-50 border-2 border-transparent outline-none text-slate-800 font-semibold transition-all duration-300 focus:bg-white focus:border-cop-blue/20"
                             />
                         </div>
                     </div>
 
                     {/* Google Maps Link */}
-                    <div>
-                        <label htmlFor="ubicacion_url" className="admin-label">Link Google Maps</label>
-                        <div style={{ position: 'relative' }}>
-                            <LinkIcon size={16} style={{ position: 'absolute', left: '0.875rem', top: '50%', transform: 'translateY(-50%)', color: '#94A3B8', pointerEvents: 'none' }} />
+                    <div className="group">
+                        <label htmlFor="ubicacion_url" className="block text-sm font-bold text-cop-blue/70 mb-2 ml-1">Link Google Maps</label>
+                        <div className="relative">
+                            <LinkIcon size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
                             <input
                                 id="ubicacion_url"
                                 type="url"
                                 value={ubicacionUrl}
                                 onChange={(e) => setUbicacionUrl(e.target.value)}
                                 placeholder="https://maps.app.goo.gl/..."
-                                className="admin-input"
-                                style={{ paddingLeft: '2.5rem' }}
+                                className="w-full pl-12 pr-5 py-3.5 rounded-xl bg-slate-50 border-2 border-transparent outline-none text-slate-800 font-semibold transition-all duration-300 focus:bg-white focus:border-cop-blue/20"
                             />
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
 
             {/* ═══════ MULTIMEDIA ═══════ */}
-            <div className="admin-card">
-                <div className="admin-card-header red">
-                    <div className="icon-box"><ImageIcon size={16} /></div>
-                    <h3>Multimedia</h3>
+            <section className="space-y-6">
+                <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
+                    <div className="w-10 h-10 rounded-xl bg-fpt-red/10 flex items-center justify-center text-fpt-red">
+                        <ImageIcon size={20} />
+                    </div>
+                    <div>
+                        <h3 className="text-lg font-black text-fpt-red leading-none">Multimedia</h3>
+                        <p className="text-[11px] text-slate-400 font-bold uppercase tracking-wider mt-1.5">Identidad visual del evento</p>
+                    </div>
                 </div>
-                <div className="admin-card-body" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                    <span className="admin-label">Imagen del Evento</span>
 
-                    <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'flex-start', flexWrap: 'wrap' }}>
-                        {/* Preview */}
-                        <div style={{
-                            width: '200px', height: '130px',
-                            background: 'linear-gradient(135deg, #F9FBFF, #EEF2FF)',
-                            borderRadius: '12px', border: '2px dashed rgba(30,58,138,0.2)',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            overflow: 'hidden', position: 'relative', flexShrink: 0,
-                            transition: 'all 0.3s ease'
-                        }}>
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                    <div className="lg:col-span-5 flex flex-col items-center gap-6">
+                        <div className={cn(
+                            "w-full aspect-video rounded-3xl border-4 border-dashed transition-all duration-500 overflow-hidden relative group/img",
+                            imagenUrl ? "border-cop-blue/10 shadow-elite-md" : "border-slate-100 bg-slate-50/50 hover:bg-slate-100/50 hover:border-slate-200"
+                        )}>
                             {imagenUrl ? (
                                 <>
-                                    <div style={{
-                                        width: '100%', height: '100%',
-                                        backgroundImage: `url(${imagenUrl})`,
-                                        backgroundSize: 'cover', backgroundRepeat: 'no-repeat',
-                                        backgroundPosition: imagenPosition
-                                    }} />
-                                    <button
-                                        type="button"
-                                        onClick={() => setImagenUrl('')}
-                                        aria-label="Eliminar imagen"
-                                        style={{
-                                            position: 'absolute', top: '6px', right: '6px',
-                                            background: 'rgba(255,255,255,0.95)', border: 'none',
-                                            borderRadius: '50%', width: '28px', height: '28px',
-                                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                            cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                                            transition: 'all 0.2s'
-                                        }}
-                                    >
-                                        <X size={14} />
-                                    </button>
+                                    <div
+                                        className="w-full h-full bg-cover bg-no-repeat transition-transform duration-700 group-hover/img:scale-110"
+                                        style={{ backgroundImage: `url(${imagenUrl})`, backgroundPosition: imagenPosition }}
+                                    />
+                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
+                                        <button
+                                            type="button"
+                                            onClick={() => setImagenUrl('')}
+                                            className="p-3 rounded-2xl bg-white/20 backdrop-blur-md text-white border border-white/30 hover:bg-fpt-red hover:border-fpt-red transition-all"
+                                        >
+                                            <X size={24} />
+                                        </button>
+                                    </div>
                                 </>
                             ) : (
-                                <div style={{ textAlign: 'center' }}>
-                                    <ImageIcon size={28} style={{ color: '#94A3B8', marginBottom: '4px' }} />
-                                    <p style={{ fontSize: '0.75rem', color: '#94A3B8', fontWeight: 500 }}>Sin imagen</p>
+                                <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-300 gap-3">
+                                    <ImageIcon size={64} strokeWidth={1} />
+                                    <span className="text-xs font-black uppercase tracking-[0.2em]">Sin Imagen</span>
                                 </div>
                             )}
-                        </div>
 
-                        {/* Upload Controls */}
-                        <div style={{ flex: 1, minWidth: '250px', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                            <p style={{ fontSize: '0.875rem', color: '#475569' }}>
-                                Sube una imagen (JPG, PNG) o pega una URL directa.
-                            </p>
-
-                            <button
-                                type="button"
-                                onClick={() => fileInputRef.current?.click()}
-                                disabled={uploading}
-                                className="btn btn-secondary"
-                                style={{ alignSelf: 'flex-start' }}
-                            >
-                                {uploading ? <Loader2 size={16} className="animate-spin" /> : <UploadCloud size={16} />}
-                                Subir Archivo
-                            </button>
-                            <input
-                                ref={fileInputRef}
-                                type="file"
-                                accept="image/*"
-                                style={{ display: 'none' }}
-                                onChange={handleFileUpload}
-                                aria-label="Subir archivo de imagen"
-                            />
-
-                            {/* Position buttons */}
-                            {imagenUrl && (
-                                <div style={{
-                                    background: 'linear-gradient(135deg, #F9FBFF, #F1F5FF)',
-                                    padding: '0.875rem', borderRadius: '10px',
-                                    border: '1px solid rgba(30,58,138,0.1)'
-                                }}>
-                                    <span style={{ fontSize: '0.6875rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: '0.5rem' }}>
-                                        Ajustar Enfoque
-                                    </span>
-                                    <div style={{ display: 'flex', gap: '0.375rem', flexWrap: 'wrap' }}>
-                                        {(['top', 'center', 'bottom', 'left', 'right'] as const).map(pos => (
-                                            <button
-                                                key={pos}
-                                                type="button"
-                                                onClick={() => setImagenPosition(pos)}
-                                                style={{
-                                                    padding: '0.375rem 0.75rem',
-                                                    fontSize: '0.75rem',
-                                                    fontWeight: 600,
-                                                    borderRadius: '8px',
-                                                    border: imagenPosition === pos ? '1.5px solid #1E3A8A' : '1.5px solid rgba(30,58,138,0.15)',
-                                                    background: imagenPosition === pos ? '#1E3A8A' : 'white',
-                                                    color: imagenPosition === pos ? 'white' : '#475569',
-                                                    cursor: 'pointer',
-                                                    transition: 'all 0.2s',
-                                                    boxShadow: imagenPosition === pos ? '0 2px 8px rgba(30,58,138,0.3)' : 'none'
-                                                }}
-                                            >
-                                                {pos === 'top' ? 'Arriba' : pos === 'center' ? 'Centro' : pos === 'bottom' ? 'Abajo' : pos === 'left' ? 'Izq' : 'Der'}
-                                            </button>
-                                        ))}
+                            {uploading && (
+                                <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-20">
+                                    <div className="flex flex-col items-center gap-4">
+                                        <Loader2 size={32} className="text-cop-blue animate-spin" />
+                                        <span className="text-xs font-bold text-cop-blue tracking-widest uppercase">Subiendo archivo...</span>
                                     </div>
                                 </div>
                             )}
+                        </div>
+                    </div>
 
-                            {/* Divider */}
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                                <div style={{ flex: 1, height: '1px', background: 'rgba(30,58,138,0.1)' }} />
-                                <span style={{ fontSize: '0.6875rem', color: '#94A3B8', textTransform: 'uppercase', fontWeight: 600, letterSpacing: '0.05em' }}>O usa URL</span>
-                                <div style={{ flex: 1, height: '1px', background: 'rgba(30,58,138,0.1)' }} />
+                    <div className="lg:col-span-7 space-y-8">
+                        <div className="space-y-4">
+                            <p className="text-sm font-medium text-slate-500 leading-relaxed">
+                                Mejora el impacto visual de tu evento seleccionando una imagen institucional o un flyer oficial.
+                            </p>
+
+                            <div className="flex flex-wrap gap-4">
+                                <EliteButton
+                                    type="button"
+                                    variant="secondary"
+                                    onClick={() => fileInputRef.current?.click()}
+                                    isLoading={uploading}
+                                    icon={<UploadCloud size={18} />}
+                                    className="px-6 py-6 rounded-2xl border-2"
+                                >
+                                    Elegir Archivo
+                                </EliteButton>
+                                <input
+                                    ref={fileInputRef}
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden"
+                                    onChange={handleFileUpload}
+                                />
+                            </div>
+                        </div>
+
+                        {imagenUrl && (
+                            <div className="p-6 rounded-3xl bg-cop-blue/5 border border-cop-blue/10 animate-fade-in group">
+                                <span className="block text-[11px] font-black text-cop-blue/60 uppercase tracking-widest mb-4">Ajustar Enfoque Visual</span>
+                                <div className="flex flex-wrap gap-2">
+                                    {(['top', 'center', 'bottom', 'left', 'right'] as const).map(pos => (
+                                        <button
+                                            key={pos}
+                                            type="button"
+                                            onClick={() => setImagenPosition(pos)}
+                                            className={cn(
+                                                "px-4 py-2 text-xs font-extrabold rounded-xl transition-all border-2",
+                                                imagenPosition === pos
+                                                    ? "bg-cop-blue border-cop-blue text-white shadow-btn-blue shadow-blue-900/40 translate-y-[-2px]"
+                                                    : "bg-white border-slate-100 text-slate-500 hover:border-cop-blue/30 hover:text-cop-blue"
+                                            )}
+                                        >
+                                            {pos === 'top' ? 'Superior' : pos === 'center' ? 'Central' : pos === 'bottom' ? 'Inferior' : pos === 'left' ? 'Izquierda' : 'Derecha'}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-4">
+                                <div className="flex-grow h-px bg-slate-100" />
+                                <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">O Vincular URL</span>
+                                <div className="flex-grow h-px bg-slate-100" />
                             </div>
 
-                            <div style={{ position: 'relative' }}>
-                                <LinkIcon size={16} style={{ position: 'absolute', left: '0.875rem', top: '50%', transform: 'translateY(-50%)', color: '#94A3B8', pointerEvents: 'none' }} />
+                            <div className="relative group/url">
+                                <LinkIcon size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within/url:text-cop-blue transition-colors pointer-events-none" />
                                 <input
                                     type="url"
                                     value={imagenUrl}
                                     onChange={(e) => setImagenUrl(e.target.value)}
-                                    placeholder="https://pagina.com/imagen.jpg"
-                                    className="admin-input"
-                                    style={{ paddingLeft: '2.5rem' }}
-                                    aria-label="URL de la imagen"
+                                    placeholder="https://pagina.com/flyer-oficial.jpg"
+                                    className="w-full pl-12 pr-5 py-4 rounded-2xl bg-slate-50 border-2 border-transparent outline-none text-sm font-semibold transition-all focus:bg-white focus:border-cop-blue/20"
                                 />
                             </div>
                         </div>
                     </div>
 
-                    {/* Descripción */}
-                    <div>
-                        <label htmlFor="descripcion" className="admin-label">Descripción Adicional</label>
+                    <div className="lg:col-span-12 group">
+                        <label htmlFor="descripcion" className="block text-sm font-bold text-cop-blue/70 mb-3 ml-1">Observaciones / Descripción Detallada</label>
                         <textarea
                             id="descripcion"
                             value={descripcion}
                             onChange={(e) => setDescripcion(e.target.value)}
-                            rows={4}
-                            className="admin-input"
-                            placeholder="Detalles sobre inscripciones, requisitos, etc..."
+                            rows={5}
+                            placeholder="Aclara detalles sobre inscripciones, premiación o requisitos especiales..."
+                            className="w-full px-6 py-5 rounded-3xl bg-slate-50 border-2 border-transparent outline-none text-slate-800 font-medium transition-all focus:bg-white focus:border-cop-blue/20 leading-relaxed"
                         />
                     </div>
                 </div>
-            </div>
+            </section>
 
             {/* ═══════ ACTIONS ═══════ */}
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', paddingTop: '0.5rem' }}>
-                <Link href="/admin" className="btn btn-secondary">
-                    Cancelar
-                </Link>
-                <button
-                    type="submit"
-                    disabled={loading || uploading}
-                    className="btn btn-primary"
+            <div className="flex items-center justify-end gap-4 pt-6 border-t border-slate-100">
+                <Link
+                    href="/admin"
+                    className="px-8 py-3.5 rounded-2xl font-bold text-slate-400 hover:text-slate-600 transition-colors uppercase text-xs tracking-widest"
                 >
-                    {loading ? (
-                        <><Loader2 size={16} className="animate-spin" /> Guardando...</>
-                    ) : (
-                        <><Save size={16} /> {isEditing ? 'Guardar Cambios' : 'Crear Evento'}</>
-                    )}
-                </button>
+                    Descartar
+                </Link>
+                <EliteButton
+                    type="submit"
+                    isLoading={loading}
+                    icon={<Save size={18} />}
+                    className="px-10 py-4 rounded-2xl text-xs font-black uppercase tracking-[0.1em]"
+                >
+                    {isEditing ? 'Actualizar Evento' : 'Publicar Competencia'}
+                </EliteButton>
             </div>
         </form>
     );
