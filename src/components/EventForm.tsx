@@ -399,7 +399,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                                             type="button"
                                             onClick={() => fileInputRef.current?.click()}
                                             disabled={uploading}
-                                            className="flex items-center gap-2 px-4 py-2 bg-bg-elite hover:bg-slate-100 text-cop-blue border border-border-elite rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+                                            className="flex items-center gap-2 px-4 py-2 bg-bg-elite hover:bg-cop-blue/5 text-cop-blue border border-border-elite rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
                                         >
                                             {uploading ? <Loader2 size={16} className="animate-spin" /> : <UploadCloud size={16} />}
                                             Subir Archivo
@@ -427,7 +427,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                                                         onClick={() => setImagenPosition(pos)}
                                                         className={`px-3 py-1.5 text-xs font-medium rounded-md border transition-all ${imagenPosition === pos
                                                             ? 'bg-cop-blue text-white border-cop-blue shadow-sm'
-                                                            : 'bg-white text-slate-600 border-slate-200 hover:border-cop-blue/50 hover:text-cop-blue'
+                                                            : 'bg-white text-text-secondary border-border-elite hover:border-cop-blue/50 hover:text-cop-blue'
                                                             }`}
                                                     >
                                                         {pos === 'top' ? 'Arriba' :

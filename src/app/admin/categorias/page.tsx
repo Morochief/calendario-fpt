@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Header from '@/components/Header';
+import Breadcrumbs from '@/components/Breadcrumbs';
+import { useToast } from '@/components/Toast';
 import { createClient } from '@/lib/supabase';
 import {
     Plus,
@@ -12,8 +14,8 @@ import {
     Trash2,
     X,
     Save,
-    LayoutGrid,
-    Tag
+    Tag,
+    Loader2
 } from 'lucide-react';
 import { Categoria } from '@/lib/types';
 
@@ -29,10 +31,23 @@ export default function CategoriasPage() {
     const [descripcion, setDescripcion] = useState('');
 
     const router = useRouter();
+    const { showToast } = useToast();
 
     useEffect(() => {
-        loadCategorias();
+        checkAuthAndLoad();
     }, []);
+
+    async function checkAuthAndLoad() {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (!user) {
+            router.push('/admin/login');
+            return;
+        }
+
+        await loadCategorias();
+    }
 
     async function loadCategorias() {
         const supabase = createClient();
@@ -60,15 +75,16 @@ export default function CategoriasPage() {
         try {
             if (editingId) {
                 await supabase.from('categorias').update(categoriaData).eq('id', editingId);
+                showToast('Categoría actualizada', 'success');
             } else {
                 await supabase.from('categorias').insert(categoriaData);
+                showToast('Categoría creada', 'success');
             }
 
             resetForm();
             await loadCategorias();
-        } catch (error) {
-            console.error('Error saving categoria:', error);
-            alert('Error al guardar la categoría');
+        } catch {
+            showToast('Error al guardar la categoría', 'error');
         } finally {
             setSaving(false);
         }
@@ -95,36 +111,40 @@ export default function CategoriasPage() {
         const { error } = await supabase.from('categorias').delete().eq('id', id);
 
         if (error) {
-            console.error('Error deleting categoria:', error);
-            alert('Error al eliminar.');
+            showToast('Error al eliminar la categoría', 'error');
         } else {
+            showToast('Categoría eliminada', 'success');
             await loadCategorias();
         }
     }
 
+    const labelStyle = "block text-sm font-medium text-text-elite mb-1.5";
+    const inputStyle = "block w-full rounded-elite-sm border-border-elite shadow-elite-xs focus:border-cop-blue focus:ring-1 focus:ring-cop-blue/20 sm:text-sm py-2.5 transition-all text-text-secondary bg-surface hover:border-border-hover";
+
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#F9FBFF] flex flex-col">
+            <div className="min-h-screen bg-bg-elite flex flex-col">
                 <Header />
                 <div className="flex-grow flex items-center justify-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                    <Loader2 size={48} className="text-cop-blue animate-spin" />
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-[#F9FBFF] flex flex-col font-sans text-[#1E3A8A]">
+        <div className="min-h-screen bg-bg-elite flex flex-col font-sans text-text-elite">
             <Header />
-            <main className="flex-grow py-8 px-4 sm:px-6 lg:px-8">
+            <main className="flex-grow py-8 px-4 sm:px-6 lg:px-8 animate-page-enter">
                 <div className="max-w-4xl mx-auto space-y-6">
+                    <Breadcrumbs />
 
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
-                            <h1 className="text-2xl font-bold text-[#1E3A8A]">Categorías</h1>
+                            <h1 className="text-2xl font-bold text-text-elite tracking-tight">Categorías</h1>
                             <Link
                                 href="/admin"
-                                className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-blue-600 transition-colors mt-1"
+                                className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-cop-blue transition-colors mt-1"
                             >
                                 <ArrowLeft size={16} />
                                 Volver al panel
@@ -133,28 +153,32 @@ export default function CategoriasPage() {
                         {!showForm && (
                             <button
                                 onClick={() => setShowForm(true)}
-                                className="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-[#D91E18] hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors"
+                                className="btn btn-primary shadow-btn-red hover:shadow-btn-red-hover active:scale-95"
                             >
-                                <Plus size={16} className="mr-2" />
+                                <Plus size={16} />
                                 Nueva Categoría
                             </button>
                         )}
                     </div>
 
                     {showForm && (
-                        <div className="bg-white rounded-xl shadow-sm border border-slate-300 overflow-hidden">
-                            <div className="border-b border-slate-300 px-6 py-4 flex items-center justify-between">
-                                <h3 className="text-lg font-medium text-[#1E3A8A]">
+                        <div className="bg-surface rounded-xl shadow-elite-sm border border-border-elite overflow-hidden animate-in fade-in duration-300">
+                            <div className="border-b border-border-elite px-6 py-4 flex items-center justify-between">
+                                <h3 className="text-lg font-semibold text-text-elite">
                                     {editingId ? 'Editar Categoría' : 'Nueva Categoría'}
                                 </h3>
-                                <button onClick={resetForm} className="text-slate-400 hover:text-slate-500">
+                                <button
+                                    onClick={resetForm}
+                                    className="text-text-muted hover:text-text-elite transition-colors p-1 rounded-lg hover:bg-bg-elite"
+                                    aria-label="Cerrar formulario"
+                                >
                                     <X size={20} />
                                 </button>
                             </div>
                             <div className="p-6">
                                 <form onSubmit={handleSubmit} className="space-y-6">
                                     <div>
-                                        <label htmlFor="nombre" className="block text-sm font-medium text-slate-700 mb-1">Nombre de la categoría</label>
+                                        <label htmlFor="nombre" className={labelStyle}>Nombre de la categoría</label>
                                         <input
                                             id="nombre"
                                             type="text"
@@ -162,38 +186,40 @@ export default function CategoriasPage() {
                                             onChange={(e) => setNombre(e.target.value)}
                                             placeholder="Ej: Senior"
                                             required
-                                            className="block w-full rounded-lg border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                            maxLength={50}
+                                            className={inputStyle}
                                         />
                                     </div>
 
                                     <div>
-                                        <label htmlFor="descripcion" className="block text-sm font-medium text-slate-700 mb-1">Descripción (opcional)</label>
+                                        <label htmlFor="descripcion" className={labelStyle}>Descripción (opcional)</label>
                                         <textarea
                                             id="descripcion"
                                             value={descripcion}
                                             onChange={(e) => setDescripcion(e.target.value)}
                                             rows={3}
-                                            className="block w-full rounded-lg border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                            maxLength={300}
+                                            className={`${inputStyle} resize-y`}
                                             placeholder="Detalles sobre esta categoría..."
                                         />
                                     </div>
 
-                                    <div className="flex justify-end gap-3 pt-4 border-t border-slate-200">
+                                    <div className="flex justify-end gap-3 pt-4 border-t border-border-elite">
                                         <button
                                             type="button"
                                             onClick={resetForm}
-                                            className="inline-flex items-center px-4 py-2 border border-slate-300 rounded-lg shadow-sm text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                                            className="btn btn-secondary shadow-elite-xs"
                                         >
                                             Cancelar
                                         </button>
                                         <button
                                             type="submit"
                                             disabled={saving}
-                                            className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-[#D91E18] hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors disabled:opacity-50"
+                                            className="btn btn-primary shadow-btn-red hover:shadow-btn-red-hover active:scale-95 disabled:opacity-50"
                                         >
                                             {saving ? 'Guardando...' : (
                                                 <>
-                                                    <Save size={16} className="mr-2" />
+                                                    <Save size={16} />
                                                     Guardar
                                                 </>
                                             )}
@@ -204,31 +230,31 @@ export default function CategoriasPage() {
                         </div>
                     )}
 
-                    <div className="bg-white rounded-xl shadow-sm border border-slate-300 overflow-hidden">
-                        <div className="px-6 py-4 border-b border-slate-300">
-                            <h3 className="text-lg font-medium text-[#1E3A8A]">Listado de Categorías</h3>
+                    <div className="bg-surface rounded-xl shadow-elite-sm border border-border-elite overflow-hidden">
+                        <div className="px-6 py-4 border-b border-border-elite">
+                            <h3 className="text-lg font-semibold text-text-elite">Listado de Categorías</h3>
                         </div>
 
                         {categorias.length === 0 ? (
-                            <div className="p-12 text-center text-slate-500">
-                                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 mb-4">
-                                    <Tag size={32} className="text-slate-400" />
+                            <div className="p-12 text-center text-text-secondary">
+                                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-bg-elite mb-4">
+                                    <Tag size={32} className="text-text-muted" />
                                 </div>
-                                <p className="text-lg font-medium text-slate-900 mb-1">No hay categorías</p>
+                                <p className="text-lg font-medium text-text-elite mb-1">No hay categorías</p>
                                 <p>Crea la primera categoría para organizar a los participantes.</p>
                             </div>
                         ) : (
-                            <div className="divide-y divide-slate-200">
+                            <div className="divide-y divide-border-elite">
                                 {categorias.map((categoria) => (
-                                    <div key={categoria.id} className="p-4 sm:p-6 hover:bg-slate-50 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                    <div key={categoria.id} className="p-4 sm:p-6 hover:bg-bg-elite transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                                         <div className="flex items-start gap-4">
                                             <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0">
-                                                <Tag size={20} className="text-blue-600" />
+                                                <Tag size={20} className="text-cop-blue" />
                                             </div>
                                             <div>
-                                                <h4 className="text-base font-medium text-slate-900">{categoria.nombre}</h4>
+                                                <h4 className="text-base font-medium text-text-elite">{categoria.nombre}</h4>
                                                 {categoria.descripcion && (
-                                                    <p className="mt-1 text-sm text-slate-500">{categoria.descripcion}</p>
+                                                    <p className="mt-1 text-sm text-text-secondary">{categoria.descripcion}</p>
                                                 )}
                                             </div>
                                         </div>
@@ -236,15 +262,17 @@ export default function CategoriasPage() {
                                         <div className="flex items-center gap-2 sm:self-center self-end">
                                             <button
                                                 onClick={() => handleEdit(categoria)}
-                                                className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                                className="p-2 text-text-muted hover:text-cop-blue hover:bg-blue-50 rounded-lg transition-colors"
                                                 title="Editar"
+                                                aria-label={`Editar categoría ${categoria.nombre}`}
                                             >
                                                 <Edit2 size={18} />
                                             </button>
                                             <button
                                                 onClick={() => handleDelete(categoria.id)}
-                                                className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                                className="p-2 text-text-muted hover:text-fpt-red hover:bg-red-50 rounded-lg transition-colors"
                                                 title="Eliminar"
+                                                aria-label={`Eliminar categoría ${categoria.nombre}`}
                                             >
                                                 <Trash2 size={18} />
                                             </button>

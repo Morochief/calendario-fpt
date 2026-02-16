@@ -59,16 +59,16 @@ export default function AdminFilterDropdown({
             >
                 <div className="flex items-center gap-3 truncate">
                     {/* Icon - fades out when selection is active, optional style choice */}
-                    <Icon size={16} className={`text-slate-400 ${!isDefault ? 'text-blue-600' : ''}`} />
+                    <Icon size={16} className={`text-text-muted ${!isDefault ? 'text-cop-blue' : ''}`} />
 
-                    <span className={`truncate ${!isDefault ? 'text-slate-900' : 'text-slate-500'}`}>
+                    <span className={`truncate ${!isDefault ? 'text-text-elite' : 'text-text-secondary'}`}>
                         {selectedOption ? selectedOption.label : label}
                     </span>
                 </div>
 
                 <ChevronDown
                     size={14}
-                    className={`text-slate-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''} ${!isDefault ? 'text-blue-600' : ''}`}
+                    className={`text-text-muted transition-transform duration-200 ${isOpen ? 'rotate-180' : ''} ${!isDefault ? 'text-cop-blue' : ''}`}
                 />
             </button>
 
