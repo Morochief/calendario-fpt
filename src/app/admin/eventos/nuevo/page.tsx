@@ -66,7 +66,7 @@ export default function NuevoEventoPage() {
             {/* ════════════════════════════════════════════════════════════════════════
                 VIBRANT HERO SECTION (Institutional Blue)
                 ════════════════════════════════════════════════════════════════════════ */}
-            <div className="bg-cop-blue text-white pt-16 pb-24 px-4 relative overflow-hidden border-b-4 border-fpt-red shadow-xl">
+            <div className="bg-[#1E3A8A] text-white pt-16 pb-24 px-4 relative overflow-hidden border-b-4 border-[#D91E18] shadow-xl">
                 {/* Background Glow effects */}
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white/5 rounded-full blur-[100px] pointer-events-none" />
                 <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-400/10 via-transparent to-transparent pointer-events-none" />
@@ -88,7 +88,7 @@ export default function NuevoEventoPage() {
                             <Plus size={32} className="text-white" strokeWidth={1.5} />
                         </div>
                         <h1 className="text-4xl md:text-5xl font-black tracking-tight uppercase">
-                            Nuevo <span className="text-fpt-red">Evento</span>
+                            Nuevo <span className="text-[#D91E18]">Evento</span>
                         </h1>
                         <p className="text-blue-100/80 font-medium max-w-2xl leading-relaxed text-lg">
                             Registra una nueva competencia oficial en el calendario nacional de la Federación.
