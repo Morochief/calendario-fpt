@@ -345,7 +345,7 @@ export default function AdminClubesPage() {
                                     style={{
                                         width: '28px',
                                         height: '28px',
-                                        borderRadius: '8px',
+                                        borderRadius: '6px',
                                         backgroundColor: c,
                                         border: formData.color === c
                                             ? '2.5px solid #1E3A8A'

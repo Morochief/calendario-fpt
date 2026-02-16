@@ -2931,7 +2931,7 @@ a.user-dropdown-item,
   background-color: #fff;
   border: 2px solid #e2e8f0;
   border-bottom-width: 4px;
-  border-radius: 12px;
+  border-radius: 8px;
   transition: all 0.2s ease;
   outline: none;
 }
@@ -2951,13 +2951,13 @@ a.user-dropdown-item,
   padding: 1rem;
   border: 2px solid #e2e8f0;
   border-bottom-width: 4px;
-  border-radius: 12px;
+  border-radius: 8px;
   background: #f8fafc;
 }
 
 .admin-card {
   background: white;
-  border-radius: 20px;
+  border-radius: 12px;
   border: 1px solid rgba(0, 0, 0, 0.05);
   box-shadow:
     0 4px 6px -1px rgba(0, 0, 0, 0.1),
