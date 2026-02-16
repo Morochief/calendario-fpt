@@ -240,7 +240,7 @@ export default function AdminPage() {
                         </button>
 
                         <Link
-                            className="inline-flex items-center justify-center px-4 py-2.5 rounded-xl font-bold text-sm transition-all duration-300 bg-fpt-red text-white hover:bg-cop-blue shadow-md shadow-red-900/20 hover:shadow-xl hover:shadow-blue-900/30 hover:-translate-y-0.5 active:translate-y-0"
+                            className="inline-flex items-center justify-center px-4 py-2.5 rounded-xl font-bold text-sm transition-all duration-300 bg-[#D91E18] text-white hover:bg-cop-blue shadow-md shadow-red-900/20 hover:shadow-xl hover:shadow-blue-900/30 hover:-translate-y-0.5 active:translate-y-0"
                             href="/admin/eventos/nuevo"
                         >
                             <Plus size={20} className="mr-2" strokeWidth={2.5} />
