@@ -52,13 +52,13 @@ export default function Pagination({
     return (
         <nav className="flex flex-col sm:flex-row items-center justify-between gap-6 px-4 py-2" aria-label="Paginación">
             {totalItems && (
-                <div className="flex items-center gap-2 text-sm text-slate-500 font-medium animate-fade-in">
+                <div className="flex items-center gap-2 text-sm text-slate-500 font-bold animate-fade-in">
                     <span>Mostrando</span>
                     <span className="flex items-center gap-1">
-                        <span className="text-slate-800 font-bold px-2 py-0.5 bg-slate-100 rounded-md border border-slate-200">{startItem}-{endItem}</span>
+                        <span className="text-cop-blue font-black px-2.5 py-1 bg-blue-50 rounded-lg border border-blue-100 shadow-sm">{startItem}-{endItem}</span>
                     </span>
                     <span>de</span>
-                    <span className="text-cop-blue font-bold px-2 py-0.5 bg-blue-50 rounded-md border border-blue-100">{totalItems}</span>
+                    <span className="text-fpt-red font-black px-2.5 py-1 bg-red-50 rounded-lg border border-red-100 shadow-sm">{totalItems}</span>
                 </div>
             )}
 
@@ -66,15 +66,15 @@ export default function Pagination({
                 <motion.button
                     whileHover={{ scale: 1.05, x: -2 }}
                     whileTap={{ scale: 0.95 }}
-                    className="flex items-center justify-center w-10 h-10 rounded-xl bg-white border border-slate-200 text-slate-400 transition-all hover:text-cop-blue hover:border-cop-blue hover:shadow-lg hover:shadow-blue-900/5 disabled:opacity-30 disabled:hover:scale-100 disabled:hover:shadow-none disabled:cursor-not-allowed group"
+                    className="flex items-center justify-center w-10 h-10 rounded-xl bg-white border border-slate-200 text-cop-blue transition-all hover:border-cop-blue hover:bg-blue-50 hover:shadow-lg hover:shadow-blue-900/5 disabled:opacity-30 disabled:hover:scale-100 disabled:hover:shadow-none disabled:cursor-not-allowed group"
                     onClick={() => onPageChange(currentPage - 1)}
                     disabled={currentPage === 1}
                     aria-label="Página anterior"
                 >
-                    <ChevronLeft size={20} strokeWidth={2.5} className="group-hover:-translate-x-0.5 transition-transform" />
+                    <ChevronLeft size={20} strokeWidth={3} className="group-hover:-translate-x-0.5 transition-transform" />
                 </motion.button>
 
-                <div className="flex items-center gap-1.5 p-1 bg-slate-100/50 backdrop-blur-sm rounded-2xl border border-slate-200 shadow-inner">
+                <div className="flex items-center gap-1.5 p-1.5 bg-slate-100 backdrop-blur-sm rounded-2xl border border-slate-200 shadow-inner">
                     <AnimatePresence mode="popLayout">
                         {getVisiblePages().map((page, index) => (
                             page === 'ellipsis' ? (
@@ -89,8 +89,8 @@ export default function Pagination({
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                     className={`relative flex items-center justify-center w-10 h-10 rounded-xl text-sm font-black transition-all ${currentPage === page
-                                        ? 'bg-cop-blue text-white shadow-lg shadow-blue-900/20 active:bg-blue-800'
-                                        : 'text-slate-500 hover:text-cop-blue hover:bg-white hover:shadow-md'
+                                        ? 'bg-cop-blue text-white shadow-lg shadow-blue-900/40 active:bg-blue-800'
+                                        : 'text-slate-800 hover:text-fpt-red hover:bg-white hover:shadow-md hover:border hover:border-red-100'
                                         }`}
                                     onClick={() => onPageChange(page)}
                                     aria-current={currentPage === page ? 'page' : undefined}
@@ -100,7 +100,7 @@ export default function Pagination({
                                     {currentPage === page && (
                                         <motion.div
                                             layoutId="pageHighlight"
-                                            className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-1 bg-fpt-red rounded-full shadow-sm shadow-red-500/50"
+                                            className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-5 h-1.5 bg-fpt-red rounded-full shadow-sm shadow-red-500/50"
                                         />
                                     )}
                                 </motion.button>
@@ -112,12 +112,12 @@ export default function Pagination({
                 <motion.button
                     whileHover={{ scale: 1.05, x: 2 }}
                     whileTap={{ scale: 0.95 }}
-                    className="flex items-center justify-center w-10 h-10 rounded-xl bg-white border border-slate-200 text-slate-400 transition-all hover:text-cop-blue hover:border-cop-blue hover:shadow-lg hover:shadow-blue-900/5 disabled:opacity-30 disabled:hover:scale-100 disabled:hover:shadow-none disabled:cursor-not-allowed group"
+                    className="flex items-center justify-center w-10 h-10 rounded-xl bg-white border border-slate-200 text-cop-blue transition-all hover:border-cop-blue hover:bg-blue-50 hover:shadow-lg hover:shadow-blue-900/5 disabled:opacity-30 disabled:hover:scale-100 disabled:hover:shadow-none disabled:cursor-not-allowed group"
                     onClick={() => onPageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
                     aria-label="Página siguiente"
                 >
-                    <ChevronRight size={20} strokeWidth={2.5} className="group-hover:translate-x-0.5 transition-transform" />
+                    <ChevronRight size={20} strokeWidth={3} className="group-hover:translate-x-0.5 transition-transform" />
                 </motion.button>
             </div>
         </nav>

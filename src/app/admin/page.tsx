@@ -213,19 +213,19 @@ export default function AdminPage() {
                 </nav>
 
                 {/* ========== WATERMARK BACKGROUND ========== */}
-                <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden flex items-center justify-center opacity-[0.03]">
+                <div className="fixed bottom-0 right-0 pointer-events-none z-0 overflow-hidden opacity-[0.05] translate-x-1/4 translate-y-1/4 rotate-12">
                     <img
                         src="/LOGO_FPDT-removebg-preview.svg"
                         alt="FPDT Watermark"
-                        className="w-[800px] h-[800px] object-contain grayscale"
+                        className="w-[1000px] h-[1000px] object-contain grayscale"
                     />
                 </div>
 
                 {/* ========== HEADER CON ACCIONES ========== */}
                 <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 my-10 animate-fade-in">
                     <div>
-                        <h1 className="text-4xl font-bold text-slate-800 tracking-tight">Panel de Administración</h1>
-                        <p className="text-slate-500 mt-2 text-lg font-light">
+                        <h1 className="text-4xl font-black text-cop-blue tracking-tight">Panel de Administración</h1>
+                        <p className="text-slate-500 mt-2 text-lg font-medium">
                             Gestiona eventos, inscripciones y configuraciones del sistema.
                         </p>
                     </div>
@@ -233,17 +233,17 @@ export default function AdminPage() {
                         {/* Botón exportar */}
                         <button
                             onClick={() => showToast('Funcionalidad de exportación en desarrollo', 'info')}
-                            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-600 font-medium text-sm transition-all duration-200 hover:border-cop-blue hover:text-cop-blue hover:shadow-md active:scale-95"
+                            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-cop-blue font-bold text-sm transition-all duration-200 hover:border-cop-blue hover:bg-blue-50 hover:shadow-md active:scale-95"
                         >
-                            <Download size={18} strokeWidth={2} />
+                            <Download size={18} strokeWidth={2.5} />
                             <span>Exportar</span>
                         </button>
 
                         <Link
-                            className="inline-flex items-center justify-center px-4 py-2.5 rounded-xl font-medium text-sm transition-all duration-200 bg-fpt-red text-white hover:bg-red-700 shadow-md shadow-red-900/20 hover:shadow-lg hover:shadow-red-900/30 hover:-translate-y-0.5 active:translate-y-0"
+                            className="inline-flex items-center justify-center px-4 py-2.5 rounded-xl font-bold text-sm transition-all duration-300 bg-fpt-red text-white hover:bg-cop-blue shadow-md shadow-red-900/20 hover:shadow-xl hover:shadow-blue-900/30 hover:-translate-y-0.5 active:translate-y-0"
                             href="/admin/eventos/nuevo"
                         >
-                            <Plus size={20} className="mr-2" strokeWidth={2} />
+                            <Plus size={20} className="mr-2" strokeWidth={2.5} />
                             Nuevo Evento
                         </Link>
                     </div>
@@ -264,46 +264,46 @@ export default function AdminPage() {
                         value={kpiInscripciones}
                         trend="+3 esta semana"
                         icon={Users}
-                        iconColor="text-status-success"
-                        iconBg="bg-green-50"
+                        iconColor="text-fpt-red"
+                        iconBg="bg-red-50"
                     />
                     <StatCard
                         label="Próximo"
                         value={nextEvent ? new Date(nextEvent.fecha + 'T12:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' }) : "--"}
                         description={nextEvent ? nextEvent.titulo : "Sin eventos futuros"}
                         icon={Calendar}
-                        iconColor="text-status-warning"
-                        iconBg="bg-amber-50"
+                        iconColor="text-cop-blue"
+                        iconBg="bg-blue-50"
                     />
                     <StatCard
                         label="Modalidades"
                         value={kpiModalidadesCount}
                         description="Tipos utilizados"
                         icon={ClipboardList}
-                        iconColor="text-purple-600"
-                        iconBg="bg-purple-50"
+                        iconColor="text-cop-blue"
+                        iconBg="bg-blue-50"
                     />
                 </div>
 
                 {/* ========== CARDS: INSCRIPCIONES + CONFIGURACIÓN ========== */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12 stagger-children" style={{ animationDelay: '0.1s' }}>
-                    <Link className="group bg-white/90 backdrop-blur-sm p-6 rounded-2xl border border-white/20 shadow-lg shadow-slate-200/50 hover:shadow-xl hover:shadow-green-900/5 hover:-translate-y-1 transition-all duration-300 ease-out flex items-center gap-6 relative overflow-hidden h-full"
+                    <Link className="group bg-white/90 backdrop-blur-sm p-6 rounded-2xl border border-white/20 shadow-lg shadow-slate-200/50 hover:shadow-xl hover:shadow-red-900/5 hover:-translate-y-1 transition-all duration-300 ease-out flex items-center gap-6 relative overflow-hidden h-full"
                         href="/admin/inscripciones">
                         {/* Hover Bar Effect */}
-                        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 to-green-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out origin-left"></div>
+                        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-fpt-red to-red-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out origin-left"></div>
 
                         <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity transform translate-x-8 -translate-y-8 pointer-events-none">
-                            <Users size={150} className="text-green-600" />
+                            <Users size={150} className="text-fpt-red" />
                         </div>
-                        <div className="p-4 bg-gradient-to-br from-green-50 to-green-100 border border-green-200 text-green-600 rounded-xl group-hover:scale-110 transition-transform shadow-sm relative z-10 group-hover:shadow-green-500/20">
-                            <Users size={32} strokeWidth={2} />
+                        <div className="p-4 bg-gradient-to-br from-red-50 to-red-100 border border-red-200 text-fpt-red rounded-xl group-hover:scale-110 transition-transform shadow-sm relative z-10 group-hover:shadow-red-500/20">
+                            <Users size={32} strokeWidth={2.5} />
                         </div>
                         <div className="z-10">
-                            <h3 className="font-bold text-slate-800 text-xl group-hover:text-green-700 transition-colors">Inscripciones</h3>
-                            <p className="text-slate-500 text-sm mt-1 font-medium group-hover:text-green-600/80 transition-colors">Ver lista de inscripciones</p>
+                            <h3 className="font-bold text-cop-blue text-xl group-hover:text-fpt-red transition-colors">Inscripciones</h3>
+                            <p className="text-slate-500 text-sm mt-1 font-medium group-hover:text-slate-600 transition-colors">Ver lista de inscripciones</p>
                         </div>
                         {/* Badge con contador */}
-                        <span className="ml-auto bg-white border border-green-200 text-green-700 text-xs font-bold px-3 py-1 rounded-full shadow-sm z-10 group-hover:bg-green-600 group-hover:text-white group-hover:border-green-600 transition-all duration-300 transform group-hover:scale-110 group-hover:shadow-lg shadow-green-900/5">{kpiInscripciones}</span>
+                        <span className="ml-auto bg-white border border-red-200 text-fpt-red text-xs font-black px-3 py-1 rounded-full shadow-sm z-10 group-hover:bg-fpt-red group-hover:text-white group-hover:border-fpt-red transition-all duration-300 transform group-hover:scale-110 group-hover:shadow-lg shadow-red-900/5">{kpiInscripciones}</span>
                     </Link>
 
                     <div className="group bg-white/90 backdrop-blur-sm p-6 rounded-2xl border border-white/20 shadow-lg shadow-slate-200/50 hover:shadow-xl hover:shadow-blue-900/5 transition-all duration-300 ease-out col-span-1 md:col-span-2 lg:col-span-2 relative overflow-hidden h-full">
@@ -312,49 +312,49 @@ export default function AdminPage() {
                         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cop-blue to-blue-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out origin-left"></div>
 
                         <div className="absolute top-0 right-0 p-4 opacity-5 transform translate-x-8 -translate-y-8 pointer-events-none group-hover:scale-110 transition-transform duration-500">
-                            <Settings size={150} />
+                            <Settings size={150} className="text-cop-blue" />
                         </div>
-                        <h3 className="font-bold text-slate-800 text-xl mb-6 flex items-center gap-3 relative z-10">
-                            <div className="p-2 bg-slate-50 rounded-lg group-hover:bg-blue-50 transition-colors duration-300">
-                                <Settings size={20} className="text-slate-400 group-hover:text-cop-blue transition-colors duration-300" strokeWidth={2} />
+                        <h3 className="font-bold text-cop-blue text-xl mb-6 flex items-center gap-3 relative z-10">
+                            <div className="p-2 bg-blue-50 rounded-lg group-hover:bg-blue-100 transition-colors duration-300">
+                                <Settings size={20} className="text-cop-blue" strokeWidth={2.5} />
                             </div>
                             Configuración
                         </h3>
                         <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 relative z-10 w-full">
-                            <Link className="flex flex-col items-center justify-center gap-3 p-4 bg-white/50 hover:bg-white text-slate-600 rounded-xl border border-slate-200 transition-all duration-200 font-semibold text-sm hover:border-cop-blue hover:text-cop-blue hover:shadow-lg hover:-translate-y-1 active:scale-95 group/link h-full"
+                            <Link className="flex flex-col items-center justify-center gap-3 p-4 bg-white/50 hover:bg-white text-slate-600 rounded-xl border border-slate-200 transition-all duration-200 font-bold text-sm hover:border-cop-blue hover:text-cop-blue hover:shadow-lg hover:-translate-y-1 active:scale-95 group/link h-full"
                                 href="/admin/modalidades">
                                 <div className="p-3 bg-slate-50 rounded-full group-hover/link:bg-blue-50 transition-colors">
                                     <ClipboardList size={24} className="text-slate-400 group-hover/link:text-cop-blue transition-colors" />
                                 </div>
-                                <span className="text-center">Modalidades</span>
+                                <span className="text-center group-hover/link:text-cop-blue">Modalidades</span>
                             </Link>
-                            <Link className="flex flex-col items-center justify-center gap-3 p-4 bg-white/50 hover:bg-white text-slate-600 rounded-xl border border-slate-200 transition-all duration-200 font-semibold text-sm hover:border-cop-blue hover:text-cop-blue hover:shadow-lg hover:-translate-y-1 active:scale-95 group/link h-full"
+                            <Link className="flex flex-col items-center justify-center gap-3 p-4 bg-white/50 hover:bg-white text-slate-600 rounded-xl border border-slate-200 transition-all duration-200 font-bold text-sm hover:border-fpt-red hover:text-fpt-red hover:shadow-lg hover:-translate-y-1 active:scale-95 group/link h-full"
                                 href="/admin/tipos-evento">
-                                <div className="p-3 bg-slate-50 rounded-full group-hover/link:bg-blue-50 transition-colors">
-                                    <Filter size={24} className="text-slate-400 group-hover/link:text-cop-blue transition-colors" />
+                                <div className="p-3 bg-slate-50 rounded-full group-hover/link:bg-red-50 transition-colors">
+                                    <Filter size={24} className="text-slate-400 group-hover/link:text-fpt-red transition-colors" />
                                 </div>
-                                <span className="text-center">Tipos</span>
+                                <span className="text-center group-hover/link:text-fpt-red">Tipos</span>
                             </Link>
-                            <Link className="flex flex-col items-center justify-center gap-3 p-4 bg-white/50 hover:bg-white text-slate-600 rounded-xl border border-slate-200 transition-all duration-200 font-semibold text-sm hover:border-cop-blue hover:text-cop-blue hover:shadow-lg hover:-translate-y-1 active:scale-95 group/link h-full"
+                            <Link className="flex flex-col items-center justify-center gap-3 p-4 bg-white/50 hover:bg-white text-slate-600 rounded-xl border border-slate-200 transition-all duration-200 font-bold text-sm hover:border-cop-blue hover:text-cop-blue hover:shadow-lg hover:-translate-y-1 active:scale-95 group/link h-full"
                                 href="/admin/reglamentos">
                                 <div className="p-3 bg-slate-50 rounded-full group-hover/link:bg-blue-50 transition-colors">
                                     <BookOpen size={24} className="text-slate-400 group-hover/link:text-cop-blue transition-colors" />
                                 </div>
-                                <span className="text-center">Reglamentos</span>
+                                <span className="text-center group-hover/link:text-cop-blue">Reglamentos</span>
                             </Link>
-                            <Link className="flex flex-col items-center justify-center gap-3 p-4 bg-white/50 hover:bg-white text-slate-600 rounded-xl border border-slate-200 transition-all duration-200 font-semibold text-sm hover:border-cop-blue hover:text-cop-blue hover:shadow-lg hover:-translate-y-1 active:scale-95 group/link h-full"
+                            <Link className="flex flex-col items-center justify-center gap-3 p-4 bg-white/50 hover:bg-white text-slate-600 rounded-xl border border-slate-200 transition-all duration-200 font-bold text-sm hover:border-fpt-red hover:text-fpt-red hover:shadow-lg hover:-translate-y-1 active:scale-95 group/link h-full"
                                 href="/admin/categorias">
-                                <div className="p-3 bg-slate-50 rounded-full group-hover/link:bg-blue-50 transition-colors">
-                                    <ClipboardList size={24} className="text-slate-400 group-hover/link:text-cop-blue transition-colors" />
+                                <div className="p-3 bg-slate-50 rounded-full group-hover/link:bg-red-50 transition-colors">
+                                    <ClipboardList size={24} className="text-slate-400 group-hover/link:text-fpt-red transition-colors" />
                                 </div>
-                                <span className="text-center">Categorías</span>
+                                <span className="text-center group-hover/link:text-fpt-red">Categorías</span>
                             </Link>
-                            <Link className="flex flex-col items-center justify-center gap-3 p-4 bg-white hover:bg-white text-text-secondary rounded-xl border border-slate-200 transition-all duration-200 font-semibold text-sm hover:border-cop-blue hover:shadow-lg hover:-translate-y-1 active:scale-95 group/link h-full"
+                            <Link className="flex flex-col items-center justify-center gap-3 p-4 bg-white hover:bg-white text-slate-600 rounded-xl border border-slate-200 transition-all duration-200 font-bold text-sm hover:border-cop-blue hover:shadow-lg hover:-translate-y-1 active:scale-95 group/link h-full"
                                 href="/admin/clubes">
                                 <div className="p-3 bg-slate-50 rounded-full group-hover/link:bg-blue-50 transition-colors">
                                     <Building2 size={24} className="text-slate-400 group-hover/link:text-cop-blue transition-colors" />
                                 </div>
-                                <span className="group-hover/link:text-cop-blue transition-colors text-center">Clubes</span>
+                                <span className="text-center group-hover/link:text-cop-blue">Clubes</span>
                             </Link>
                         </div>
                     </div>
