@@ -301,7 +301,7 @@ export default function AdminPage() {
                         </div>
                         <div className="z-10">
                             <h3 className="font-bold text-text-elite text-xl group-hover:text-green-700 transition-colors">Inscripciones</h3>
-                            <p className="text-text-muted text-sm mt-1 font-medium group-hover:text-green-600/80 transition-colors">Ver lista de tiradores</p>
+                            <p className="text-text-muted text-sm mt-1 font-medium group-hover:text-green-600/80 transition-colors">Ver lista de inscripciones</p>
                         </div>
                         {/* Badge con contador */}
                         <span className="ml-auto bg-white border border-green-200 text-green-700 text-xs font-bold px-3 py-1 rounded-full shadow-sm z-10 group-hover:bg-green-600 group-hover:text-white group-hover:border-green-600 transition-all duration-300 transform group-hover:scale-110 group-hover:shadow-lg shadow-green-900/5">{kpiInscripciones}</span>

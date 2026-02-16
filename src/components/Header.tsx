@@ -82,9 +82,9 @@ export default function Header() {
                     <FileText size={16} strokeWidth={1.5} />
                     <span>Reglamentos</span>
                 </Link>
-                <Link href="/tiradores">
+                <Link href="/clubes">
                     <Users size={16} strokeWidth={1.5} />
-                    <span>Tiradores</span>
+                    <span>Clubes</span>
                 </Link>
 
                 {/* Bandera Paraguaya */}
