@@ -261,6 +261,7 @@ export default function InscripcionesPage() {
                                 </select>
                             </div>
                         }
+                        noPadding
                     >
                         <EliteTable
                             data={filteredInscripciones}
