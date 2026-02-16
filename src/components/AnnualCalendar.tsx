@@ -15,8 +15,8 @@ interface AnnualCalendarProps {
 
 export default function AnnualCalendar({ eventos, year = 2026 }: AnnualCalendarProps) {
     return (
-        <div className="annual-calendar">
-            <div className="annual-grid">
+        <div className="bg-surface rounded-elite-md p-6 border border-border-elite shadow-elite-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {MESES_COMPLETOS.map((mes, index) => (
                     <MiniMonth
                         key={mes}

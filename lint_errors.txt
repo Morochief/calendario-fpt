@@ -1,0 +1,274 @@
+﻿
+> calendario-fpt@0.1.0 lint
+> eslint
+
+
+C:\Users\NBCLT-LAB\Desktop\Proyectos\calendario-fpt\src\app\admin\clubes\page.tsx
+    4:8    warning  'Link' is defined but never used          @typescript-eslint/no-unused-vars
+   12:8    warning  'EliteButton' is defined but never used   @typescript-eslint/no-unused-vars
+   15:43   warning  'Phone' is defined but never used         @typescript-eslint/no-unused-vars
+  302:107  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\NBCLT-LAB\Desktop\Proyectos\calendario-fpt\src\app\admin\eventos\[id]\editar\page.tsx
+  11:18  warning  'Modalidad' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              @typescript-eslint/no-unused-vars
+  11:29  warning  'TipoEvento' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             @typescript-eslint/no-unused-vars
+  24:13  error    Error: Cannot access variable before it is declared
+
+`loadEvento` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+C:\Users\NBCLT-LAB\Desktop\Proyectos\calendario-fpt\src\app\admin\eventos\[id]\editar\page.tsx:24:13
+  22 |         const id = params?.id as string;
+  23 |         if (id) {
+> 24 |             loadEvento(id);
+     |             ^^^^^^^^^^ `loadEvento` accessed before it is declared
+  25 |         }
+  26 |     }, [params]);
+  27 |
+
+C:\Users\NBCLT-LAB\Desktop\Proyectos\calendario-fpt\src\app\admin\eventos\[id]\editar\page.tsx:28:5
+  26 |     }, [params]);
+  27 |
+> 28 |     async function loadEvento(id: string) {
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 29 |         const supabase = createClient();
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 30 |
+     ÔÇª
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 53 |         setLoading(false);
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 54 |     }
+     | ^^^^^^ `loadEvento` is declared here
+  55 |
+  56 |     if (loading) {
+  57 |         return (  react-hooks/immutability
+  26:8   warning  React Hook useEffect has a missing dependency: 'loadEvento'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      react-hooks/exhaustive-deps
+
+C:\Users\NBCLT-LAB\Desktop\Proyectos\calendario-fpt\src\app\admin\eventos\[id]\page.tsx
+  26:9  error    Error: Cannot access variable before it is declared
+
+`checkAuthAndLoad` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+C:\Users\NBCLT-LAB\Desktop\Proyectos\calendario-fpt\src\app\admin\eventos\[id]\page.tsx:26:9
+  24 |
+  25 |     useEffect(() => {
+> 26 |         checkAuthAndLoad();
+     |         ^^^^^^^^^^^^^^^^ `checkAuthAndLoad` accessed before it is declared
+  27 |     }, [id]);
+  28 |
+  29 |     async function checkAuthAndLoad() {
+
+C:\Users\NBCLT-LAB\Desktop\Proyectos\calendario-fpt\src\app\admin\eventos\[id]\page.tsx:29:5
+  27 |     }, [id]);
+  28 |
+> 29 |     async function checkAuthAndLoad() {
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 30 |         const supabase = createClient();
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 31 |         const { data: { user } } = await supabase.auth.getUser();
+     ÔÇª
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 60 |         setLoading(false);
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 61 |     }
+     | ^^^^^^ `checkAuthAndLoad` is declared here
+  62 |
+  63 |     if (loading) {
+  64 |         return (  react-hooks/immutability
+  27:8  warning  React Hook useEffect has a missing dependency: 'checkAuthAndLoad'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                react-hooks/exhaustive-deps
+
+C:\Users\NBCLT-LAB\Desktop\Proyectos\calendario-fpt\src\app\admin\eventos\nuevo\page.tsx
+  17:9  error    Error: Cannot access variable before it is declared
+
+`checkAuth` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+C:\Users\NBCLT-LAB\Desktop\Proyectos\calendario-fpt\src\app\admin\eventos\nuevo\page.tsx:17:9
+  15 |
+  16 |     useEffect(() => {
+> 17 |         checkAuth();
+     |         ^^^^^^^^^ `checkAuth` accessed before it is declared
+  18 |     }, []);
+  19 |
+  20 |     async function checkAuth() {
+
+C:\Users\NBCLT-LAB\Desktop\Proyectos\calendario-fpt\src\app\admin\eventos\nuevo\page.tsx:20:5
+  18 |     }, []);
+  19 |
+> 20 |     async function checkAuth() {
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 21 |         const supabase = createClient();
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 22 |         const { data: { user } } = await supabase.auth.getUser();
+     ÔÇª
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 29 |         setLoading(false);
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 30 |     }
+     | ^^^^^^ `checkAuth` is declared here
+  31 |
+  32 |     if (loading) {
+  33 |         return (  react-hooks/immutability
+  18:8  warning  React Hook useEffect has a missing dependency: 'checkAuth'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             react-hooks/exhaustive-deps
+
+C:\Users\NBCLT-LAB\Desktop\Proyectos\calendario-fpt\src\app\admin\inscripciones\page.tsx
+  56:8  warning  React Hook useEffect has a missing dependency: 'loadData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\NBCLT-LAB\Desktop\Proyectos\calendario-fpt\src\app\admin\login\page.tsx
+  70:25  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+C:\Users\NBCLT-LAB\Desktop\Proyectos\calendario-fpt\src\app\admin\page.tsx
+   7:8  warning  'Breadcrumbs' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  15:5  warning  'FileText' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             @typescript-eslint/no-unused-vars
+  27:5  warning  'ChevronDown' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  71:9  error    Error: Cannot access variable before it is declared
+
+`checkAuth` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+C:\Users\NBCLT-LAB\Desktop\Proyectos\calendario-fpt\src\app\admin\page.tsx:71:9
+  69 |
+  70 |     useEffect(() => {
+> 71 |         checkAuth();
+     |         ^^^^^^^^^ `checkAuth` accessed before it is declared
+  72 |     }, []);
+  73 |
+  74 |     async function checkAuth() {
+
+C:\Users\NBCLT-LAB\Desktop\Proyectos\calendario-fpt\src\app\admin\page.tsx:74:5
+  72 |     }, []);
+  73 |
+> 74 |     async function checkAuth() {
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 75 |         const supabase = createClient();
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 76 |         const { data: { user } } = await supabase.auth.getUser();
+     ÔÇª
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 83 |         loadEventos();
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 84 |     }
+     | ^^^^^^ `checkAuth` is declared here
+  85 |
+  86 |     async function loadEventos() {
+  87 |         const supabase = createClient();  react-hooks/immutability
+  72:8  warning  React Hook useEffect has a missing dependency: 'checkAuth'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     react-hooks/exhaustive-deps
+
+C:\Users\NBCLT-LAB\Desktop\Proyectos\calendario-fpt\src\app\layout.tsx
+  28:9  warning  Custom fonts not added in `pages/_document.js` will only load for a single page. This is discouraged. See: https://nextjs.org/docs/messages/no-page-custom-font  @next/next/no-page-custom-font
+
+C:\Users\NBCLT-LAB\Desktop\Proyectos\calendario-fpt\src\app\reglamentos\page.tsx
+  21:9  error  Error: Cannot access variable before it is declared
+
+`loadReglamentos` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+C:\Users\NBCLT-LAB\Desktop\Proyectos\calendario-fpt\src\app\reglamentos\page.tsx:21:9
+  19 |
+  20 |     useEffect(() => {
+> 21 |         loadReglamentos();
+     |         ^^^^^^^^^^^^^^^ `loadReglamentos` accessed before it is declared
+  22 |     }, []);
+  23 |
+  24 |     async function loadReglamentos() {
+
+C:\Users\NBCLT-LAB\Desktop\Proyectos\calendario-fpt\src\app\reglamentos\page.tsx:24:5
+  22 |     }, []);
+  23 |
+> 24 |     async function loadReglamentos() {
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 25 |         const supabase = createClient();
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 26 |         const { data } = await supabase
+     ÔÇª
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 34 |         setLoading(false);
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 35 |     }
+     | ^^^^^^ `loadReglamentos` is declared here
+  36 |
+  37 |     return (
+  38 |         <div style={{ minHeight: '100vh', background: '#F9FBFF', display: 'flex', flexDirection: 'column' }}>  react-hooks/immutability
+
+C:\Users\NBCLT-LAB\Desktop\Proyectos\calendario-fpt\src\components\AdminFilterDropdown.tsx
+  29:5   warning  'placeholder' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   @typescript-eslint/no-unused-vars
+  37:23  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\NBCLT-LAB\Desktop\Proyectos\calendario-fpt\src\components\AdminFilterDropdown.tsx:37:23
+  35 |     const menuRef = useRef<HTMLDivElement>(null);
+  36 |
+> 37 |     useEffect(() => { setMounted(true); }, []);
+     |                       ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  38 |
+  39 |     // Position the portal menu relative to the trigger
+  40 |     const updatePosition = useCallback(() => {  react-hooks/set-state-in-effect
+
+C:\Users\NBCLT-LAB\Desktop\Proyectos\calendario-fpt\src\components\EventForm.tsx
+   41:41  warning  React Hook useEffect has a missing dependency: 'loadOptions'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+   88:25  error    Unexpected any. Specify a different type                                                                        @typescript-eslint/no-explicit-any
+  134:18  warning  'err' is defined but never used                                                                                 @typescript-eslint/no-unused-vars
+
+C:\Users\NBCLT-LAB\Desktop\Proyectos\calendario-fpt\src\components\EventModal.tsx
+   30:9   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\NBCLT-LAB\Desktop\Proyectos\calendario-fpt\src\components\EventModal.tsx:30:9
+  28 |
+  29 |     useEffect(() => {
+> 30 |         setMounted(true);
+     |         ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  31 |         if (evento) {
+  32 |             document.body.style.overflow = 'hidden';
+  33 |             document.addEventListener('keydown', handleEscape);  react-hooks/set-state-in-effect
+  122:25  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      @next/next/no-img-element
+
+C:\Users\NBCLT-LAB\Desktop\Proyectos\calendario-fpt\src\components\Footer.tsx
+   3:10  warning  'useState' is defined but never used          @typescript-eslint/no-unused-vars
+   3:20  warning  'useEffect' is defined but never used         @typescript-eslint/no-unused-vars
+   4:10  warning  'createClient' is defined but never used      @typescript-eslint/no-unused-vars
+   7:11  warning  'Contacto' is defined but never used          @typescript-eslint/no-unused-vars
+  14:11  warning  'ContactoAgrupado' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\NBCLT-LAB\Desktop\Proyectos\calendario-fpt\src\components\Header.tsx
+   4:8    warning  'Image' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 @typescript-eslint/no-unused-vars
+  19:11   warning  'isAdmin' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      @typescript-eslint/no-unused-vars
+  23:49   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-explicit-any
+  27:102  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-explicit-any
+  36:9    error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\NBCLT-LAB\Desktop\Proyectos\calendario-fpt\src\components\Header.tsx:36:9
+  34 |     // Close mobile menu on route change
+  35 |     useEffect(() => {
+> 36 |         setMenuOpen(false);
+     |         ^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  37 |     }, [pathname]);
+  38 |
+  39 |     async function handleLogout() {  react-hooks/set-state-in-effect
+  57:17   warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           @next/next/no-img-element
+
+C:\Users\NBCLT-LAB\Desktop\Proyectos\calendario-fpt\src\components\Hero.tsx
+   3:8   warning  'Image' is defined but never used                                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+  19:25  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+C:\Users\NBCLT-LAB\Desktop\Proyectos\calendario-fpt\src\components\ui\StatCard.tsx
+  3:10  warning  'ReactNode' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\NBCLT-LAB\Desktop\Proyectos\calendario-fpt\src\middleware.ts
+  20:58  warning  'options' is defined but never used  @typescript-eslint/no-unused-vars
+
+Ô£û 43 problems (12 errors, 31 warnings)
+

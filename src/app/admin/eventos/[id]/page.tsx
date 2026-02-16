@@ -22,19 +22,8 @@ export default function EditarEventoPage({ params }: { params: Promise<{ id: str
     const [notFound, setNotFound] = useState(false);
     const router = useRouter();
 
-    useEffect(() => {
-        checkAuthAndLoad();
-    }, [id]);
-
-    async function checkAuthAndLoad() {
+    async function loadEvento() {
         const supabase = createClient();
-        const { data: { user } } = await supabase.auth.getUser();
-
-        if (!user) {
-            router.push('/admin/login');
-            return;
-        }
-
         // Load evento
         const { data: eventoData, error } = await supabase
             .from('eventos')

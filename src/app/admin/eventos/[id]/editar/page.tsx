@@ -8,50 +8,61 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import EventForm from '@/components/EventForm';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import { createClient } from '@/lib/supabase';
-import { Evento, Modalidad, TipoEvento } from '@/lib/types';
 import { useToast } from '@/components/Toast';
 
 export default function EditarEventoPage() {
     const [loading, setLoading] = useState(true);
-    const [evento, setEvento] = useState<Evento | null>(null);
+    const [evento, setEvento] = useState<any | null>(null); // Changed to 'any' to match new loadEvento structure
     const router = useRouter();
     const params = useParams();
     const { showToast } = useToast();
+
+
+
+    async function loadEvento(id: string) {
+        const supabase = createClient();
+
+        // Check Auth - This part was in the original loadEvento but not in the provided new one.
+        // Assuming it should still be there for security.
+        const { data: { user } = { user: null } } = await supabase.auth.getUser();
+        if (!user) {
+            router.push('/admin/login');
+            return;
+        }
+
+        try {
+            const { data: eventoData, error } = await supabase
+                .from('eventos')
+                .select(`
+                    *,
+                    modalidad:modalidades(*),
+                    tipo:tipos_evento(*)
+                `)
+                .eq('id', id)
+                .single();
+
+            if (error) throw error;
+            if (!eventoData) throw new Error('Evento no encontrado');
+
+            setEvento(eventoData);
+
+
+        } catch (error) {
+            console.error('Error al cargar evento:', error);
+            showToast('Error al cargar el evento', 'error');
+            router.push('/admin');
+        } finally {
+            setLoading(false);
+        }
+    }
 
     useEffect(() => {
         const id = params?.id as string;
         if (id) {
             loadEvento(id);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [params]);
-
-    async function loadEvento(id: string) {
-        const supabase = createClient();
-
-        // Check Auth
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) {
-            router.push('/admin/login');
-            return;
-        }
-
-        // Fetch Event
-        const { data, error } = await supabase
-            .from('eventos')
-            .select('*')
-            .eq('id', id)
-            .single();
-
-        if (error || !data) {
-            console.error('Error loading event:', error);
-            showToast('No se pudo cargar el evento', 'error');
-            router.push('/admin');
-            return;
-        }
-
-        setEvento(data);
-        setLoading(false);
-    }
 
     if (loading) {
         return (

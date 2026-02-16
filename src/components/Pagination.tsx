@@ -58,16 +58,16 @@ export default function Pagination({
     const endItem = Math.min(currentPage * itemsPerPage, totalItems || 0);
 
     return (
-        <nav className="pagination" aria-label="Paginación">
+        <nav className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 px-2" aria-label="Paginación">
             {totalItems && (
-                <span className="pagination-info" aria-live="polite">
-                    Mostrando {startItem}-{endItem} de {totalItems}
+                <span className="text-sm text-text-muted font-medium" aria-live="polite">
+                    Mostrando <span className="text-text-elite font-bold">{startItem}-{endItem}</span> de <span className="text-text-elite font-bold">{totalItems}</span>
                 </span>
             )}
 
-            <div className="pagination-controls">
+            <div className="flex items-center gap-1.5">
                 <button
-                    className="pagination-btn"
+                    className="flex items-center justify-center w-9 h-9 rounded-elite-sm text-text-secondary transition-all hover:bg-slate-100 hover:text-cop-blue disabled:opacity-40 disabled:hover:bg-transparent disabled:cursor-not-allowed active:scale-95"
                     onClick={() => onPageChange(currentPage - 1)}
                     disabled={currentPage === 1}
                     aria-label="Página anterior"
@@ -77,13 +77,16 @@ export default function Pagination({
 
                 {getVisiblePages().map((page, index) => (
                     page === 'ellipsis' ? (
-                        <span key={`ellipsis-${index}`} className="pagination-ellipsis" aria-hidden="true">
+                        <span key={`ellipsis-${index}`} className="flex items-center justify-center w-9 h-9 text-text-muted select-none" aria-hidden="true">
                             ...
                         </span>
                     ) : (
                         <button
                             key={page}
-                            className={`pagination-btn ${currentPage === page ? 'active' : ''}`}
+                            className={`flex items-center justify-center w-9 h-9 rounded-elite-sm text-sm font-semibold transition-all shadow-sm active:scale-95 ${currentPage === page
+                                    ? 'bg-cop-blue text-white shadow-elite-sm hover:shadow-elite-md'
+                                    : 'bg-white text-text-secondary border border-border-elite hover:border-cop-blue hover:text-cop-blue'
+                                }`}
                             onClick={() => onPageChange(page)}
                             aria-current={currentPage === page ? 'page' : undefined}
                             aria-label={`Página ${page}`}
@@ -94,7 +97,7 @@ export default function Pagination({
                 ))}
 
                 <button
-                    className="pagination-btn"
+                    className="flex items-center justify-center w-9 h-9 rounded-elite-sm text-text-secondary transition-all hover:bg-slate-100 hover:text-cop-blue disabled:opacity-40 disabled:hover:bg-transparent disabled:cursor-not-allowed active:scale-95"
                     onClick={() => onPageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
                     aria-label="Página siguiente"

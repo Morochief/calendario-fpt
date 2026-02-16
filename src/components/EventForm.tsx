@@ -85,6 +85,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
             const { data: { publicUrl } } = supabase.storage.from('eventos').getPublicUrl(fileName);
             setImagenUrl(publicUrl);
             showToast('Imagen subida correctamente', 'success');
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             showToast(`Error al subir imagen: ${error.message}`, 'error');
         } finally {

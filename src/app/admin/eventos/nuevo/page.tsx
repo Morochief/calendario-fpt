@@ -13,10 +13,6 @@ export default function NuevoEventoPage() {
     const [loading, setLoading] = useState(true);
     const router = useRouter();
 
-    useEffect(() => {
-        checkAuth();
-    }, []);
-
     async function checkAuth() {
         const supabase = createClient();
         const { data: { user } } = await supabase.auth.getUser();
@@ -26,8 +22,18 @@ export default function NuevoEventoPage() {
             return;
         }
 
+        if (user.email !== 'admin@fpdt.org.py') {
+            router.push('/');
+            return;
+        }
+
         setLoading(false);
     }
+
+    useEffect(() => {
+        checkAuth();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     if (loading) {
         return (

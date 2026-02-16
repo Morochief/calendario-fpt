@@ -34,7 +34,7 @@ export default function MiniMonth({ mes, mesIndex, year, eventos }: MiniMonthPro
     const dias = [];
 
     for (let i = 0; i < startDayOfWeek; i++) {
-        dias.push(<div key={`empty-${i}`} className="mini-day empty"></div>);
+        dias.push(<div key={`empty-${i}`} className="bg-transparent"></div>);
     }
 
     for (let dia = 1; dia <= daysInMonth; dia++) {
@@ -44,16 +44,19 @@ export default function MiniMonth({ mes, mesIndex, year, eventos }: MiniMonthPro
         dias.push(
             <div
                 key={dia}
-                className={`mini-day ${tieneEventos ? 'has-event' : ''}`}
+                className={`aspect-square flex flex-col items-center justify-center text-[11px] text-text-elite rounded-[4px] cursor-default relative transition-all ${tieneEventos
+                        ? 'bg-surface font-semibold cursor-pointer shadow-elite-xs hover:scale-115 hover:z-10 hover:shadow-elite-md hover:bg-cop-blue hover:text-white group'
+                        : ''
+                    }`}
                 title={tieneEventos ? eventosDelDia.map(e => e.titulo).join('\n') : ''}
             >
-                <span className="day-number">{dia}</span>
+                <span className="leading-none">{dia}</span>
                 {tieneEventos && (
-                    <div className="event-dots">
+                    <div className="flex gap-px mt-px">
                         {eventosDelDia.slice(0, 3).map((e, i) => (
                             <span
                                 key={i}
-                                className="event-dot"
+                                className="w-[3px] h-[3px] rounded-full transition-colors group-hover:bg-white"
                                 style={{ background: e.modalidades?.color || '#171717' }}
                             />
                         ))}
@@ -67,43 +70,42 @@ export default function MiniMonth({ mes, mesIndex, year, eventos }: MiniMonthPro
     const tieneEventosOcultos = eventosDelMes.length > 3 && !expandido;
 
     return (
-        <div className={`mini-month ${expandido ? 'expanded' : ''}`}>
+        <div className={`bg-cop-blue/5 rounded-elite-sm p-3.5 text-xs transition-all border border-transparent hover:bg-cop-blue/10 hover:border-border-elite ${expandido ? 'ring-2 ring-cop-blue/20' : ''}`}>
             <div
-                className="mini-month-header"
+                className="font-semibold uppercase tracking-wider text-text-elite mb-2 text-xs flex items-center justify-between"
                 onClick={() => eventosDelMes.length > 0 && setExpandido(!expandido)}
                 style={{ cursor: eventosDelMes.length > 0 ? 'pointer' : 'default' }}
             >
                 {mes}
                 {eventosDelMes.length > 0 && (
-                    <span className="event-count">{eventosDelMes.length}</span>
+                    <span className="text-[10px] bg-cop-blue/10 px-1.5 py-0.5 rounded-full text-cop-blue font-bold">{eventosDelMes.length}</span>
                 )}
             </div>
-            <div className="mini-month-weekdays">
+            <div className="grid grid-cols-7 text-center font-medium text-text-muted text-[10px] mb-1">
                 <span>D</span><span>L</span><span>M</span><span>M</span>
                 <span>J</span><span>V</span><span>S</span>
             </div>
-            <div className="mini-month-grid">
+            <div className="grid grid-cols-7 gap-0.5">
                 {dias}
             </div>
             {eventosDelMes.length > 0 && (
-                <div className="mini-month-events">
+                <div className="mt-2 pt-2 border-t border-border-elite">
                     {eventosAMostrar.map((e, i) => (
-                        <div key={i} className="mini-event" title={e.titulo}>
+                        <div key={i} className="flex items-center gap-1.5 py-1 text-[10px] text-text-elite cursor-pointer transition-all rounded-[3px] px-1 hover:bg-cop-blue/10 hover:translate-x-0.5" title={e.titulo}>
                             <span
-                                className="mini-event-dot"
+                                className="w-[5px] h-[5px] rounded-full shrink-0"
                                 style={{ background: e.modalidades?.color || '#171717' }}
                             />
-                            <span className="mini-event-date">
+                            <span className="font-semibold text-text-secondary min-w-[16px]">
                                 {new Date(e.fecha + 'T12:00:00').getDate()}
                             </span>
-                            <span className="mini-event-title">{e.titulo}</span>
+                            <span className="whitespace-nowrap overflow-hidden text-ellipsis flex-1">{e.titulo}</span>
                         </div>
                     ))}
                     {tieneEventosOcultos && (
                         <button
-                            className="mini-event-toggle"
+                            className="w-full mt-1 flex items-center justify-center gap-1 text-[10px] text-cop-blue font-medium hover:underline py-1"
                             onClick={() => setExpandido(true)}
-                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.25rem' }}
                         >
                             Ver {eventosDelMes.length - 3} más
                             <ChevronDown size={10} strokeWidth={1.5} />
@@ -111,9 +113,8 @@ export default function MiniMonth({ mes, mesIndex, year, eventos }: MiniMonthPro
                     )}
                     {expandido && eventosDelMes.length > 3 && (
                         <button
-                            className="mini-event-toggle"
+                            className="w-full mt-1 flex items-center justify-center gap-1 text-[10px] text-cop-blue font-medium hover:underline py-1"
                             onClick={() => setExpandido(false)}
-                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.25rem' }}
                         >
                             Mostrar menos
                             <ChevronUp size={10} strokeWidth={1.5} />

@@ -25,50 +25,19 @@ export default function EventRow({ evento, onClick }: EventRowProps) {
             role="button"
             tabIndex={0}
             aria-label={`Ver evento: ${evento.titulo}`}
+            className="group flex items-center gap-2 py-2.5 px-3 mb-1.5 bg-white border border-[rgba(30,58,138,0.12)] border-l-[4px] rounded-[10px] cursor-pointer text-[13px] transition-all duration-200 shadow-sm hover:shadow-md hover:border-cop-blue/20 hover:translate-x-1 outline-none focus:ring-2 focus:ring-cop-blue/20"
             style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                padding: '0.625rem 0.75rem',
-                marginBottom: '0.375rem',
-                background: 'white',
-                border: '1.5px solid rgba(30, 58, 138, 0.12)',
-                borderLeft: `4px solid ${modalityColor}`,
-                borderRadius: '10px',
-                cursor: 'pointer',
-                fontSize: '0.8125rem',
-                transition: 'all 0.2s ease',
-                boxShadow: '0 1px 4px rgba(30, 58, 138, 0.06)',
-            }}
-            onMouseEnter={(e) => {
-                const el = e.currentTarget;
-                el.style.boxShadow = '0 4px 16px rgba(30, 58, 138, 0.12)';
-                el.style.borderColor = 'rgba(30, 58, 138, 0.2)';
-                el.style.transform = 'translateX(4px)';
-            }}
-            onMouseLeave={(e) => {
-                const el = e.currentTarget;
-                el.style.boxShadow = '0 1px 4px rgba(30, 58, 138, 0.06)';
-                el.style.borderColor = 'rgba(30, 58, 138, 0.12)';
-                el.style.transform = 'translateX(0)';
+                borderLeftColor: modalityColor,
             }}
         >
             {evento.hora && (
-                <span style={{
-                    display: 'flex', alignItems: 'center', gap: '0.25rem',
-                    color: '#94A3B8', fontWeight: 600, fontSize: '0.75rem',
-                    flexShrink: 0,
-                }}>
+                <span className="flex items-center gap-1 text-text-muted font-semibold text-xs shrink-0">
                     <Clock size={12} />
                     {evento.hora.slice(0, 5)}
                 </span>
             )}
 
-            <span style={{
-                fontWeight: 600, color: '#1E3A8A',
-                whiteSpace: 'nowrap', overflow: 'hidden',
-                textOverflow: 'ellipsis', flex: 1,
-            }}>
+            <span className="font-semibold text-cop-blue whitespace-nowrap overflow-hidden text-ellipsis flex-1 group-hover:text-fpt-red transition-colors">
                 {evento.titulo}
             </span>
         </div>

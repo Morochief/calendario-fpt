@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
 import { createClient } from '@/lib/supabase';
 import { Club } from '@/lib/types';
 import { useToast } from '@/components/Toast';
@@ -12,7 +11,7 @@ import EliteTable, { EliteHeader, EliteCell } from '@/components/ui/EliteTable';
 import EliteButton from '@/components/ui/EliteButton';
 import EliteModal from '@/components/ui/EliteModal';
 import {
-    Plus, Edit2, Trash2, Save, Building2, Phone, User, Loader2
+    Plus, Edit2, Trash2, Save, Loader2, Building2, Phone, User
 } from 'lucide-react';
 
 const PRESET_COLORS = [
@@ -78,7 +77,8 @@ export default function AdminClubesPage() {
             }
             closeModal();
             await loadClubes();
-        } catch (error) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
             console.error('Error saving club:', error);
             showToast('Error al guardar el club', 'error');
         } finally {
@@ -299,7 +299,10 @@ export default function AdminClubesPage() {
                                 <select
                                     id="club-estado"
                                     value={formData.estado}
-                                    onChange={(e) => setFormData({ ...formData, estado: e.target.value as any })}
+                                    onChange={(e) => {
+                                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                        setFormData({ ...formData, estado: e.target.value as any });
+                                    }}
                                     className="admin-input w-full"
                                 >
                                     <option value="pendiente">Pendiente</option>

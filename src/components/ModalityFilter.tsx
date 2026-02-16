@@ -32,9 +32,9 @@ export default function ModalityFilter({ modalidades, selected, onSelect }: Moda
     };
 
     return (
-        <div className="filter-container" ref={dropdownRef}>
+        <div className="sticky top-[80px] z-[var(--z-filter)] flex py-2 pointer-events-none mb-10" ref={dropdownRef}>
             <button
-                className={`filter-trigger ${selected ? 'active' : ''}`}
+                className={`pointer-events-auto flex items-center justify-between gap-4 px-4 py-2.5 bg-surface border border-border-elite rounded-elite-sm font-medium text-sm text-text-elite cursor-pointer shadow-elite-xs transition-all hover:border-border-hover hover:shadow-elite-sm active:scale-98 min-w-[240px] ${selected ? 'border-border-hover shadow-[0_0_0_3px_rgba(30,58,138,0.08)]' : ''}`}
                 onClick={() => setIsOpen(!isOpen)}
             >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
@@ -68,9 +68,9 @@ export default function ModalityFilter({ modalidades, selected, onSelect }: Moda
             </button>
 
             {isOpen && (
-                <div className="filter-dropdown-menu">
+                <div className="absolute top-[calc(100%+6px)] left-0 bg-surface border border-border-elite rounded-elite-md shadow-elite-xl p-1.5 min-w-[260px] max-h-[60vh] overflow-y-auto pointer-events-auto z-[var(--z-dropdown)] flex flex-col animate-in fade-in slide-in-from-top-2 duration-200">
                     <button
-                        className={`dropdown-item ${selected === null ? 'selected' : ''}`}
+                        className={`flex items-center gap-3 px-3 py-2.5 rounded-md cursor-pointer transition-all border-none bg-transparent w-full text-left text-[13px] text-text-elite hover:bg-cop-blue/5 hover:translate-x-0.5 active:translate-x-0.5 active:scale-98 ${selected === null ? 'bg-cop-blue/5 font-semibold' : ''}`}
                         onClick={() => handleSelect(null)}
                     >
                         <div style={{ width: '18px', display: 'flex', justifyContent: 'center' }}>
@@ -79,12 +79,12 @@ export default function ModalityFilter({ modalidades, selected, onSelect }: Moda
                         Todas las modalidades
                     </button>
 
-                    <div style={{ height: '1px', background: 'rgba(0,0,0,0.04)', margin: '0.25rem 0' }} />
+                    <div className="h-px bg-black/5 my-1" />
 
                     {modalidades.map((mod) => (
                         <button
                             key={mod.id}
-                            className={`dropdown-item ${selected === mod.id ? 'selected' : ''}`}
+                            className={`flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer transition-all border-none bg-transparent w-full text-left text-[13px] text-text-elite hover:bg-cop-blue/5 hover:translate-x-0.5 active:translate-x-0.5 active:scale-98 ${selected === mod.id ? 'bg-cop-blue/5 font-semibold' : ''}`}
                             onClick={() => handleSelect(mod.id)}
                         >
                             <span

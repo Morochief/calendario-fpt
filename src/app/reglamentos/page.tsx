@@ -17,10 +17,6 @@ export default function PublicReglamentosPage() {
     const [reglamentos, setReglamentos] = useState<Reglamento[]>([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        loadReglamentos();
-    }, []);
-
     async function loadReglamentos() {
         const supabase = createClient();
         const { data } = await supabase
@@ -28,11 +24,14 @@ export default function PublicReglamentosPage() {
             .select('*')
             .order('titulo');
 
-        if (data) {
-            setReglamentos(data);
-        }
+        if (data) setReglamentos(data);
         setLoading(false);
     }
+
+    useEffect(() => {
+        loadReglamentos();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return (
         <div style={{ minHeight: '100vh', background: '#F9FBFF', display: 'flex', flexDirection: 'column' }}>

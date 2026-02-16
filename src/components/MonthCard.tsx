@@ -23,13 +23,13 @@ export default function MonthCard({ mes, mesIndex, eventos }: MonthCardProps) {
 
     return (
         <>
-            <div className="month-card">
-                <div className="month-header">
+            <div className="bg-white rounded-[14px] border-[1.5px] border-border-elite overflow-hidden transition-all duration-300 shadow-elite-sm hover:shadow-elite-lg hover:-translate-y-1 hover:border-cop-blue/25 group">
+                <div className="relative bg-gradient-to-br from-blue-50 to-indigo-50 text-cop-blue p-4 text-[13px] font-bold uppercase tracking-wider border-b border-cop-blue/10 after:content-[''] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-gradient-to-r after:from-fpt-red after:to-cop-blue after:opacity-40">
                     {mes} 2026
                 </div>
-                <div className="month-content">
+                <div className="p-4 min-h-[100px] bg-white">
                     {eventosDelMes.length === 0 ? (
-                        <div className="month-empty">
+                        <div className="text-text-muted text-[13px] text-center py-8 italic">
                             Sin eventos programados
                         </div>
                     ) : (
