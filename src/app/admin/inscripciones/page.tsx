@@ -21,7 +21,11 @@ import {
     Clock,
     AlertCircle,
     Save,
-    Filter
+    Filter,
+    User,
+    Calendar,
+    CreditCard,
+    ClipboardList
 } from 'lucide-react';
 
 export default function InscripcionesPage() {
@@ -376,121 +380,196 @@ export default function InscripcionesPage() {
                 title={editingId ? 'Editar Inscripción' : 'Nueva Inscripción'}
                 width="max-w-2xl"
             >
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label className="block text-sm font-semibold text-slate-700 mb-1">Nombre Completo</label>
-                            <input
-                                type="text"
-                                value={nombre}
-                                onChange={(e) => setNombre(e.target.value)}
-                                placeholder="Juan Pérez"
-                                required
-                                maxLength={100}
-                                className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-medium text-slate-800"
-                            />
+                <form onSubmit={handleSubmit} className="space-y-5">
+
+                    {/* Sección 1: Datos Personales */}
+                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-4">
+                        <div className="flex items-center gap-2 mb-2">
+                            <div className="p-1.5 bg-white rounded-md shadow-sm text-blue-600">
+                                <User size={16} />
+                            </div>
+                            <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide">
+                                Datos del Tirador
+                            </h3>
                         </div>
-                        <div>
-                            <label className="block text-sm font-semibold text-slate-700 mb-1">Teléfono</label>
-                            <input
-                                type="tel"
-                                value={telefono}
-                                onChange={(e) => setTelefono(e.target.value)}
-                                placeholder="0981 123 456"
-                                required
-                                maxLength={20}
-                                className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-medium text-slate-800"
-                            />
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                                    Nombre Completo
+                                </label>
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                        <User size={16} />
+                                    </div>
+                                    <input
+                                        type="text"
+                                        value={nombre}
+                                        onChange={(e) => setNombre(e.target.value)}
+                                        placeholder="Juan Pérez"
+                                        required
+                                        maxLength={100}
+                                        className="w-full pl-10 pr-3 py-2.5 bg-white rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-medium text-slate-700 placeholder:text-slate-400"
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                                    Teléfono
+                                </label>
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                        <Phone size={16} />
+                                    </div>
+                                    <input
+                                        type="tel"
+                                        value={telefono}
+                                        onChange={(e) => setTelefono(e.target.value)}
+                                        placeholder="0981 123 456"
+                                        required
+                                        maxLength={20}
+                                        className="w-full pl-10 pr-3 py-2.5 bg-white rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-medium text-slate-700 placeholder:text-slate-400"
+                                    />
+                                </div>
+                            </div>
+                            <div className="md:col-span-2">
+                                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                                    Email (Opcional)
+                                </label>
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                        <Mail size={16} />
+                                    </div>
+                                    <input
+                                        type="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        placeholder="correo@ejemplo.com"
+                                        maxLength={100}
+                                        className="w-full pl-10 pr-3 py-2.5 bg-white rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-medium text-slate-700 placeholder:text-slate-400"
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label className="block text-sm font-semibold text-slate-700 mb-1">Email (Opcional)</label>
-                            <input
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="correo@ejemplo.com"
-                                maxLength={100}
-                                className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-                            />
+                    {/* Sección 2: Detalles del Evento */}
+                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-4">
+                        <div className="flex items-center gap-2 mb-2">
+                            <div className="p-1.5 bg-white rounded-md shadow-sm text-blue-600">
+                                <Calendar size={16} />
+                            </div>
+                            <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide">
+                                Selección de Evento
+                            </h3>
                         </div>
-                        <div>
-                            <label className="block text-sm font-semibold text-slate-700 mb-1">Modalidad</label>
-                            <select
-                                value={modalidadId}
-                                onChange={(e) => {
-                                    setModalidadId(e.target.value);
-                                    setEventoId('');
-                                }}
-                                required
-                                className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-                            >
-                                {modalidades.map(m => (
-                                    <option key={m.id} value={m.id}>{m.nombre}</option>
-                                ))}
-                            </select>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                                    Modalidad
+                                </label>
+                                <select
+                                    value={modalidadId}
+                                    onChange={(e) => {
+                                        setModalidadId(e.target.value);
+                                        setEventoId('');
+                                    }}
+                                    required
+                                    className="w-full px-3 py-2.5 bg-white rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-medium text-slate-700"
+                                >
+                                    <option value="">Seleccionar Modalidad</option>
+                                    {modalidades.map(m => (
+                                        <option key={m.id} value={m.id}>{m.nombre}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div>
+                                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                                    Tipo de Evento
+                                </label>
+                                <select
+                                    value={tipoEventoId}
+                                    onChange={(e) => setTipoEventoId(e.target.value)}
+                                    required
+                                    className="w-full px-3 py-2.5 bg-white rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-medium text-slate-700"
+                                >
+                                    <option value="">Seleccionar Tipo</option>
+                                    {tiposEvento.map(t => (
+                                        <option key={t.id} value={t.id}>{t.nombre}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="md:col-span-2">
+                                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                                    Evento (Opcional)
+                                </label>
+                                <select
+                                    value={eventoId}
+                                    onChange={(e) => setEventoId(e.target.value)}
+                                    className="w-full px-3 py-2.5 bg-white rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-medium text-slate-700"
+                                >
+                                    <option value="">-- Inscripción General (Sin evento específico) --</option>
+                                    {eventosDeModalidad.map(e => (
+                                        <option key={e.id} value={e.id}>
+                                            {new Date(e.fecha + 'T12:00:00').toLocaleDateString('es-ES')} - {e.titulo}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label className="block text-sm font-semibold text-slate-700 mb-1">Tipo de Evento</label>
-                            <select
-                                value={tipoEventoId}
-                                onChange={(e) => setTipoEventoId(e.target.value)}
-                                required
-                                className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-                            >
-                                {tiposEvento.map(t => (
-                                    <option key={t.id} value={t.id}>{t.nombre}</option>
-                                ))}
-                            </select>
+                    {/* Sección 3: Finanzas y Notas */}
+                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-4">
+                        <div className="flex items-center gap-2 mb-2">
+                            <div className="p-1.5 bg-white rounded-md shadow-sm text-blue-600">
+                                <CreditCard size={16} />
+                            </div>
+                            <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide">
+                                Pago y Observaciones
+                            </h3>
                         </div>
-                        <div>
-                            <label className="block text-sm font-semibold text-slate-700 mb-1">Evento (Opcional)</label>
-                            <select
-                                value={eventoId}
-                                onChange={(e) => setEventoId(e.target.value)}
-                                className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-                            >
-                                <option value="">-- Inscripción General --</option>
-                                {eventosDeModalidad.map(e => (
-                                    <option key={e.id} value={e.id}>
-                                        {new Date(e.fecha + 'T12:00:00').toLocaleDateString('es-ES')} - {e.titulo}
-                                    </option>
-                                ))}
-                            </select>
+
+                        <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-4">
+                            <div>
+                                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                                    Monto Abonado
+                                </label>
+                                <div className="relative">
+                                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500 font-bold text-sm">₲</span>
+                                    <input
+                                        type="number"
+                                        value={montoPagado}
+                                        onChange={(e) => setMontoPagado(e.target.value)}
+                                        placeholder="0"
+                                        min="0"
+                                        className="w-full pl-7 pr-3 py-2.5 bg-white rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-bold text-slate-800"
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                                    Notas
+                                </label>
+                                <div className="relative">
+                                    <div className="absolute top-3 left-3 flex items-start pointer-events-none text-slate-400">
+                                        <ClipboardList size={16} />
+                                    </div>
+                                    <textarea
+                                        value={notas}
+                                        onChange={(e) => setNotas(e.target.value)}
+                                        placeholder="Observaciones adicionales..."
+                                        rows={2}
+                                        maxLength={500}
+                                        className="w-full pl-10 pr-3 py-2.5 bg-white rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-medium text-slate-700 resize-none placeholder:text-slate-400"
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div>
-                        <label className="block text-sm font-semibold text-slate-700 mb-1">Notas</label>
-                        <textarea
-                            value={notas}
-                            onChange={(e) => setNotas(e.target.value)}
-                            placeholder="Observaciones adicionales..."
-                            rows={2}
-                            maxLength={500}
-                            className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm resize-none"
-                        />
-                    </div>
-
-                    <div>
-                        <label className="block text-sm font-semibold text-slate-700 mb-1">Monto Abonado (Gs)</label>
-                        <input
-                            type="number"
-                            value={montoPagado}
-                            onChange={(e) => setMontoPagado(e.target.value)}
-                            placeholder="0"
-                            min="0"
-                            step="5000"
-                            className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-                        />
-                    </div>
-
-                    <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                    <div className="flex justify-end gap-3 pt-2">
                         <EliteButton type="button" variant="secondary" onClick={closeModal}>
                             Cancelar
                         </EliteButton>

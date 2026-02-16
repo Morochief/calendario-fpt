@@ -208,33 +208,48 @@ export default function CategoriasPage() {
                 onClose={closeModal}
                 title={editingId ? 'Editar Categoría' : 'Nueva Categoría'}
             >
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    <div>
-                        <label className="block text-sm font-semibold text-slate-700 mb-1">Nombre</label>
-                        <input
-                            type="text"
-                            value={nombre}
-                            onChange={(e) => setNombre(e.target.value)}
-                            placeholder="Ej: Senior, Super Senior"
-                            required
-                            maxLength={50}
-                            className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-medium text-slate-800"
-                        />
+                <form onSubmit={handleSubmit} className="space-y-5">
+                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-4">
+                        <div className="flex items-center gap-2 mb-2">
+                            <div className="p-1.5 bg-white rounded-md shadow-sm text-blue-600">
+                                <Tag size={16} />
+                            </div>
+                            <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide">
+                                Información de la Categoría
+                            </h3>
+                        </div>
+
+                        <div>
+                            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                                Nombre
+                            </label>
+                            <input
+                                type="text"
+                                value={nombre}
+                                onChange={(e) => setNombre(e.target.value)}
+                                placeholder="Ej: Senior, Super Senior"
+                                required
+                                maxLength={50}
+                                className="w-full px-3 py-2.5 bg-white rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-semibold text-slate-800 placeholder:text-slate-400"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                                Descripción
+                            </label>
+                            <textarea
+                                value={descripcion}
+                                onChange={(e) => setDescripcion(e.target.value)}
+                                rows={3}
+                                maxLength={300}
+                                className="w-full px-3 py-2.5 bg-white rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-medium text-slate-700 resize-none placeholder:text-slate-400"
+                                placeholder="Detalles o requisitos de la categoría..."
+                            />
+                        </div>
                     </div>
 
-                    <div>
-                        <label className="block text-sm font-semibold text-slate-700 mb-1">Descripción</label>
-                        <textarea
-                            value={descripcion}
-                            onChange={(e) => setDescripcion(e.target.value)}
-                            rows={3}
-                            maxLength={300}
-                            className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-sm resize-none"
-                            placeholder="Detalles opcionales..."
-                        />
-                    </div>
-
-                    <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                    <div className="flex justify-end gap-3 pt-2">
                         <EliteButton type="button" variant="secondary" onClick={closeModal}>
                             Cancelar
                         </EliteButton>

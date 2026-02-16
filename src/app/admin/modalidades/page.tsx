@@ -16,7 +16,8 @@ import {
     Trash2,
     Phone,
     User,
-    Save
+    Save,
+    Tag
 } from 'lucide-react';
 
 interface Modalidad {
@@ -246,61 +247,104 @@ export default function ModalidadesPage() {
                 title={editingId ? 'Editar Modalidad' : 'Nueva Modalidad'}
                 width="max-w-lg"
             >
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    <div>
-                        <label className="block text-sm font-semibold text-slate-700 mb-1">Nombre de la Modalidad</label>
-                        <input
-                            type="text"
-                            value={formData.nombre}
-                            onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
-                            placeholder="Ej: Tiro Práctico (IPSC)"
-                            required
-                            maxLength={100}
-                            className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-medium text-slate-800"
-                        />
-                    </div>
+                <form onSubmit={handleSubmit} className="space-y-5">
 
-                    <div>
-                        <label className="block text-sm font-semibold text-slate-700 mb-1">Color Distintivo</label>
-                        <div className="flex items-center gap-3 p-3 border border-slate-200 rounded-xl bg-slate-50/50">
-                            <input
-                                type="color"
-                                value={formData.color}
-                                onChange={(e) => setFormData({ ...formData, color: e.target.value })}
-                                className="h-10 w-12 rounded cursor-pointer border-0 p-0 bg-transparent"
-                            />
-                            <div className="flex-1">
-                                <span className="text-sm font-mono text-slate-600">{formData.color}</span>
+                    {/* Sección: Información Principal */}
+                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-4">
+                        <div className="flex items-center gap-2 mb-2">
+                            <div className="p-1.5 bg-white rounded-md shadow-sm text-blue-600">
+                                <Tag size={16} />
+                            </div>
+                            <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide">
+                                Detalles de la Modalidad
+                            </h3>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4">
+                            <div>
+                                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                                    Nombre de la Modalidad
+                                </label>
+                                <input
+                                    type="text"
+                                    value={formData.nombre}
+                                    onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
+                                    placeholder="Ej: Tiro Práctico (IPSC)"
+                                    required
+                                    maxLength={100}
+                                    className="w-full px-3 py-2.5 bg-white rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-semibold text-slate-800 placeholder:text-slate-400"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                                    Color
+                                </label>
+                                <div className="flex items-center gap-2 p-1.5 bg-white border border-slate-200 rounded-lg h-[46px]">
+                                    <input
+                                        type="color"
+                                        value={formData.color}
+                                        onChange={(e) => setFormData({ ...formData, color: e.target.value })}
+                                        className="h-8 w-10 rounded cursor-pointer border-0 p-0 bg-transparent"
+                                        title="Seleccionar color distintivo"
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-sm font-semibold text-slate-700 mb-1">Contacto (Nombre)</label>
-                            <input
-                                type="text"
-                                value={formData.contactoNombre}
-                                onChange={(e) => setFormData({ ...formData, contactoNombre: e.target.value })}
-                                placeholder="Persona responsable"
-                                maxLength={100}
-                                className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-                            />
+                    {/* Sección: Contacto */}
+                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-4">
+                        <div className="flex items-center gap-2 mb-2">
+                            <div className="p-1.5 bg-white rounded-md shadow-sm text-blue-600">
+                                <User size={16} />
+                            </div>
+                            <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide">
+                                Referente / Contacto
+                            </h3>
                         </div>
-                        <div>
-                            <label className="block text-sm font-semibold text-slate-700 mb-1">Contacto (Teléfono)</label>
-                            <input
-                                type="tel"
-                                value={formData.contactoTelefono}
-                                onChange={(e) => setFormData({ ...formData, contactoTelefono: e.target.value })}
-                                placeholder="09xx..."
-                                maxLength={20}
-                                className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-                            />
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                                    Nombre del Responsable
+                                </label>
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                        <User size={16} />
+                                    </div>
+                                    <input
+                                        type="text"
+                                        value={formData.contactoNombre}
+                                        onChange={(e) => setFormData({ ...formData, contactoNombre: e.target.value })}
+                                        placeholder="Nombre completo"
+                                        maxLength={100}
+                                        className="w-full pl-10 pr-3 py-2.5 bg-white rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-medium text-slate-700"
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                                    Teléfono
+                                </label>
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                        <Phone size={16} />
+                                    </div>
+                                    <input
+                                        type="tel"
+                                        value={formData.contactoTelefono}
+                                        onChange={(e) => setFormData({ ...formData, contactoTelefono: e.target.value })}
+                                        placeholder="Ej: 0981..."
+                                        maxLength={20}
+                                        className="w-full pl-10 pr-3 py-2.5 bg-white rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-medium text-slate-700"
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                    <div className="flex justify-end gap-3 pt-2">
                         <EliteButton type="button" variant="secondary" onClick={closeModal}>
                             Cancelar
                         </EliteButton>

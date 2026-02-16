@@ -243,51 +243,64 @@ export default function AdminReglamentosPage() {
                 onClose={closeModal}
                 title="Nuevo Reglamento"
             >
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    <div>
-                        <label className="block text-sm font-semibold text-slate-700 mb-1">
-                            Título del Reglamento *
-                        </label>
-                        <input
-                            type="text"
-                            value={titulo}
-                            onChange={(e) => setTitulo(e.target.value)}
-                            placeholder="Ej: Reglamento Técnico IPSC 2024"
-                            required
-                            maxLength={200}
-                            className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-medium text-slate-800"
-                        />
-                    </div>
+                <form onSubmit={handleSubmit} className="space-y-5">
+                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-4">
+                        <div className="flex items-center gap-2 mb-2">
+                            <div className="p-1.5 bg-white rounded-md shadow-sm text-blue-600">
+                                <FileText size={16} />
+                            </div>
+                            <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide">
+                                Detalles del Documento
+                            </h3>
+                        </div>
 
-                    <div>
-                        <label className="block text-sm font-semibold text-slate-700 mb-1">
-                            Archivo PDF *
-                        </label>
-                        <div className="relative border-2 border-dashed border-slate-300 rounded-xl p-8 text-center bg-slate-50 hover:bg-blue-50 hover:border-blue-300 transition-colors group cursor-pointer">
-                            <Upload size={40} className="mx-auto text-slate-400 group-hover:text-blue-500 mb-3 transition-colors" />
-                            <p className="text-sm text-slate-600 mb-1">
-                                <span className="font-bold text-blue-600">Clic para subir</span> o arrastra aquí
-                            </p>
-                            <p className="text-xs text-slate-400">PDF hasta 10MB</p>
-
-                            {file && (
-                                <div className="mt-4 inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-blue-100 text-blue-700 rounded-lg text-sm font-medium shadow-sm">
-                                    <FileText size={16} />
-                                    {file.name}
-                                </div>
-                            )}
-
+                        <div>
+                            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                                Título del Reglamento *
+                            </label>
                             <input
-                                type="file"
-                                accept=".pdf,application/pdf"
-                                onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
-                                required={!file}
-                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                type="text"
+                                value={titulo}
+                                onChange={(e) => setTitulo(e.target.value)}
+                                placeholder="Ej: Reglamento Técnico IPSC 2024"
+                                required
+                                maxLength={200}
+                                className="w-full px-3 py-2.5 bg-white rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-semibold text-slate-800 placeholder:text-slate-400"
                             />
+                        </div>
+
+                        <div>
+                            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                                Archivo PDF *
+                            </label>
+                            <div className="relative border-2 border-dashed border-slate-300 rounded-xl p-8 text-center bg-white hover:bg-blue-50/50 hover:border-blue-300 transition-all duration-200 group cursor-pointer shadow-sm">
+                                <div className="mx-auto w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200 border border-slate-100">
+                                    <Upload size={20} className="text-slate-400 group-hover:text-blue-500 transition-colors" />
+                                </div>
+                                <p className="text-sm text-slate-600 mb-1 font-medium">
+                                    <span className="text-blue-600 hover:underline">Clic para subir</span> o arrastra aquí
+                                </p>
+                                <p className="text-xs text-slate-400 font-medium">PDF hasta 10MB</p>
+
+                                {file && (
+                                    <div className="mt-4 inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 border border-blue-100 text-blue-700 rounded-lg text-sm font-bold shadow-sm animate-in fade-in zoom-in duration-200">
+                                        <FileText size={14} />
+                                        {file.name}
+                                    </div>
+                                )}
+
+                                <input
+                                    type="file"
+                                    accept=".pdf,application/pdf"
+                                    onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
+                                    required={!file}
+                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                />
+                            </div>
                         </div>
                     </div>
 
-                    <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                    <div className="flex justify-end gap-3 pt-2">
                         <EliteButton type="button" variant="secondary" onClick={closeModal}>
                             Cancelar
                         </EliteButton>

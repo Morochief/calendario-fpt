@@ -60,7 +60,7 @@ export default function EliteTable<T>({
                                     exit={{ opacity: 0, scale: 0.98 }}
                                     transition={{ duration: 0.2, delay: index * 0.05 }}
                                     style={{ gridTemplateColumns: gridCols }}
-                                    className="group grid gap-4 px-6 py-4 bg-white rounded-xl border border-slate-100 hover:border-blue-100 shadow-[0_1px_2px_rgba(0,0,0,0.02)] hover:shadow-[0_4px_20px_rgba(30,58,138,0.06)] hover:-translate-y-0.5 transition-all items-center"
+                                    className="group grid gap-4 px-6 py-4 bg-white rounded-xl border border-[rgba(30,58,138,0.06)] shadow-[0_2px_6px_rgba(30,58,138,0.04)] hover:shadow-[0_12px_32px_rgba(30,58,138,0.12),0_4px_8px_rgba(30,58,138,0.06)] hover:-translate-y-0.5 hover:scale-[1.003] hover:border-[rgba(30,58,138,0.12)] transition-all duration-[250ms] ease-[cubic-bezier(0.25,0.8,0.25,1)] items-center relative"
                                 >
                                     {renderRow(item)}
                                 </motion.div>

@@ -200,38 +200,53 @@ export default function TiposEventoPage() {
                 onClose={closeModal}
                 title={editingId ? 'Editar Tipo' : 'Nuevo Tipo de Evento'}
             >
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    <div>
-                        <label htmlFor="nombre" className="block text-sm font-semibold text-slate-700 mb-1">Nombre</label>
-                        <input
-                            id="nombre"
-                            type="text"
-                            value={nombre}
-                            onChange={(e) => setNombre(e.target.value)}
-                            placeholder="Ej: Competencia, Entrenamiento"
-                            required
-                            maxLength={100}
-                            className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-medium text-slate-800"
-                        />
-                    </div>
+                <form onSubmit={handleSubmit} className="space-y-5">
+                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-4">
+                        <div className="flex items-center gap-2 mb-2">
+                            <div className="p-1.5 bg-white rounded-md shadow-sm text-blue-600">
+                                <Tag size={16} />
+                            </div>
+                            <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide">
+                                Datos del Tipo de Evento
+                            </h3>
+                        </div>
 
-                    <div>
-                        <label htmlFor="color" className="block text-sm font-semibold text-slate-700 mb-1">Color de Etiqueta</label>
-                        <div className="flex items-center gap-3 p-3 border border-slate-200 rounded-xl bg-slate-50/50">
-                            <input
-                                id="color"
-                                type="color"
-                                value={color}
-                                onChange={(e) => setColor(e.target.value)}
-                                className="h-10 w-12 rounded cursor-pointer border-0 p-0 bg-transparent"
-                            />
-                            <div className="flex-1">
-                                <span className="text-sm font-mono text-slate-600">{color}</span>
+                        <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4">
+                            <div>
+                                <label htmlFor="nombre" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                                    Nombre
+                                </label>
+                                <input
+                                    id="nombre"
+                                    type="text"
+                                    value={nombre}
+                                    onChange={(e) => setNombre(e.target.value)}
+                                    placeholder="Ej: Competencia, Entrenamiento"
+                                    required
+                                    maxLength={100}
+                                    className="w-full px-3 py-2.5 bg-white rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-semibold text-slate-800 placeholder:text-slate-400"
+                                />
+                            </div>
+
+                            <div>
+                                <label htmlFor="color" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                                    Etiqueta
+                                </label>
+                                <div className="flex items-center gap-2 p-1.5 bg-white border border-slate-200 rounded-lg h-[46px]">
+                                    <input
+                                        id="color"
+                                        type="color"
+                                        value={color}
+                                        onChange={(e) => setColor(e.target.value)}
+                                        className="h-8 w-10 rounded cursor-pointer border-0 p-0 bg-transparent"
+                                        title="Seleccionar color de etiqueta"
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="flex justify-end gap-3 pt-4">
+                    <div className="flex justify-end gap-3 pt-2">
                         <EliteButton type="button" variant="secondary" onClick={closeModal}>
                             Cancelar
                         </EliteButton>

@@ -25,15 +25,15 @@ export default function EliteCard({
             transition={{ duration: 0.5, delay, ease: [0.25, 0.8, 0.25, 1] }}
             className={`
                 relative overflow-hidden
-                bg-white/80 backdrop-blur-xl
-                border border-white/40
-                shadow-[0_8px_30px_rgb(0,0,0,0.04)]
-                rounded-2xl
+                bg-surface
+                border border-[rgba(30,58,138,0.08)]
+                shadow-[0_4px_6px_-1px_rgba(0,0,0,0.02),0_2px_4px_-1px_rgba(0,0,0,0.02)]
+                rounded-[16px]
                 ${className}
             `}
         >
             {/* Gradient Top Border */}
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 via-indigo-500 to-blue-600 opacity-80" />
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cop-blue via-blue-500 to-cop-blue opacity-80" style={{ borderRadius: '16px 16px 0 0' }} />
 
             {(title || action) && (
                 <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
