@@ -147,20 +147,20 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
             {/* ═══════ INFORMACIÓN GENERAL ═══════ */}
             <section className="space-y-6">
                 <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
-                    <div className="w-10 h-10 rounded-xl bg-cop-blue/10 flex items-center justify-center text-cop-blue">
+                    <div className="w-10 h-10 rounded-xl bg-fpt-red/10 flex items-center justify-center text-fpt-red shadow-sm border border-fpt-red/10">
                         <AlignLeft size={20} />
                     </div>
                     <div>
-                        <h3 className="text-lg font-black text-cop-blue leading-none">Información General</h3>
-                        <p className="text-[11px] text-slate-400 font-bold uppercase tracking-wider mt-1.5">Datos principales de la competencia</p>
+                        <h3 className="text-lg font-bold text-cop-blue tracking-tight leading-none">Información General</h3>
+                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.15em] mt-1.5 opacity-80">Datos principales de la competencia</p>
                     </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {/* Título */}
                     <div className="md:col-span-2 group">
-                        <label htmlFor="titulo" className="block text-sm font-bold text-cop-blue/70 mb-2 ml-1 transition-colors group-focus-within:text-cop-blue">
-                            Título del evento <span className="text-fpt-red">*</span>
+                        <label htmlFor="titulo" className="block text-sm font-bold text-cop-blue/70 mb-2 ml-1 transition-colors group-focus-within:text-cop-blue uppercase tracking-wider">
+                            Título del evento <span className="text-fpt-red font-black">*</span>
                         </label>
                         <input
                             id="titulo"
@@ -258,12 +258,12 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
             {/* ═══════ FECHA Y UBICACIÓN ═══════ */}
             <section className="space-y-6">
                 <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
-                    <div className="w-10 h-10 rounded-xl bg-cop-blue/10 flex items-center justify-center text-cop-blue">
+                    <div className="w-10 h-10 rounded-xl bg-fpt-red/10 flex items-center justify-center text-fpt-red shadow-sm border border-fpt-red/10">
                         <Calendar size={20} />
                     </div>
                     <div>
-                        <h3 className="text-lg font-black text-cop-blue leading-none">Fecha y Ubicación</h3>
-                        <p className="text-[11px] text-slate-400 font-bold uppercase tracking-wider mt-1.5">Cronograma y coordenadas del evento</p>
+                        <h3 className="text-lg font-bold text-cop-blue tracking-tight leading-none">Fecha y Ubicación</h3>
+                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.15em] mt-1.5 opacity-80">Cronograma y coordenadas del evento</p>
                     </div>
                 </div>
 
@@ -301,7 +301,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
 
                     {/* Ubicación */}
                     <div className="group">
-                        <label htmlFor="ubicacion" className="block text-sm font-bold text-cop-blue/70 mb-2 ml-1">Ubicación / Polígono</label>
+                        <label htmlFor="ubicacion" className="block text-sm font-bold text-cop-blue/70 mb-2 ml-1 uppercase tracking-wider">Ubicación / Polígono</label>
                         <div className="relative">
                             <MapPin size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
                             <input
@@ -317,7 +317,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
 
                     {/* Google Maps Link */}
                     <div className="group">
-                        <label htmlFor="ubicacion_url" className="block text-sm font-bold text-cop-blue/70 mb-2 ml-1">Link Google Maps</label>
+                        <label htmlFor="ubicacion_url" className="block text-sm font-bold text-cop-blue/70 mb-2 ml-1 uppercase tracking-wider">Link Google Maps</label>
                         <div className="relative">
                             <LinkIcon size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
                             <input
@@ -336,12 +336,12 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
             {/* ═══════ MULTIMEDIA ═══════ */}
             <section className="space-y-6">
                 <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
-                    <div className="w-10 h-10 rounded-xl bg-fpt-red/10 flex items-center justify-center text-fpt-red">
+                    <div className="w-10 h-10 rounded-xl bg-fpt-red/10 flex items-center justify-center text-fpt-red shadow-sm border border-fpt-red/10">
                         <ImageIcon size={20} />
                     </div>
                     <div>
-                        <h3 className="text-lg font-black text-fpt-red leading-none">Multimedia</h3>
-                        <p className="text-[11px] text-slate-400 font-bold uppercase tracking-wider mt-1.5">Identidad visual del evento</p>
+                        <h3 className="text-lg font-bold text-cop-blue tracking-tight leading-none">Multimedia</h3>
+                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.15em] mt-1.5 opacity-80">Identidad visual del evento</p>
                     </div>
                 </div>
 
@@ -453,18 +453,6 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                                 />
                             </div>
                         </div>
-                    </div>
-
-                    <div className="lg:col-span-12 group">
-                        <label htmlFor="descripcion" className="block text-sm font-bold text-cop-blue/70 mb-3 ml-1">Observaciones / Descripción Detallada</label>
-                        <textarea
-                            id="descripcion"
-                            value={descripcion}
-                            onChange={(e) => setDescripcion(e.target.value)}
-                            rows={5}
-                            placeholder="Aclara detalles sobre inscripciones, premiación o requisitos especiales..."
-                            className="w-full px-6 py-5 rounded-3xl bg-slate-50 border-2 border-transparent outline-none text-slate-800 font-medium transition-all focus:bg-white focus:border-cop-blue/20 leading-relaxed"
-                        />
                     </div>
                 </div>
             </section>
