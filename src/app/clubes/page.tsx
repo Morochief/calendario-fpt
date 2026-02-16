@@ -28,72 +28,57 @@ export default function ClubesPage() {
     }, []);
 
     return (
-        <div className="min-h-screen bg-bg-elite flex flex-col">
-            <Header />
-            <main className="flex-grow">
-                {/* Hero Section */}
-                <div
-                    style={{
-                        background: 'linear-gradient(135deg, #1E3A8A 0%, #2548a0 50%, #1E3A8A 100%)',
-                        color: 'white',
-                        padding: '4rem 1.25rem',
-                        textAlign: 'center',
-                        position: 'relative',
-                        overflow: 'hidden',
-                    }}
-                >
-                    {/* Background pattern */}
-                    <div style={{
-                        position: 'absolute', inset: 0, opacity: 0.05,
-                        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-                    }} />
+        <div className="min-h-screen bg-slate-50 flex flex-col relative overflow-hidden">
+            {/* Fixed Watermark Background */}
+            <div className="fixed inset-0 pointer-events-none z-0 flex items-center justify-center opacity-[0.03]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                    src="/logo_cop-removebg-preview.svg"
+                    alt="COP Watermark"
+                    className="w-[80vw] max-w-[800px] h-auto grayscale"
+                />
+            </div>
 
-                    <div style={{ maxWidth: '1120px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
-                        <div style={{
-                            width: '64px', height: '64px', borderRadius: '16px',
-                            background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(8px)',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            margin: '0 auto 1rem',
-                        }}>
-                            <Building2 size={28} style={{ color: 'white' }} />
+            <Header />
+            <main className="flex-grow relative z-10">
+                {/* Hero Section */}
+                <div className="bg-[#1E3A8A] text-white py-20 px-4 text-center relative overflow-hidden shadow-lg">
+                    {/* Background pattern */}
+                    <div className="absolute inset-0 opacity-5 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9IiNmZmZmZmYiLz48L3N2Zz4=')]" />
+                    <div className="absolute inset-x-0 bottom-0 h-2 bg-gradient-to-r from-red-600 via-white to-blue-600 opacity-80" />
+
+                    <div className="max-w-4xl mx-auto relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                        <div className="w-16 h-16 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mx-auto mb-6 border border-white/20 shadow-xl">
+                            <Building2 size={32} className="text-white" />
                         </div>
-                        <h1 style={{
-                            fontSize: '2rem', fontWeight: 700,
-                            marginBottom: '0.75rem', letterSpacing: '-0.03em',
-                        }}>
+                        <h1 className="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight drop-shadow-sm">
                             Clubes Participantes
                         </h1>
-                        <p style={{
-                            color: 'rgba(255,255,255,0.6)', maxWidth: '520px',
-                            margin: '0 auto', fontSize: '0.9375rem', lineHeight: 1.7,
-                        }}>
+                        <p className="text-blue-100/80 max-w-xl mx-auto text-lg leading-relaxed font-light">
                             Clubes afiliados a la Federación Paraguaya de Tiro que participan en las competencias oficiales de la temporada 2026.
                         </p>
                     </div>
                 </div>
 
                 {/* Grid Section */}
-                <div style={{ maxWidth: '1120px', margin: '-2rem auto 4rem', padding: '0 1.25rem', position: 'relative', zIndex: 10 }}>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-12 pb-20 relative z-20">
                     {loading ? (
-                        <div className="flex justify-center py-12">
-                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+                        <div className="flex justify-center py-20">
+                            <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent"></div>
                         </div>
                     ) : (
-                        <div style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-                            gap: '1.25rem',
-                        }}>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                             {clubes.length === 0 ? (
-                                <div className="col-span-full text-center py-12 bg-white/80 backdrop-blur rounded-2xl border border-white shadow-sm">
-                                    <p className="text-slate-500 font-medium">No se encontraron clubes registrados.</p>
+                                <div className="col-span-full text-center py-20 bg-white/50 backdrop-blur-sm rounded-3xl border border-slate-200">
+                                    <Building2 size={48} className="mx-auto text-slate-300 mb-4" />
+                                    <p className="text-slate-500 font-medium text-lg">No se encontraron clubes registrados.</p>
                                 </div>
                             ) : (
                                 clubes.map((club, index) => (
                                     <div
                                         key={club.id}
-                                        className="animate-stagger-in"
-                                        style={{ animationDelay: `${index * 80}ms` }}
+                                        className="animate-in fade-in slide-in-from-bottom-4 fill-mode-backwards"
+                                        style={{ animationDelay: `${index * 100}ms` }}
                                     >
                                         <ClubCard
                                             abbreviation={club.siglas}

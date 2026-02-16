@@ -10,52 +10,26 @@ interface ClubCardProps {
 export default function ClubCard({ abbreviation, name, color }: ClubCardProps) {
     return (
         <div
-            className="admin-card"
-            style={{
-                borderTop: `4px solid ${color}`,
-                padding: 0,
-                transition: 'all 0.3s ease',
-            }}
+            className="group relative bg-white rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl border border-slate-100"
+            style={{ borderTop: `4px solid ${color}` }}
         >
-            <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            <div className="p-6 flex flex-col gap-3">
                 {/* Header Row */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem' }}>
+                <div className="flex items-center gap-4">
                     <div
+                        className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-110 duration-300"
                         style={{
-                            width: '44px',
-                            height: '44px',
-                            borderRadius: '12px',
-                            background: `linear-gradient(135deg, ${color}20, ${color}10)`,
-                            border: `1.5px solid ${color}30`,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            flexShrink: 0,
+                            background: `linear-gradient(135deg, ${color}15, ${color}05)`,
+                            border: `1px solid ${color}30`,
                         }}
                     >
-                        <Building2 size={20} style={{ color }} />
+                        <Building2 size={24} style={{ color }} />
                     </div>
                     <div>
-                        <h3
-                            style={{
-                                margin: 0,
-                                fontSize: '1.125rem',
-                                fontWeight: 700,
-                                color: '#1E3A8A',
-                                letterSpacing: '-0.02em',
-                                lineHeight: 1.3,
-                            }}
-                        >
+                        <h3 className="tex-lg font-bold text-[#1E3A8A] leading-tight tracking-tight">
                             {abbreviation}
                         </h3>
-                        <p
-                            style={{
-                                margin: 0,
-                                fontSize: '0.8125rem',
-                                color: '#475569',
-                                lineHeight: 1.4,
-                            }}
-                        >
+                        <p className="text-sm text-slate-500 leading-snug">
                             {name}
                         </p>
                     </div>
@@ -63,19 +37,17 @@ export default function ClubCard({ abbreviation, name, color }: ClubCardProps) {
 
                 {/* Status Badge */}
                 <div
+                    className="self-start inline-flex items-center gap-1.5 px-3 py-1 rounded-full border"
                     style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '0.375rem',
-                        alignSelf: 'flex-start',
-                        padding: '0.25rem 0.75rem',
-                        borderRadius: '100px',
-                        background: `${color}10`,
-                        border: `1px solid ${color}20`,
+                        background: `${color}08`,
+                        borderColor: `${color}20`,
                     }}
                 >
-                    <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: color }} />
-                    <span style={{ fontSize: '0.6875rem', fontWeight: 600, color, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: color }} />
+                    <span
+                        className="text-[10px] font-bold uppercase tracking-wider"
+                        style={{ color }}
+                    >
                         Club Afiliado
                     </span>
                 </div>
