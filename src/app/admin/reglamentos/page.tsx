@@ -29,11 +29,14 @@ interface Reglamento {
     created_at: string;
 }
 
+import { useRouter } from 'next/navigation';
+
 export default function AdminReglamentosPage() {
     const [reglamentos, setReglamentos] = useState<Reglamento[]>([]);
     const [loading, setLoading] = useState(true);
     const [uploading, setUploading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const router = useRouter();
 
     // Form state
     const [titulo, setTitulo] = useState('');
@@ -41,8 +44,27 @@ export default function AdminReglamentosPage() {
 
     const { showToast } = useToast();
 
-    useEffect(() => {
+    async function checkAuth() {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (!user) {
+            router.push('/admin/login');
+            return;
+        }
+
+        // Check if user is admin
+        const allowedAdmins = ['admin@fpdt.org.py', 'admin@fpt.com'];
+        if (!user.email || !allowedAdmins.includes(user.email)) {
+            router.push('/');
+            return;
+        }
+
         loadReglamentos();
+    }
+
+    useEffect(() => {
+        checkAuth();
     }, []);
 
     async function loadReglamentos() {

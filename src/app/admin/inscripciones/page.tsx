@@ -28,6 +28,8 @@ import {
     ClipboardList
 } from 'lucide-react';
 
+import { useRouter } from 'next/navigation';
+
 export default function InscripcionesPage() {
     const [inscripciones, setInscripciones] = useState<Inscripcion[]>([]);
     const [modalidades, setModalidades] = useState<Modalidad[]>([]);
@@ -38,6 +40,7 @@ export default function InscripcionesPage() {
     const [editingId, setEditingId] = useState<string | null>(null);
     const [filterModalidad, setFilterModalidad] = useState<string>('');
     const [saving, setSaving] = useState(false);
+    const router = useRouter();
 
     // Form state
     const [nombre, setNombre] = useState('');
@@ -51,8 +54,27 @@ export default function InscripcionesPage() {
 
     const { showToast } = useToast();
 
-    useEffect(() => {
+    async function checkAuth() {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (!user) {
+            router.push('/admin/login');
+            return;
+        }
+
+        // Check if user is admin
+        const allowedAdmins = ['admin@fpdt.org.py', 'admin@fpt.com'];
+        if (!user.email || !allowedAdmins.includes(user.email)) {
+            router.push('/');
+            return;
+        }
+
         loadData();
+    }
+
+    useEffect(() => {
+        checkAuth();
     }, []);
 
     async function loadData() {

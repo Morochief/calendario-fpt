@@ -22,7 +22,9 @@ export default function NuevoEventoPage() {
             return;
         }
 
-        if (user.email !== 'admin@fpdt.org.py') {
+        // Check if user is admin
+        const allowedAdmins = ['admin@fpdt.org.py', 'admin@fpt.com'];
+        if (!user.email || !allowedAdmins.includes(user.email)) {
             router.push('/');
             return;
         }

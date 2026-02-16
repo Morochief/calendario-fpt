@@ -28,12 +28,15 @@ interface Modalidad {
     contacto_telefono: string | null;
 }
 
+import { useRouter } from 'next/navigation';
+
 export default function ModalidadesPage() {
     const [modalidades, setModalidades] = useState<Modalidad[]>([]);
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
     const [saving, setSaving] = useState(false);
+    const router = useRouter();
 
     // Form state
     const [formData, setFormData] = useState({
@@ -45,8 +48,27 @@ export default function ModalidadesPage() {
 
     const { showToast } = useToast();
 
-    useEffect(() => {
+    async function checkAuth() {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (!user) {
+            router.push('/admin/login');
+            return;
+        }
+
+        // Check if user is admin
+        const allowedAdmins = ['admin@fpdt.org.py', 'admin@fpt.com'];
+        if (!user.email || !allowedAdmins.includes(user.email)) {
+            router.push('/');
+            return;
+        }
+
         loadModalidades();
+    }
+
+    useEffect(() => {
+        checkAuth();
     }, []);
 
     async function loadModalidades() {

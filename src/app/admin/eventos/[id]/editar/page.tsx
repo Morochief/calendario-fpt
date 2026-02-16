@@ -30,6 +30,13 @@ export default function EditarEventoPage() {
             return;
         }
 
+        // Check if user is admin
+        const allowedAdmins = ['admin@fpdt.org.py', 'admin@fpt.com'];
+        if (!user.email || !allowedAdmins.includes(user.email)) {
+            router.push('/');
+            return;
+        }
+
         try {
             const { data: eventoData, error } = await supabase
                 .from('eventos')

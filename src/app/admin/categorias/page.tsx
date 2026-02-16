@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase';
 import { Categoria } from '@/lib/types';
 import { useToast } from '@/components/Toast';
@@ -25,6 +26,7 @@ export default function CategoriasPage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
     const [saving, setSaving] = useState(false);
+    const router = useRouter();
 
     // Form state
     const [nombre, setNombre] = useState('');
@@ -32,8 +34,27 @@ export default function CategoriasPage() {
 
     const { showToast } = useToast();
 
-    useEffect(() => {
+    async function checkAuth() {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (!user) {
+            router.push('/admin/login');
+            return;
+        }
+
+        // Check if user is admin
+        const allowedAdmins = ['admin@fpdt.org.py', 'admin@fpt.com'];
+        if (!user.email || !allowedAdmins.includes(user.email)) {
+            router.push('/');
+            return;
+        }
+
         loadCategorias();
+    }
+
+    useEffect(() => {
+        checkAuth();
     }, []);
 
     async function loadCategorias() {
