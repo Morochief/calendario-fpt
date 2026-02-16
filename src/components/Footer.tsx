@@ -4,7 +4,7 @@ import { Phone, MapPin, ExternalLink } from 'lucide-react';
 
 export default function Footer() {
     return (
-        <footer className="bg-text-elite text-white py-16 px-10 mt-16">
+        <footer className="bg-[var(--color-cop-blue)] text-white py-16 px-10 mt-16 relative overflow-hidden">
             <div className="flex items-center justify-center gap-3 mb-8 opacity-90">
                 <Phone size={20} strokeWidth={1.5} className="opacity-60" />
                 <h3 className="m-0 text-lg font-semibold tracking-tight">
