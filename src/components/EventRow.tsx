@@ -25,7 +25,7 @@ export default function EventRow({ evento, onClick }: EventRowProps) {
             role="button"
             tabIndex={0}
             aria-label={`Ver evento: ${evento.titulo}`}
-            className="group flex items-center gap-2 py-2.5 px-3 mb-1.5 bg-white border border-[rgba(30,58,138,0.12)] border-l-[4px] rounded-[10px] cursor-pointer text-[13px] transition-all duration-200 shadow-sm hover:shadow-md hover:border-cop-blue/20 hover:translate-x-1 outline-none focus:ring-2 focus:ring-cop-blue/20"
+            className="group flex items-center gap-3 py-3 px-3.5 mb-2 bg-white border border-[rgba(30,58,138,0.08)] border-l-[4px] rounded-[10px] cursor-pointer text-[13px] transition-all duration-200 shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] hover:border-[rgba(30,58,138,0.2)] hover:translate-x-1 outline-none focus:ring-2 focus:ring-[var(--color-cop-blue)]/20"
             style={{
                 borderLeftColor: modalityColor,
             }}

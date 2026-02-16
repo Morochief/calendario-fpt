@@ -44,9 +44,9 @@ export default function MiniMonth({ mes, mesIndex, year, eventos }: MiniMonthPro
         dias.push(
             <div
                 key={dia}
-                className={`aspect-square flex flex-col items-center justify-center text-[11px] text-text-elite rounded-[4px] cursor-default relative transition-all ${tieneEventos
-                        ? 'bg-surface font-semibold cursor-pointer shadow-elite-xs hover:scale-115 hover:z-10 hover:shadow-elite-md hover:bg-cop-blue hover:text-white group'
-                        : ''
+                className={`aspect-square flex flex-col items-center justify-center text-[11px] text-[var(--color-text-secondary)] rounded-[6px] cursor-default relative transition-all duration-200 ${tieneEventos
+                    ? 'bg-white font-bold cursor-pointer shadow-[var(--shadow-sm)] border border-[var(--color-border)] hover:scale-110 hover:z-10 hover:shadow-[var(--shadow-md)] hover:border-[var(--color-cop-blue)] hover:text-[var(--color-cop-blue)] group'
+                    : ''
                     }`}
                 title={tieneEventos ? eventosDelDia.map(e => e.titulo).join('\n') : ''}
             >
@@ -56,7 +56,7 @@ export default function MiniMonth({ mes, mesIndex, year, eventos }: MiniMonthPro
                         {eventosDelDia.slice(0, 3).map((e, i) => (
                             <span
                                 key={i}
-                                className="w-[3px] h-[3px] rounded-full transition-colors group-hover:bg-white"
+                                className="w-[3px] h-[3px] rounded-full transition-colors group-hover:bg-[var(--color-cop-blue)]"
                                 style={{ background: e.modalidades?.color || '#171717' }}
                             />
                         ))}
@@ -70,7 +70,7 @@ export default function MiniMonth({ mes, mesIndex, year, eventos }: MiniMonthPro
     const tieneEventosOcultos = eventosDelMes.length > 3 && !expandido;
 
     return (
-        <div className={`bg-cop-blue/5 rounded-elite-sm p-3.5 text-xs transition-all border border-transparent hover:bg-cop-blue/10 hover:border-border-elite ${expandido ? 'ring-2 ring-cop-blue/20' : ''}`}>
+        <div className={`bg-white rounded-[12px] p-4 text-xs transition-all border border-[var(--color-border)] shadow-[var(--shadow-xs)] hover:shadow-[var(--shadow-sm)] ${expandido ? 'ring-2 ring-[var(--color-cop-blue)]/10' : ''}`}>
             <div
                 className="font-semibold uppercase tracking-wider text-text-elite mb-2 text-xs flex items-center justify-between"
                 onClick={() => eventosDelMes.length > 0 && setExpandido(!expandido)}
