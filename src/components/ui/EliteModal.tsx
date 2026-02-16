@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { X } from 'lucide-react';
 import { ReactNode, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { cn } from '@/lib/utils';
 
 interface EliteModalProps {
     isOpen: boolean;
@@ -11,6 +12,7 @@ interface EliteModalProps {
     title: string;
     children: ReactNode;
     width?: string;
+    contentClassName?: string;
 }
 
 export default function EliteModal({
@@ -18,7 +20,8 @@ export default function EliteModal({
     onClose,
     title,
     children,
-    width = 'max-w-md'
+    width = 'max-w-md',
+    contentClassName
 }: EliteModalProps) {
 
     // Lock scroll when open
@@ -51,14 +54,10 @@ export default function EliteModal({
                             animate={{ scale: 1, opacity: 1, y: 0 }}
                             exit={{ scale: 0.95, opacity: 0, y: 10 }}
                             transition={{ type: "spring", duration: 0.4, bounce: 0.3 }}
-                            className={`
-                                w-full ${width}
-                                bg-white rounded-xl
-                                shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)]
-                                border border-slate-100
-                                overflow-hidden
-                                pointer-events-auto
-                            `}
+                            className={cn(
+                                "w-full bg-white rounded-xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] border border-slate-100 overflow-hidden pointer-events-auto",
+                                width
+                            )}
                         >
                             {/* Header */}
                             <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-slate-50 to-white">
@@ -74,7 +73,7 @@ export default function EliteModal({
                             </div>
 
                             {/* Content */}
-                            <div className="p-6">
+                            <div className={cn("p-6", contentClassName)}>
                                 {children}
                             </div>
                         </motion.div>

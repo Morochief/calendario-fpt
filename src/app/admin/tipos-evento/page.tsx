@@ -199,63 +199,82 @@ export default function TiposEventoPage() {
                 isOpen={isModalOpen}
                 onClose={closeModal}
                 title={editingId ? 'Editar Tipo' : 'Nuevo Tipo de Evento'}
+                width="max-w-lg"
+                contentClassName="bg-slate-50/50"
             >
-                <form onSubmit={handleSubmit} className="space-y-5">
-                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-4">
-                        <div className="flex items-center gap-2 mb-2">
-                            <div className="p-1.5 bg-white rounded-md shadow-sm text-blue-600">
-                                <Tag size={16} />
-                            </div>
-                            <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide">
-                                Datos del Tipo de Evento
-                            </h3>
-                        </div>
+                <form onSubmit={handleSubmit} className="space-y-6">
 
-                        <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4">
-                            <div>
-                                <label htmlFor="nombre" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
-                                    Nombre
-                                </label>
-                                <input
-                                    id="nombre"
-                                    type="text"
-                                    value={nombre}
-                                    onChange={(e) => setNombre(e.target.value)}
-                                    placeholder="Ej: Competencia, Entrenamiento"
-                                    required
-                                    maxLength={100}
-                                    className="w-full px-3 py-2.5 bg-white rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-semibold text-slate-800 placeholder:text-slate-400"
-                                />
+                    {/* Main Form Card */}
+                    <EliteCard className="border-slate-200 shadow-sm" noPadding>
+                        <div className="p-5 space-y-5">
+                            {/* Header Section */}
+                            <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
+                                <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
+                                    <Tag size={18} />
+                                </div>
+                                <div>
+                                    <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wide">Información del Tipo</h4>
+                                    <p className="text-xs text-slate-500 font-medium">Define el nombre y color identificador</p>
+                                </div>
                             </div>
 
-                            <div>
-                                <label htmlFor="color" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
-                                    Etiqueta
-                                </label>
-                                <div className="flex items-center gap-2 p-1.5 bg-white border border-slate-200 rounded-lg h-[46px]">
+                            {/* Inputs Grid */}
+                            <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-5">
+                                <div className="space-y-1.5">
+                                    <label htmlFor="nombre" className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">
+                                        Nombre
+                                    </label>
                                     <input
-                                        id="color"
-                                        type="color"
-                                        value={color}
-                                        onChange={(e) => setColor(e.target.value)}
-                                        className="h-8 w-10 rounded cursor-pointer border-0 p-0 bg-transparent"
-                                        title="Seleccionar color de etiqueta"
+                                        id="nombre"
+                                        type="text"
+                                        value={nombre}
+                                        onChange={(e) => setNombre(e.target.value)}
+                                        placeholder="Ej: Competencia, Entrenamiento"
+                                        required
+                                        maxLength={50}
+                                        className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm font-semibold text-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all shadow-sm"
                                     />
+                                </div>
+
+                                <div className="space-y-1.5">
+                                    <label htmlFor="color" className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">
+                                        Color
+                                    </label>
+                                    <div className="h-[42px] px-1.5 py-1.5 bg-white border border-slate-200 rounded-lg shadow-sm flex items-center">
+                                        <input
+                                            id="color"
+                                            type="color"
+                                            value={color}
+                                            onChange={(e) => setColor(e.target.value)}
+                                            className="h-full w-12 rounded cursor-pointer border-0 p-0"
+                                            title="Seleccionar color"
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </EliteCard>
 
-                    <div className="flex justify-end gap-3 pt-2">
-                        <EliteButton type="button" variant="secondary" onClick={closeModal}>
+                    {/* Actions */}
+                    <div className="flex items-center justify-end gap-3 pt-2">
+                        <button
+                            type="button"
+                            onClick={closeModal}
+                            className="px-4 py-2 text-sm font-bold text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+                        >
                             Cancelar
-                        </EliteButton>
-                        <EliteButton type="submit" isLoading={saving} icon={<Save size={16} />}>
-                            Guardar
+                        </button>
+                        <EliteButton
+                            type="submit"
+                            isLoading={saving}
+                            icon={<Save size={16} />}
+                            className="shadow-lg shadow-blue-900/20"
+                        >
+                            Guardar Cambios
                         </EliteButton>
                     </div>
                 </form>
             </EliteModal>
-        </div>
+        </div >
     );
 }
