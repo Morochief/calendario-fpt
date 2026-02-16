@@ -248,156 +248,156 @@ export default function AdminClubesPage() {
                 isOpen={isModalOpen}
                 onClose={closeModal}
                 title={editingId ? "Editar Club" : "Registrar Nuevo Club"}
+                width="max-w-lg"
             >
-                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                <form onSubmit={handleSubmit} className="space-y-6">
 
-                    {/* Nombre Oficial */}
-                    <div>
-                        <label htmlFor="club-nombre" className="admin-label">
-                            Nombre Oficial <span className="required">*</span>
-                        </label>
-                        <input
-                            id="club-nombre"
-                            type="text"
-                            value={formData.nombre}
-                            onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
-                            className="admin-input"
-                            placeholder="Ej. Club de Tiro Práctico..."
-                            required
-                        />
-                    </div>
+                    {/* Section: Identidad */}
+                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-4">
+                        <h4 className="flex items-center gap-2 text-xs font-bold text-cop-blue uppercase tracking-wider mb-3">
+                            <Building2 size={14} />
+                            Identidad del Club
+                        </h4>
 
-                    {/* Siglas + Estado */}
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                        {/* Nombre Oficial */}
                         <div>
-                            <label htmlFor="club-siglas" className="admin-label">
-                                Siglas <span className="required">*</span>
+                            <label htmlFor="club-nombre" className="admin-label mb-1.5 block">
+                                Nombre Oficial <span className="text-red-500">*</span>
                             </label>
                             <input
-                                id="club-siglas"
+                                id="club-nombre"
                                 type="text"
-                                value={formData.siglas}
-                                onChange={(e) => setFormData({ ...formData, siglas: e.target.value.toUpperCase() })}
-                                className="admin-input"
-                                placeholder="Ej. CPTP"
-                                style={{ fontFamily: 'monospace', textTransform: 'uppercase' }}
+                                value={formData.nombre}
+                                onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
+                                className="admin-input w-full"
+                                placeholder="Ej. Club de Tiro Práctico..."
                                 required
-                                maxLength={8}
                             />
                         </div>
-                        <div>
-                            <label htmlFor="club-estado" className="admin-label">
-                                Estado
-                            </label>
-                            <select
-                                id="club-estado"
-                                value={formData.estado}
-                                onChange={(e) => setFormData({ ...formData, estado: e.target.value as any })}
-                                className="admin-input"
-                            >
-                                <option value="pendiente">Pendiente</option>
-                                <option value="afiliado">Afiliado</option>
-                                <option value="inactivo">Inactivo</option>
-                            </select>
-                        </div>
-                    </div>
 
-                    {/* Contacto */}
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                        <div>
-                            <label htmlFor="club-contacto-nombre" className="admin-label">
-                                <User size={13} className="inline mr-1" style={{ verticalAlign: '-1px' }} />
-                                Referente
-                            </label>
-                            <input
-                                id="club-contacto-nombre"
-                                type="text"
-                                value={formData.contacto_nombre}
-                                onChange={(e) => setFormData({ ...formData, contacto_nombre: e.target.value })}
-                                className="admin-input"
-                                placeholder="Ej. Juan Pérez"
-                            />
-                        </div>
-                        <div>
-                            <label htmlFor="club-contacto-telefono" className="admin-label">
-                                <Phone size={13} className="inline mr-1" style={{ verticalAlign: '-1px' }} />
-                                Teléfono
-                            </label>
-                            <input
-                                id="club-contacto-telefono"
-                                type="tel"
-                                value={formData.contacto_telefono}
-                                onChange={(e) => setFormData({ ...formData, contacto_telefono: e.target.value })}
-                                className="admin-input"
-                                placeholder="Ej. 0981 123 456"
-                            />
-                        </div>
-                    </div>
-
-                    {/* Color Distintivo */}
-                    <div>
-                        <label className="admin-label mb-2 block">Color Distintivo</label>
-                        <div className="color-picker-container">
-                            {PRESET_COLORS.map((c) => (
-                                <button
-                                    key={c}
-                                    type="button"
-                                    onClick={() => setFormData({ ...formData, color: c })}
-                                    style={{
-                                        width: '28px',
-                                        height: '28px',
-                                        borderRadius: '6px',
-                                        backgroundColor: c,
-                                        border: formData.color === c
-                                            ? '2.5px solid #1E3A8A'
-                                            : '1.5px solid rgba(0,0,0,0.1)',
-                                        cursor: 'pointer',
-                                        transition: 'all 0.15s ease',
-                                        transform: formData.color === c ? 'scale(1.15)' : 'scale(1)',
-                                        boxShadow: formData.color === c
-                                            ? '0 0 0 3px rgba(30,58,138,0.15)'
-                                            : 'none',
-                                    }}
-                                    title={c}
-                                />
-                            ))}
-                            <div style={{
-                                display: 'flex', alignItems: 'center', gap: '0.5rem',
-                                marginLeft: 'auto', paddingLeft: '0.5rem',
-                            }}>
+                        {/* Siglas + Estado */}
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label htmlFor="club-siglas" className="admin-label mb-1.5 block">
+                                    Siglas <span className="text-red-500">*</span>
+                                </label>
                                 <input
-                                    type="color"
-                                    value={formData.color}
-                                    onChange={(e) => setFormData({ ...formData, color: e.target.value })}
-                                    style={{
-                                        width: '28px', height: '28px',
-                                        borderRadius: '6px', cursor: 'pointer',
-                                        border: '1.5px solid rgba(0,0,0,0.1)',
-                                        padding: 0, background: 'transparent',
-                                    }}
-                                    title="Color personalizado"
+                                    id="club-siglas"
+                                    type="text"
+                                    value={formData.siglas}
+                                    onChange={(e) => setFormData({ ...formData, siglas: e.target.value.toUpperCase() })}
+                                    className="admin-input w-full uppercase font-mono"
+                                    placeholder="Ej. CPTP"
+                                    required
+                                    maxLength={8}
                                 />
-                                <span style={{
-                                    fontFamily: 'monospace',
-                                    fontSize: '0.75rem',
-                                    color: '#94A3B8',
-                                    minWidth: '55px',
-                                }}>{formData.color}</span>
+                            </div>
+                            <div>
+                                <label htmlFor="club-estado" className="admin-label mb-1.5 block">
+                                    Estado
+                                </label>
+                                <select
+                                    id="club-estado"
+                                    value={formData.estado}
+                                    onChange={(e) => setFormData({ ...formData, estado: e.target.value as any })}
+                                    className="admin-input w-full"
+                                >
+                                    <option value="pendiente">Pendiente</option>
+                                    <option value="afiliado">Afiliado</option>
+                                    <option value="inactivo">Inactivo</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Section: Contacto + Color */}
+                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-4">
+                        <h4 className="flex items-center gap-2 text-xs font-bold text-cop-blue uppercase tracking-wider mb-3">
+                            <User size={14} />
+                            Contacto y Branding
+                        </h4>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label htmlFor="club-contacto-nombre" className="admin-label mb-1.5 block">
+                                    Referente
+                                </label>
+                                <input
+                                    id="club-contacto-nombre"
+                                    type="text"
+                                    value={formData.contacto_nombre}
+                                    onChange={(e) => setFormData({ ...formData, contacto_nombre: e.target.value })}
+                                    className="admin-input w-full"
+                                    placeholder="Ej. Juan Pérez"
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="club-contacto-telefono" className="admin-label mb-1.5 block">
+                                    Teléfono
+                                </label>
+                                <input
+                                    id="club-contacto-telefono"
+                                    type="tel"
+                                    value={formData.contacto_telefono}
+                                    onChange={(e) => setFormData({ ...formData, contacto_telefono: e.target.value })}
+                                    className="admin-input w-full"
+                                    placeholder="Ej. 0981 123 456"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Color Distintivo (Compact) */}
+                        <div className="pt-2 border-t border-slate-200 mt-2">
+                            <label className="admin-label mb-2 block">Color Distintivo</label>
+                            <div className="flex flex-wrap gap-2">
+                                {PRESET_COLORS.map((c) => (
+                                    <button
+                                        key={c}
+                                        type="button"
+                                        onClick={() => setFormData({ ...formData, color: c })}
+                                        className={`
+                                            w-6 h-6 rounded-full border-2 transition-all hover:scale-110 shadow-sm
+                                            ${formData.color === c ? 'border-slate-800 scale-110 ring-1 ring-slate-300' : 'border-transparent'}
+                                        `}
+                                        style={{ backgroundColor: c }}
+                                        title={c}
+                                    />
+                                ))}
+                                {/* Custom Color Input Wrapper */}
+                                <div className="relative w-6 h-6 rounded-full overflow-hidden border border-slate-300 ml-1">
+                                    <input
+                                        type="color"
+                                        value={formData.color}
+                                        onChange={(e) => setFormData({ ...formData, color: e.target.value })}
+                                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                    />
+                                    <div className="w-full h-full" style={{ backgroundColor: formData.color }} />
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     {/* Actions */}
-                    <div style={{
-                        display: 'flex', justifyContent: 'flex-end',
-                        gap: '0.75rem', paddingTop: '0.5rem',
-                    }}>
-                        <EliteButton type="button" variant="secondary" onClick={closeModal}>
+                    <div className="flex justify-end gap-3 pt-2">
+                        <button
+                            type="button"
+                            onClick={closeModal}
+                            className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
+                        >
                             Cancelar
-                        </EliteButton>
-                        <EliteButton type="submit" isLoading={saving} icon={<Save size={16} />}>
-                            {editingId ? 'Actualizar Club' : 'Guardar Club'}
-                        </EliteButton>
+                        </button>
+                        <button
+                            type="submit"
+                            disabled={saving}
+                            className="btn btn-primary shadow-btn-red hover:shadow-btn-red-hover active:scale-95"
+                        >
+                            {saving ? (
+                                <Loader2 size={18} className="animate-spin" />
+                            ) : (
+                                <Save size={18} />
+                            )}
+                            <span className="ml-2">{editingId ? 'Actualizar' : 'Guardar'}</span>
+                        </button>
                     </div>
                 </form>
             </EliteModal>
