@@ -1,5 +1,8 @@
-import React from 'react';
-import { Building2 } from 'lucide-react';
+'use client';
+
+import React, { useState } from 'react';
+import { Building2, MapPin } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface ClubCardProps {
     abbreviation: string;
@@ -8,47 +11,62 @@ interface ClubCardProps {
 }
 
 export default function ClubCard({ abbreviation, name, color }: ClubCardProps) {
+    const [isHovered, setIsHovered] = useState(false);
+
     return (
         <div
-            className="group relative bg-white rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl border border-slate-100"
-            style={{ borderTop: `4px solid ${color}` }}
+            className={cn(
+                "group relative bg-white/90 backdrop-blur-sm rounded-2xl p-6",
+                "border border-slate-100 shadow-sm",
+                "transition-all duration-300",
+                "flex flex-col justify-between overflow-hidden h-full",
+                isHovered ? "shadow-xl -translate-y-1" : ""
+            )}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
         >
-            <div className="p-6 flex flex-col gap-3">
-                {/* Header Row */}
-                <div className="flex items-center gap-4">
-                    <div
-                        className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-110 duration-300"
-                        style={{
-                            background: `linear-gradient(135deg, ${color}15, ${color}05)`,
-                            border: `1px solid ${color}30`,
-                        }}
-                    >
-                        <Building2 size={24} style={{ color }} />
-                    </div>
-                    <div>
-                        <h3 className="tex-lg font-bold text-[#1E3A8A] leading-tight tracking-tight">
-                            {abbreviation}
-                        </h3>
-                        <p className="text-sm text-slate-500 leading-snug">
-                            {name}
-                        </p>
-                    </div>
-                </div>
+            {/* Top Border Accent - Animated */}
+            <div
+                className="absolute top-0 left-0 w-full h-1 transform transition-transform duration-300 origin-left"
+                style={{
+                    background: color,
+                    transform: isHovered ? 'scaleX(1)' : 'scaleX(0)'
+                }}
+            />
 
-                {/* Status Badge */}
+            <div>
+                {/* Icon Container */}
                 <div
-                    className="self-start inline-flex items-center gap-1.5 px-3 py-1 rounded-full border"
+                    className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-all duration-300 border"
                     style={{
-                        background: `${color}08`,
-                        borderColor: `${color}20`,
+                        backgroundColor: isHovered ? color : `${color}10`,
+                        borderColor: isHovered ? color : `${color}30`,
+                        color: isHovered ? '#FFFFFF' : color,
                     }}
                 >
-                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: color }} />
+                    <Building2 size={24} strokeWidth={1.5} />
+                </div>
+
+                <h3
+                    className="tex-lg font-bold text-slate-800 leading-tight tracking-tight mb-2 transition-colors duration-300"
+                    style={{ color: isHovered ? color : undefined }}
+                >
+                    {abbreviation}
+                </h3>
+                <p className="text-sm font-medium text-slate-500 uppercase tracking-wide leading-snug">
+                    {name}
+                </p>
+            </div>
+
+            {/* Status / Footer */}
+            <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
+                <div className="flex items-center gap-1.5 opacity-80">
                     <span
-                        className="text-[10px] font-bold uppercase tracking-wider"
-                        style={{ color }}
-                    >
-                        Club Afiliado
+                        className="w-1.5 h-1.5 rounded-full"
+                        style={{ background: color }}
+                    />
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                        Afiliado
                     </span>
                 </div>
             </div>
