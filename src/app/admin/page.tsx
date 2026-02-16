@@ -468,32 +468,84 @@ export default function AdminPage() {
                         </div>
                     </div>
 
-                    {/* Tabla */}
-                    <div className="overflow-x-auto p-4 bg-slate-50/30">
-                        <table className="admin-table">
-                            <thead>
-                                <tr>
-                                    <th style={{ width: '48px', paddingLeft: '1rem', paddingRight: '0.5rem' }} className="py-4 rounded-l-lg">
-                                        <input type="checkbox" className="admin-checkbox" />
-                                    </th>
-                                    <th style={{ width: '130px' }} className="sortable py-4 px-4">Fecha</th>
-                                    <th className="sortable py-4 px-4">Título</th>
-                                    <th style={{ width: '120px', textAlign: 'center' }} className="py-4 px-4">Estado</th>
-                                    <th style={{ width: '160px', textAlign: 'center' }} className="py-4 px-4">Modalidad</th>
-                                    <th style={{ width: '110px', textAlign: 'center' }} className="py-4 px-4">Tipo</th>
-                                    <th style={{ width: '90px', textAlign: 'center' }} className="py-4 px-4">Inscritos</th>
-                                    <th style={{ width: '100px', textAlign: 'right' }} className="py-4 px-4 rounded-r-lg">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody className="space-y-2">
-                                {paginatedEventos.length === 0 ? (
-                                    <tr>
-                                        <td colSpan={8} className="px-6 py-16 text-center text-text-muted">
-                                            <div className="flex flex-col items-center justify-center gap-3">
-                                                <div className="p-4 bg-slate-100 rounded-full">
-                                                    <Search size={24} className="text-slate-400" />
+                    {/* Grid Table — mathematically aligned columns */}
+                    <div style={{ padding: '1rem', background: 'rgba(248, 250, 252, 0.3)', overflowX: 'auto' }}>
+                        {/* Shared grid template for perfect column sync */}
+                        {(() => {
+                            const gridCols = '48px 130px 1.5fr 120px 180px 110px 80px 100px';
+                            return (
+                                <>
+                                    {/* Header Row */}
+                                    <div style={{
+                                        display: 'grid',
+                                        gridTemplateColumns: gridCols,
+                                        alignItems: 'center',
+                                        padding: '0 0.25rem',
+                                        marginBottom: '0.25rem',
+                                    }}>
+                                        <div style={{ paddingLeft: '0.75rem' }}>
+                                            <input type="checkbox" className="admin-checkbox" />
+                                        </div>
+                                        <div style={{
+                                            fontSize: '0.75rem', fontWeight: 600,
+                                            color: '#94A3B8', textTransform: 'uppercase',
+                                            letterSpacing: '0.06em', padding: '0.75rem 0.5rem',
+                                        }}>Fecha</div>
+                                        <div style={{
+                                            fontSize: '0.75rem', fontWeight: 600,
+                                            color: '#94A3B8', textTransform: 'uppercase',
+                                            letterSpacing: '0.06em', padding: '0.75rem 0.5rem',
+                                        }}>Título</div>
+                                        <div style={{
+                                            fontSize: '0.75rem', fontWeight: 600,
+                                            color: '#94A3B8', textTransform: 'uppercase',
+                                            letterSpacing: '0.06em', padding: '0.75rem 0.5rem',
+                                            textAlign: 'center',
+                                        }}>Estado</div>
+                                        <div style={{
+                                            fontSize: '0.75rem', fontWeight: 600,
+                                            color: '#94A3B8', textTransform: 'uppercase',
+                                            letterSpacing: '0.06em', padding: '0.75rem 0.5rem',
+                                            textAlign: 'center',
+                                        }}>Modalidad</div>
+                                        <div style={{
+                                            fontSize: '0.75rem', fontWeight: 600,
+                                            color: '#94A3B8', textTransform: 'uppercase',
+                                            letterSpacing: '0.06em', padding: '0.75rem 0.5rem',
+                                            textAlign: 'center',
+                                        }}>Tipo</div>
+                                        <div style={{
+                                            fontSize: '0.75rem', fontWeight: 600,
+                                            color: '#94A3B8', textTransform: 'uppercase',
+                                            letterSpacing: '0.06em', padding: '0.75rem 0.5rem',
+                                            textAlign: 'center',
+                                        }}>Inscritos</div>
+                                        <div style={{
+                                            fontSize: '0.75rem', fontWeight: 600,
+                                            color: '#94A3B8', textTransform: 'uppercase',
+                                            letterSpacing: '0.06em', padding: '0.75rem 0.5rem',
+                                            textAlign: 'right',
+                                        }}>Acciones</div>
+                                    </div>
+
+                                    {/* Data Rows */}
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                        {paginatedEventos.length === 0 ? (
+                                            <div style={{
+                                                padding: '4rem 2rem', textAlign: 'center',
+                                                color: '#94A3B8', background: 'white',
+                                                borderRadius: '12px', border: '1px solid rgba(30,58,138,0.06)',
+                                            }}>
+                                                <div style={{
+                                                    width: '56px', height: '56px', background: '#F1F5F9',
+                                                    borderRadius: '50%', display: 'flex', alignItems: 'center',
+                                                    justifyContent: 'center', margin: '0 auto 1rem',
+                                                }}>
+                                                    <Search size={24} style={{ color: '#94A3B8' }} />
                                                 </div>
-                                                <p className="font-medium">No se encontraron eventos con estos filtros.</p>
+                                                <p style={{ fontWeight: 600, color: '#64748B', marginBottom: '0.5rem' }}>
+                                                    No se encontraron eventos con estos filtros.
+                                                </p>
                                                 <button
                                                     onClick={() => {
                                                         setSearchTerm('');
@@ -501,99 +553,230 @@ export default function AdminPage() {
                                                         setFilterModalidad('');
                                                         setFilterTipo('');
                                                     }}
-                                                    className="text-sm text-cop-blue hover:underline font-semibold"
+                                                    style={{
+                                                        fontSize: '0.875rem', color: '#1E3A8A', fontWeight: 600,
+                                                        background: 'none', border: 'none', cursor: 'pointer',
+                                                        textDecoration: 'underline',
+                                                    }}
                                                 >
                                                     Limpiar filtros
                                                 </button>
                                             </div>
-                                        </td>
-                                    </tr>
-                                ) : (
-                                    paginatedEventos.map(evento => {
-                                        const fecha = new Date(evento.fecha + 'T12:00:00');
-                                        const status = getEventStatus(evento.fecha);
-                                        const isNext = nextEvent?.id === evento.id;
+                                        ) : (
+                                            paginatedEventos.map(evento => {
+                                                const fecha = new Date(evento.fecha + 'T12:00:00');
+                                                const status = getEventStatus(evento.fecha);
+                                                const isNext = nextEvent?.id === evento.id;
 
-                                        return (
-                                            <tr key={evento.id} className="group">
-                                                <td style={{ paddingLeft: '1rem', paddingRight: '0.5rem', paddingTop: '1.25rem', paddingBottom: '1.25rem' }}>
-                                                    <input type="checkbox" className="admin-checkbox" />
-                                                </td>
-                                                <td style={{ padding: '1.25rem 1rem', whiteSpace: 'nowrap' }}>
-                                                    <div className="flex flex-col">
-                                                        <span className="text-text-elite font-bold text-sm">
-                                                            {fecha.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })}
-                                                        </span>
-                                                        {isNext && (
-                                                            <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-amber-600 mt-1 bg-amber-50 px-2 py-0.5 rounded-full w-fit">
-                                                                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
-                                                                Próximo
-                                                            </span>
-                                                        )}
-                                                    </div>
-                                                </td>
-                                                <td style={{ padding: '1.25rem 1rem' }}>
-                                                    <Link href={`/admin/eventos/${evento.id}/editar`} className="font-bold text-text-elite text-base hover:text-cop-blue transition-colors line-clamp-1 block" title={evento.titulo}>
-                                                        {evento.titulo}
-                                                    </Link>
-                                                </td>
-                                                <td style={{ padding: '1.25rem 1rem', textAlign: 'center' }}>
-                                                    {status === 'activo' ? (
-                                                        <span className="status-badge status-active shadow-sm border border-green-200/50">
-                                                            <span className="status-dot"></span>
-                                                            Activo
-                                                        </span>
-                                                    ) : (
-                                                        <span className="status-badge status-closed shadow-sm border border-slate-200/50">
-                                                            <span className="status-dot"></span>
-                                                            Finalizado
-                                                        </span>
-                                                    )}
-                                                </td>
-                                                <td style={{ padding: '1.25rem 1rem', textAlign: 'center' }}>
-                                                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide border shadow-sm"
+                                                return (
+                                                    <div
+                                                        key={evento.id}
+                                                        className="group"
                                                         style={{
-                                                            backgroundColor: 'white',
-                                                            color: evento.modalidades?.color,
-                                                            borderColor: `${evento.modalidades?.color}30`
-                                                        }}>
-                                                        <span className="w-2 h-2 rounded-full" style={{ backgroundColor: evento.modalidades?.color }}></span>
-                                                        {evento.modalidades?.nombre}
-                                                    </span>
-                                                </td>
-                                                <td style={{ padding: '1.25rem 1rem', textAlign: 'center' }}>
-                                                    <span className="inline-flex px-3 py-1 rounded-md text-xs font-semibold border bg-slate-50 text-slate-600 border-slate-200">
-                                                        {evento.tipos_evento?.nombre || evento.tipo || '-'}
-                                                    </span>
-                                                </td>
-                                                <td style={{ padding: '1.25rem 1rem', textAlign: 'center' }}>
-                                                    <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full font-bold text-xs border shadow-sm transition-transform group-hover:scale-110 ${(evento.inscripciones?.[0]?.count || 0) > 0
-                                                        ? 'bg-blue-50 text-cop-blue border-blue-100'
-                                                        : 'bg-slate-50 text-slate-400 border-slate-100'
-                                                        }`}>
-                                                        {evento.inscripciones?.[0]?.count || 0}
-                                                    </span>
-                                                </td>
-                                                <td style={{ padding: '1.25rem 1rem', textAlign: 'right' }}>
-                                                    <div className="admin-actions justify-end gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-                                                        <Link href={`/admin/eventos/${evento.id}/editar`} className="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-border-elite text-text-muted hover:text-cop-blue hover:border-cop-blue hover:shadow-md transition-all active:scale-95" title="Editar">
-                                                            <Edit size={16} />
-                                                        </Link>
-                                                        <button
-                                                            onClick={() => handleDelete(evento.id)}
-                                                            className="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-border-elite text-text-muted hover:text-fpt-red hover:border-fpt-red hover:shadow-md transition-all active:scale-95"
-                                                            title="Eliminar"
-                                                        >
-                                                            <Trash2 size={16} />
-                                                        </button>
+                                                            display: 'grid',
+                                                            gridTemplateColumns: gridCols,
+                                                            alignItems: 'center',
+                                                            background: 'white',
+                                                            borderRadius: '12px',
+                                                            border: '1px solid rgba(30, 58, 138, 0.06)',
+                                                            boxShadow: '0 2px 6px rgba(30, 58, 138, 0.04)',
+                                                            transition: 'all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1)',
+                                                            position: 'relative',
+                                                            cursor: 'default',
+                                                        }}
+                                                        onMouseEnter={(e) => {
+                                                            const el = e.currentTarget;
+                                                            el.style.boxShadow = '0 12px 32px rgba(30, 58, 138, 0.12), 0 4px 8px rgba(30, 58, 138, 0.06)';
+                                                            el.style.transform = 'translateY(-2px) scale(1.005)';
+                                                            el.style.borderColor = 'rgba(30, 58, 138, 0.12)';
+                                                            el.style.zIndex = '5';
+                                                        }}
+                                                        onMouseLeave={(e) => {
+                                                            const el = e.currentTarget;
+                                                            el.style.boxShadow = '0 2px 6px rgba(30, 58, 138, 0.04)';
+                                                            el.style.transform = 'translateY(0) scale(1)';
+                                                            el.style.borderColor = 'rgba(30, 58, 138, 0.06)';
+                                                            el.style.zIndex = '0';
+                                                        }}
+                                                    >
+                                                        {/* Checkbox */}
+                                                        <div style={{ paddingLeft: '0.75rem', paddingTop: '1rem', paddingBottom: '1rem' }}>
+                                                            <input type="checkbox" className="admin-checkbox" />
+                                                        </div>
+
+                                                        {/* Fecha */}
+                                                        <div style={{ padding: '1rem 0.5rem' }}>
+                                                            <span style={{ fontWeight: 700, color: '#1E3A8A', fontSize: '0.8125rem' }}>
+                                                                {fecha.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })}
+                                                            </span>
+                                                            {isNext && (
+                                                                <span style={{
+                                                                    display: 'inline-flex', alignItems: 'center', gap: '4px',
+                                                                    fontSize: '0.625rem', fontWeight: 700, textTransform: 'uppercase',
+                                                                    letterSpacing: '0.06em', color: '#D97706',
+                                                                    marginTop: '4px', background: '#FFFBEB',
+                                                                    padding: '2px 8px', borderRadius: '100px',
+                                                                }}>
+                                                                    <span style={{
+                                                                        width: '5px', height: '5px', borderRadius: '50%',
+                                                                        background: '#F59E0B',
+                                                                    }} />
+                                                                    Próximo
+                                                                </span>
+                                                            )}
+                                                        </div>
+
+                                                        {/* Título */}
+                                                        <div style={{ padding: '1rem 0.5rem', overflow: 'hidden' }}>
+                                                            <Link
+                                                                href={`/admin/eventos/${evento.id}/editar`}
+                                                                style={{
+                                                                    fontWeight: 700, color: '#1E3A8A', fontSize: '0.9375rem',
+                                                                    textDecoration: 'none', display: 'block',
+                                                                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                                                                    transition: 'color 0.2s',
+                                                                }}
+                                                                title={evento.titulo}
+                                                                onMouseEnter={(e) => { e.currentTarget.style.color = '#2D4BA6'; }}
+                                                                onMouseLeave={(e) => { e.currentTarget.style.color = '#1E3A8A'; }}
+                                                            >
+                                                                {evento.titulo}
+                                                            </Link>
+                                                        </div>
+
+                                                        {/* Estado */}
+                                                        <div style={{ padding: '1rem 0.5rem', textAlign: 'center' }}>
+                                                            {status === 'activo' ? (
+                                                                <span style={{
+                                                                    display: 'inline-flex', alignItems: 'center', gap: '6px',
+                                                                    fontSize: '0.6875rem', fontWeight: 700,
+                                                                    padding: '4px 10px', borderRadius: '100px',
+                                                                    color: '#16A34A', background: '#F0FDF4',
+                                                                    border: '1px solid rgba(34, 197, 94, 0.2)',
+                                                                }}>
+                                                                    <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#22C55E' }} />
+                                                                    ACTIVO
+                                                                </span>
+                                                            ) : (
+                                                                <span style={{
+                                                                    display: 'inline-flex', alignItems: 'center', gap: '6px',
+                                                                    fontSize: '0.6875rem', fontWeight: 700,
+                                                                    padding: '4px 10px', borderRadius: '100px',
+                                                                    color: '#64748B', background: '#F8FAFC',
+                                                                    border: '1px solid rgba(100, 116, 139, 0.2)',
+                                                                }}>
+                                                                    <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#94A3B8' }} />
+                                                                    Finalizado
+                                                                </span>
+                                                            )}
+                                                        </div>
+
+                                                        {/* Modalidad */}
+                                                        <div style={{ padding: '1rem 0.5rem', textAlign: 'center' }}>
+                                                            <span style={{
+                                                                display: 'inline-flex', alignItems: 'center', gap: '6px',
+                                                                fontSize: '0.6875rem', fontWeight: 700,
+                                                                padding: '4px 10px', borderRadius: '100px',
+                                                                color: evento.modalidades?.color || '#1E3A8A',
+                                                                background: 'white',
+                                                                border: `1px solid ${(evento.modalidades?.color || '#1E3A8A')}30`,
+                                                                textTransform: 'uppercase',
+                                                                letterSpacing: '0.04em',
+                                                            }}>
+                                                                <span style={{
+                                                                    width: '7px', height: '7px', borderRadius: '50%',
+                                                                    background: evento.modalidades?.color || '#1E3A8A',
+                                                                }} />
+                                                                {evento.modalidades?.nombre}
+                                                            </span>
+                                                        </div>
+
+                                                        {/* Tipo */}
+                                                        <div style={{ padding: '1rem 0.5rem', textAlign: 'center' }}>
+                                                            <span style={{
+                                                                display: 'inline-flex',
+                                                                fontSize: '0.75rem', fontWeight: 600,
+                                                                padding: '3px 10px', borderRadius: '6px',
+                                                                color: '#64748B', background: '#F8FAFC',
+                                                                border: '1px solid #E2E8F0',
+                                                            }}>
+                                                                {evento.tipos_evento?.nombre || evento.tipo || '-'}
+                                                            </span>
+                                                        </div>
+
+                                                        {/* Inscritos */}
+                                                        <div style={{ padding: '1rem 0.5rem', textAlign: 'center' }}>
+                                                            <span style={{
+                                                                display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                                                                width: '32px', height: '32px', borderRadius: '50%',
+                                                                fontWeight: 700, fontSize: '0.75rem',
+                                                                color: (evento.inscripciones?.[0]?.count || 0) > 0 ? '#1E3A8A' : '#94A3B8',
+                                                                background: (evento.inscripciones?.[0]?.count || 0) > 0 ? '#EFF6FF' : '#F8FAFC',
+                                                                border: `1px solid ${(evento.inscripciones?.[0]?.count || 0) > 0 ? '#BFDBFE' : '#E2E8F0'}`,
+                                                            }}>
+                                                                {evento.inscripciones?.[0]?.count || 0}
+                                                            </span>
+                                                        </div>
+
+                                                        {/* Acciones */}
+                                                        <div style={{ padding: '1rem 0.5rem', display: 'flex', justifyContent: 'flex-end', gap: '0.375rem' }}>
+                                                            <Link
+                                                                href={`/admin/eventos/${evento.id}/editar`}
+                                                                title="Editar"
+                                                                style={{
+                                                                    width: '32px', height: '32px',
+                                                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                                    borderRadius: '8px', background: 'white',
+                                                                    border: '1.5px solid rgba(30,58,138,0.12)',
+                                                                    color: '#94A3B8', textDecoration: 'none',
+                                                                    transition: 'all 0.2s',
+                                                                }}
+                                                                onMouseEnter={(e) => {
+                                                                    e.currentTarget.style.color = '#1E3A8A';
+                                                                    e.currentTarget.style.borderColor = '#1E3A8A';
+                                                                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(30,58,138,0.12)';
+                                                                }}
+                                                                onMouseLeave={(e) => {
+                                                                    e.currentTarget.style.color = '#94A3B8';
+                                                                    e.currentTarget.style.borderColor = 'rgba(30,58,138,0.12)';
+                                                                    e.currentTarget.style.boxShadow = 'none';
+                                                                }}
+                                                            >
+                                                                <Edit size={15} />
+                                                            </Link>
+                                                            <button
+                                                                onClick={() => handleDelete(evento.id)}
+                                                                title="Eliminar"
+                                                                style={{
+                                                                    width: '32px', height: '32px',
+                                                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                                    borderRadius: '8px', background: 'white',
+                                                                    border: '1.5px solid rgba(30,58,138,0.12)',
+                                                                    color: '#94A3B8', cursor: 'pointer',
+                                                                    transition: 'all 0.2s',
+                                                                }}
+                                                                onMouseEnter={(e) => {
+                                                                    e.currentTarget.style.color = '#D91E18';
+                                                                    e.currentTarget.style.borderColor = '#D91E18';
+                                                                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(217,30,24,0.12)';
+                                                                }}
+                                                                onMouseLeave={(e) => {
+                                                                    e.currentTarget.style.color = '#94A3B8';
+                                                                    e.currentTarget.style.borderColor = 'rgba(30,58,138,0.12)';
+                                                                    e.currentTarget.style.boxShadow = 'none';
+                                                                }}
+                                                            >
+                                                                <Trash2 size={15} />
+                                                            </button>
+                                                        </div>
                                                     </div>
-                                                </td>
-                                            </tr>
-                                        );
-                                    })
-                                )}
-                            </tbody>
-                        </table>
+                                                );
+                                            })
+                                        )}
+                                    </div>
+                                </>
+                            );
+                        })()}
                     </div>
 
                     {/* Paginación */}

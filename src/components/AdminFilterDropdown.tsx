@@ -1,12 +1,14 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { ChevronDown, Check, type LucideIcon } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface FilterOption {
     value: string;
     label: string;
-    color?: string; // Optional color dot
+    color?: string;
 }
 
 interface AdminFilterDropdownProps {
@@ -27,22 +29,60 @@ export default function AdminFilterDropdown({
     placeholder = "Seleccionar"
 }: AdminFilterDropdownProps) {
     const [isOpen, setIsOpen] = useState(false);
-    const dropdownRef = useRef<HTMLDivElement>(null);
+    const [mounted, setMounted] = useState(false);
+    const [menuPos, setMenuPos] = useState({ top: 0, left: 0, width: 0 });
+    const triggerRef = useRef<HTMLButtonElement>(null);
+    const menuRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => { setMounted(true); }, []);
+
+    // Position the portal menu relative to the trigger
+    const updatePosition = useCallback(() => {
+        if (triggerRef.current) {
+            const rect = triggerRef.current.getBoundingClientRect();
+            setMenuPos({
+                top: rect.bottom + 8,
+                left: rect.left,
+                width: Math.max(rect.width, 220),
+            });
+        }
+    }, []);
 
     // Close on click outside
     useEffect(() => {
+        if (!isOpen) return;
         function handleClickOutside(event: MouseEvent) {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+            const target = event.target as Node;
+            if (
+                triggerRef.current && !triggerRef.current.contains(target) &&
+                menuRef.current && !menuRef.current.contains(target)
+            ) {
                 setIsOpen(false);
             }
         }
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
+    }, [isOpen]);
+
+    // Close on Escape
+    useEffect(() => {
+        if (!isOpen) return;
+        function handleEscape(e: KeyboardEvent) {
+            if (e.key === 'Escape') setIsOpen(false);
+        }
+        document.addEventListener('keydown', handleEscape);
+        return () => document.removeEventListener('keydown', handleEscape);
+    }, [isOpen]);
+
+    // Close on scroll to avoid orphaned menus
+    useEffect(() => {
+        if (!isOpen) return;
+        const handleScroll = () => setIsOpen(false);
+        window.addEventListener('scroll', handleScroll, true);
+        return () => window.removeEventListener('scroll', handleScroll, true);
+    }, [isOpen]);
 
     const selectedOption = options.find(opt => opt.value === value);
-
-    // Helper to determine if we are in "all" or "default" state
     const isDefault = value === 'todos' || value === 'todas' || value === '';
 
     const handleSelect = (val: string) => {
@@ -50,54 +90,141 @@ export default function AdminFilterDropdown({
         setIsOpen(false);
     };
 
-    return (
-        <div className="relative" ref={dropdownRef}>
-            <button
-                type="button"
-                className={`filter-trigger ${isOpen ? 'active' : ''} !min-w-[200px] !justify-between`}
-                onClick={() => setIsOpen(!isOpen)}
-            >
-                <div className="flex items-center gap-3 truncate">
-                    {/* Icon - fades out when selection is active, optional style choice */}
-                    <Icon size={16} className={`text-text-muted ${!isDefault ? 'text-cop-blue' : ''}`} />
+    const handleToggle = () => {
+        if (!isOpen) updatePosition();
+        setIsOpen(!isOpen);
+    };
 
-                    <span className={`truncate ${!isDefault ? 'text-text-elite' : 'text-text-secondary'}`}>
+    return (
+        <div style={{ position: 'relative', display: 'inline-flex' }}>
+            <button
+                ref={triggerRef}
+                type="button"
+                onClick={handleToggle}
+                aria-expanded={isOpen}
+                aria-haspopup="listbox"
+                style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '0.5rem',
+                    minWidth: '180px',
+                    padding: '0.5rem 0.875rem',
+                    background: isOpen ? 'rgba(30, 58, 138, 0.04)' : 'white',
+                    border: `1.5px solid ${isOpen ? 'rgba(30, 58, 138, 0.3)' : 'rgba(30, 58, 138, 0.12)'}`,
+                    borderRadius: '10px',
+                    cursor: 'pointer',
+                    fontSize: '0.8125rem',
+                    fontWeight: 600,
+                    color: isDefault ? '#475569' : '#1E3A8A',
+                    transition: 'all 0.2s ease',
+                    boxShadow: isOpen ? '0 0 0 3px rgba(30, 58, 138, 0.08)' : '0 1px 3px rgba(0,0,0,0.04)',
+                }}
+                onMouseEnter={(e) => {
+                    if (!isOpen) {
+                        e.currentTarget.style.borderColor = 'rgba(30, 58, 138, 0.25)';
+                        e.currentTarget.style.boxShadow = '0 2px 8px rgba(30, 58, 138, 0.08)';
+                    }
+                }}
+                onMouseLeave={(e) => {
+                    if (!isOpen) {
+                        e.currentTarget.style.borderColor = 'rgba(30, 58, 138, 0.12)';
+                        e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.04)';
+                    }
+                }}
+            >
+                <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', overflow: 'hidden' }}>
+                    <Icon size={15} style={{ color: isDefault ? '#94A3B8' : '#1E3A8A', flexShrink: 0 }} />
+                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {selectedOption ? selectedOption.label : label}
                     </span>
-                </div>
-
+                </span>
                 <ChevronDown
                     size={14}
-                    className={`text-text-muted transition-transform duration-200 ${isOpen ? 'rotate-180' : ''} ${!isDefault ? 'text-cop-blue' : ''}`}
+                    style={{
+                        color: isDefault ? '#94A3B8' : '#1E3A8A',
+                        flexShrink: 0,
+                        transition: 'transform 0.2s ease',
+                        transform: isOpen ? 'rotate(180deg)' : 'rotate(0)',
+                    }}
                 />
             </button>
 
-            {/* Dropdown Menu */}
-            {isOpen && (
-                <div className="filter-dropdown-menu absolute top-full left-0 mt-2 bg-surface border border-border-elite rounded-elite-md shadow-elite-xl z-[100] min-w-[220px] overflow-hidden animate-dropdown-fade">
-                    {options.map((option) => (
-                        <button
-                            key={option.value}
-                            type="button"
-                            onClick={() => handleSelect(option.value)}
-                            className={`dropdown-item flex items-center justify-between w-full px-4 py-2.5 text-sm text-text-secondary hover:bg-blue-50/50 hover:text-cop-blue transition-colors ${value === option.value ? 'selected bg-blue-50/50 text-cop-blue font-semibold' : ''}`}
+            {/* Portal-rendered dropdown — outside all parent overflow contexts */}
+            {mounted && createPortal(
+                <AnimatePresence>
+                    {isOpen && (
+                        <motion.div
+                            ref={menuRef}
+                            role="listbox"
+                            aria-label={`Filtrar por ${label}`}
+                            initial={{ opacity: 0, y: -6, scale: 0.97 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: -4, scale: 0.97 }}
+                            transition={{ duration: 0.18, ease: [0.25, 0.8, 0.25, 1] }}
+                            style={{
+                                position: 'fixed',
+                                top: menuPos.top,
+                                left: menuPos.left,
+                                width: menuPos.width,
+                                zIndex: 9999,
+                                background: 'white',
+                                border: '1.5px solid rgba(30, 58, 138, 0.12)',
+                                borderRadius: '12px',
+                                boxShadow: '0 12px 40px rgba(30, 58, 138, 0.14), 0 4px 12px rgba(0,0,0,0.06)',
+                                overflow: 'hidden',
+                            }}
                         >
-                            <div className="flex items-center gap-2.5">
-                                {option.color && (
-                                    <span
-                                        className="w-2 h-2 rounded-full ring-1 ring-inset ring-black/5"
-                                        style={{ backgroundColor: option.color }}
-                                    />
-                                )}
-                                {option.label}
-                            </div>
-
-                            {value === option.value && (
-                                <Check size={14} className="text-blue-600 ml-auto" />
-                            )}
-                        </button>
-                    ))}
-                </div>
+                            {options.map((option) => (
+                                <button
+                                    key={option.value}
+                                    type="button"
+                                    role="option"
+                                    aria-selected={value === option.value}
+                                    onClick={() => handleSelect(option.value)}
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between',
+                                        width: '100%',
+                                        padding: '0.625rem 1rem',
+                                        fontSize: '0.8125rem',
+                                        fontWeight: value === option.value ? 700 : 500,
+                                        color: value === option.value ? '#1E3A8A' : '#475569',
+                                        background: value === option.value ? 'rgba(30, 58, 138, 0.05)' : 'transparent',
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                        transition: 'all 0.15s ease',
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.background = 'rgba(30, 58, 138, 0.06)';
+                                        e.currentTarget.style.color = '#1E3A8A';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.background = value === option.value ? 'rgba(30, 58, 138, 0.05)' : 'transparent';
+                                        e.currentTarget.style.color = value === option.value ? '#1E3A8A' : '#475569';
+                                    }}
+                                >
+                                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                        {option.color && (
+                                            <span style={{
+                                                width: '8px', height: '8px', borderRadius: '50%',
+                                                backgroundColor: option.color,
+                                                boxShadow: `0 0 0 2px ${option.color}20`,
+                                                flexShrink: 0,
+                                            }} />
+                                        )}
+                                        {option.label}
+                                    </span>
+                                    {value === option.value && (
+                                        <Check size={14} style={{ color: '#1E3A8A', flexShrink: 0 }} />
+                                    )}
+                                </button>
+                            ))}
+                        </motion.div>
+                    )}
+                </AnimatePresence>,
+                document.body
             )}
         </div>
     );
