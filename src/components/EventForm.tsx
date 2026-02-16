@@ -6,9 +6,9 @@ import Link from 'next/link';
 import { useToast } from '@/components/Toast';
 import { SelectEmptyState } from '@/components/EmptyState';
 import { createClient } from '@/lib/supabase';
-import { Modalidad, TipoEvento } from '@/lib/types';
+import { Modalidad, TipoEvento, Club } from '@/lib/types';
 import { eventoCreateSchema, EventoInput } from '@/lib/schemas';
-import { Save, X, Calendar, MapPin, Link as LinkIcon, Image as ImageIcon, AlignLeft, UploadCloud, Loader2 } from 'lucide-react';
+import { Save, X, Calendar, MapPin, Link as LinkIcon, Image as ImageIcon, AlignLeft, UploadCloud, Loader2, Building2 } from 'lucide-react';
 
 interface EventFormProps {
     initialData?: Partial<EventoInput> & { id?: string };
@@ -18,6 +18,7 @@ interface EventFormProps {
 export default function EventForm({ initialData, isEditing = false }: EventFormProps) {
     const [modalidades, setModalidades] = useState<Modalidad[]>([]);
     const [tiposEvento, setTiposEvento] = useState<TipoEvento[]>([]);
+    const [clubes, setClubes] = useState<Club[]>([]);
     const [loading, setLoading] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
@@ -35,6 +36,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
     const [imagenPosition, setImagenPosition] = useState(initialData?.imagen_position || 'center');
     const [descripcion, setDescripcion] = useState(initialData?.descripcion || '');
     const [tipoEventoId, setTipoEventoId] = useState(initialData?.tipo_evento_id || '');
+    const [clubId, setClubId] = useState(initialData?.club_id || '');
 
     useEffect(() => { loadOptions(); }, []);
 
@@ -50,6 +52,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
             setImagenPosition(initialData.imagen_position || 'center');
             setDescripcion(initialData.descripcion || '');
             setTipoEventoId(initialData.tipo_evento_id || '');
+            setClubId(initialData.club_id || '');
         }
     }, [initialData]);
 
@@ -65,6 +68,8 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
             setTiposEvento(tiposData);
             if (tiposData.length > 0 && !tipoEventoId && !isEditing) setTipoEventoId(tiposData[0].id);
         }
+        const { data: clubesData } = await supabase.from('clubes').select('*').eq('estado', 'afiliado').order('nombre');
+        if (clubesData) setClubes(clubesData);
     }
 
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -98,6 +103,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
             ubicacion: ubicacion || null, ubicacion_url: ubicacionUrl || null,
             imagen_url: imagenUrl || null, imagen_position: imagenPosition,
             descripcion: descripcion || null, tipo_evento_id: tipoEventoId || null,
+            club_id: clubId || null,
         };
 
         const validation = eventoCreateSchema.safeParse(formData);
@@ -194,6 +200,24 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                             </select>
                         </div>
                     </div>
+
+                    {/* Club Organizador */}
+                    {clubes.length > 0 && (
+                        <div>
+                            <label htmlFor="club" className="admin-label">
+                                <Building2 size={14} className="inline mr-1" /> Club Organizador
+                            </label>
+                            <select
+                                id="club"
+                                value={clubId}
+                                onChange={(e) => setClubId(e.target.value)}
+                                className="admin-input"
+                            >
+                                <option value="">— Sin club asignado —</option>
+                                {clubes.map(c => <option key={c.id} value={c.id}>{c.nombre} ({c.siglas})</option>)}
+                            </select>
+                        </div>
+                    )}
                 </div>
             </div>
 

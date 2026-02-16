@@ -43,7 +43,8 @@ export default function CalendarPage() {
         .select(`
           *,
           modalidades (*),
-          tipos_evento (*)
+          tipos_evento (*),
+          clubes (*)
         `)
         .order('fecha');
 

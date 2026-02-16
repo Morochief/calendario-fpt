@@ -61,6 +61,7 @@ export const eventoSchema = z.object({
     id: uuidSchema,
     modalidad_id: uuidSchema,
     tipo_evento_id: uuidSchema.nullable().optional(),
+    club_id: uuidSchema.nullable().optional(),
     titulo: z.string()
         .min(1, 'El título es requerido')
         .max(200, 'Máximo 200 caracteres')

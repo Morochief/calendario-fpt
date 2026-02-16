@@ -1,7 +1,7 @@
 'use client';
 
 import { EventoConModalidad } from '@/lib/types';
-import { Clock, MapPin, Map, X, Calendar as CalendarIcon } from 'lucide-react';
+import { Clock, MapPin, Map, X, Calendar as CalendarIcon, Building2 } from 'lucide-react';
 import { useEffect, useState, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -223,6 +223,22 @@ export default function EventModal({ evento, onClose }: EventModalProps) {
                                 </div>
                                 <span style={{ color: '#475569', fontSize: '0.9375rem' }}>
                                     {evento.ubicacion}
+                                </span>
+                            </div>
+                        )}
+
+                        {evento.clubes && (
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                <div style={{
+                                    width: '32px', height: '32px', borderRadius: '8px',
+                                    background: `${evento.clubes.color || '#1E3A8A'}12`,
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                    flexShrink: 0,
+                                }}>
+                                    <Building2 size={16} style={{ color: evento.clubes.color || '#1E3A8A' }} />
+                                </div>
+                                <span style={{ color: evento.clubes.color || '#475569', fontSize: '0.9375rem', fontWeight: 500 }}>
+                                    {evento.clubes.nombre}
                                 </span>
                             </div>
                         )}

@@ -8,6 +8,7 @@ export type Evento = {
     id: string;
     modalidad_id: string;
     tipo_evento_id?: string;
+    club_id?: string | null;
     titulo: string;
     fecha: string;
     hora: string;
@@ -20,11 +21,13 @@ export type Evento = {
     created_at: string;
     modalidades?: Modalidad;
     tipos_evento?: TipoEvento;
+    clubes?: Club;
 };
 
 export type EventoConModalidad = Evento & {
     modalidades: Modalidad;
     tipos_evento?: TipoEvento;
+    clubes?: Club;
 };
 
 export const MESES = [

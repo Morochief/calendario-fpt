@@ -1,7 +1,7 @@
 'use client';
 
 import { EventoConModalidad } from '@/lib/types';
-import { Clock, MapPin, Map } from 'lucide-react';
+import { Clock, MapPin, Map, Building2 } from 'lucide-react';
 
 interface EventCardProps {
     evento: EventoConModalidad;
@@ -82,6 +82,15 @@ export default function EventCard({ evento }: EventCardProps) {
                     <div className="mt-3 text-[0.8125rem] text-text-secondary flex items-center gap-1.5">
                         <MapPin size={14} strokeWidth={1.5} className="flex-shrink-0" />
                         <span style={{ lineHeight: 1.4 }}>{evento.ubicacion}</span>
+                    </div>
+                )}
+
+                {evento.clubes && (
+                    <div className="mt-2 text-[0.8125rem] text-text-secondary flex items-center gap-1.5">
+                        <Building2 size={14} strokeWidth={1.5} className="flex-shrink-0" />
+                        <span style={{ lineHeight: 1.4, color: evento.clubes.color || 'inherit', fontWeight: 500 }}>
+                            {evento.clubes.nombre}
+                        </span>
                     </div>
                 )}
 

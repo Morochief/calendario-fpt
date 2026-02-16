@@ -88,6 +88,7 @@ export default function AdminPage() {
                 *,
                 modalidades (*),
                 tipos_evento (*),
+                clubes (*),
                 inscripciones (count)
             `)
             .order('fecha', { ascending: false });
