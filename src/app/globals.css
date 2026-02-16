@@ -18,6 +18,9 @@
   --color-border-hover: rgba(30, 58, 138, 0.28);
 
   /* Identity Colors */
+  --background: var(--color-bg);
+  --foreground: var(--color-text);
+
   --color-fpt-red: #D91E18;
   --color-cop-blue: #1E3A8A;
 
@@ -77,6 +80,10 @@
 
 @layer base {
   body {
-    @apply bg-background text-text-elite min-h-screen antialiased;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
