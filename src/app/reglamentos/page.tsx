@@ -35,59 +35,142 @@ export default function PublicReglamentosPage() {
     }
 
     return (
-        <div className="min-h-screen bg-bg-elite flex flex-col">
+        <div style={{ minHeight: '100vh', background: '#F9FBFF', display: 'flex', flexDirection: 'column' }}>
             <Header />
-            <main className="flex-grow py-14 px-5 max-w-[1120px] mx-auto w-full animate-page-enter">
+            <main style={{ flexGrow: 1, padding: '3.5rem 1.25rem', maxWidth: '1120px', margin: '0 auto', width: '100%' }}>
+
                 {/* Hero Section */}
-                <div className="text-center mb-14">
-                    <div className="w-14 h-14 bg-blue-50 rounded-elite-md flex items-center justify-center mx-auto mb-5">
-                        <BookOpen size={26} strokeWidth={1.5} className="text-cop-blue" />
+                <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
+                    <div style={{
+                        width: '64px', height: '64px',
+                        background: 'linear-gradient(135deg, #EEF2FF, #DBEAFE)',
+                        borderRadius: '16px',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        margin: '0 auto 1.25rem',
+                        border: '1.5px solid rgba(30, 58, 138, 0.1)',
+                        boxShadow: '0 4px 16px rgba(30, 58, 138, 0.08)',
+                    }}>
+                        <BookOpen size={28} strokeWidth={1.5} style={{ color: '#1E3A8A' }} />
                     </div>
-                    <h1 className="text-[1.75rem] font-semibold text-text-elite m-0 mb-3 tracking-[-0.03em]">
+                    <h1 style={{
+                        fontSize: '1.75rem', fontWeight: 700,
+                        color: '#1E3A8A', margin: '0 0 0.75rem',
+                        letterSpacing: '-0.03em',
+                    }}>
                         Reglamentos y Documentos
                     </h1>
-                    <p className="text-text-muted text-[0.9375rem] max-w-[520px] mx-auto leading-relaxed">
+                    <p style={{
+                        color: '#94A3B8', fontSize: '0.9375rem',
+                        maxWidth: '520px', margin: '0 auto',
+                        lineHeight: 1.7,
+                    }}>
                         Accede a la documentación oficial, reglamentos técnicos y normativas vigentes de la Federación Paraguaya de Tiro.
                     </p>
                 </div>
 
                 {/* Loading State */}
                 {loading ? (
-                    <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-5">
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+                        gap: '1.25rem',
+                    }}>
                         {[1, 2, 3].map(i => (
-                            <div key={i} className="skeleton h-[200px] rounded-elite-md" />
+                            <div key={i} style={{
+                                height: '200px', borderRadius: '14px',
+                                background: 'linear-gradient(110deg, #F1F5F9 30%, #E2E8F0 50%, #F1F5F9 70%)',
+                                backgroundSize: '200% 100%',
+                                animation: 'shimmer 1.5s ease-in-out infinite',
+                            }} />
                         ))}
                     </div>
                 ) : reglamentos.length === 0 ? (
                     /* Empty State */
-                    <div className="text-center py-16 px-8 bg-surface rounded-elite-lg border border-border-elite">
-                        <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-5">
-                            <FileText size={28} strokeWidth={1.5} className="text-text-muted" />
+                    <div style={{
+                        textAlign: 'center', padding: '4rem 2rem',
+                        background: 'white', borderRadius: '16px',
+                        border: '1.5px solid rgba(30, 58, 138, 0.1)',
+                        boxShadow: '0 4px 16px rgba(30, 58, 138, 0.05)',
+                    }}>
+                        <div style={{
+                            width: '64px', height: '64px',
+                            background: 'linear-gradient(135deg, #EEF2FF, #DBEAFE)',
+                            borderRadius: '50%',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            margin: '0 auto 1.25rem',
+                        }}>
+                            <FileText size={28} strokeWidth={1.5} style={{ color: '#94A3B8' }} />
                         </div>
-                        <h3 className="font-semibold text-text-elite m-0 mb-2 text-[1.0625rem] tracking-[-0.01em]">
+                        <h3 style={{
+                            fontWeight: 600, color: '#1E3A8A', margin: '0 0 0.5rem',
+                            fontSize: '1.0625rem', letterSpacing: '-0.01em',
+                        }}>
                             No hay documentos disponibles
                         </h3>
-                        <p className="text-text-muted m-0 text-sm">
+                        <p style={{ color: '#94A3B8', margin: 0, fontSize: '0.875rem' }}>
                             Disculpa las molestias, vuelve a revisar pronto.
                         </p>
                     </div>
                 ) : (
                     /* Document Cards Grid */
-                    <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-5">
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+                        gap: '1.25rem',
+                    }}>
                         {reglamentos.map((reg, index) => (
                             <div
                                 key={reg.id}
-                                className="bg-surface rounded-elite-md p-7 border border-border-elite flex flex-col justify-between min-h-[200px] transition-all duration-250 ease-smooth hover:shadow-elite-md hover:-translate-y-0.5 hover:border-border-hover animate-stagger-in"
-                                style={{ animationDelay: `${index * 50}ms` }}
+                                style={{
+                                    background: 'rgba(255, 255, 255, 0.85)',
+                                    backdropFilter: 'blur(12px)',
+                                    WebkitBackdropFilter: 'blur(12px)',
+                                    borderRadius: '16px',
+                                    padding: '1.75rem',
+                                    border: '1.5px solid rgba(30, 58, 138, 0.1)',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    justifyContent: 'space-between',
+                                    minHeight: '210px',
+                                    transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
+                                    boxShadow: '0 2px 8px rgba(30, 58, 138, 0.05)',
+                                    cursor: 'default',
+                                    animation: `fadeSlideUp 0.4s ease ${index * 60}ms both`,
+                                }}
+                                onMouseEnter={(e) => {
+                                    const el = e.currentTarget;
+                                    el.style.boxShadow = '0 16px 48px rgba(30, 58, 138, 0.14), 0 6px 16px rgba(30, 58, 138, 0.06)';
+                                    el.style.borderColor = 'rgba(30, 58, 138, 0.2)';
+                                    el.style.transform = 'translateY(-4px) scale(1.01)';
+                                }}
+                                onMouseLeave={(e) => {
+                                    const el = e.currentTarget;
+                                    el.style.boxShadow = '0 2px 8px rgba(30, 58, 138, 0.05)';
+                                    el.style.borderColor = 'rgba(30, 58, 138, 0.1)';
+                                    el.style.transform = 'translateY(0) scale(1)';
+                                }}
                             >
                                 <div>
-                                    <div className="w-11 h-11 bg-blue-50 rounded-[10px] flex items-center justify-center mb-4">
-                                        <FileText size={20} strokeWidth={1.5} className="text-cop-blue" />
+                                    <div style={{
+                                        width: '44px', height: '44px',
+                                        background: 'linear-gradient(135deg, #EEF2FF, #DBEAFE)',
+                                        borderRadius: '12px',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                        marginBottom: '1rem',
+                                        border: '1px solid rgba(30, 58, 138, 0.08)',
+                                    }}>
+                                        <FileText size={20} strokeWidth={1.5} style={{ color: '#1E3A8A' }} />
                                     </div>
-                                    <h3 className="font-semibold text-text-elite m-0 mb-2 text-[0.9375rem] leading-normal tracking-[-0.01em]">
+                                    <h3 style={{
+                                        fontWeight: 600, color: '#1E3A8A',
+                                        margin: '0 0 0.5rem', fontSize: '0.9375rem',
+                                        lineHeight: 1.5, letterSpacing: '-0.01em',
+                                    }}>
                                         {reg.titulo}
                                     </h3>
-                                    <p className="text-text-muted text-xs m-0">
+                                    <p style={{
+                                        color: '#94A3B8', fontSize: '0.75rem', margin: 0,
+                                    }}>
                                         Publicado: {new Date(reg.created_at).toLocaleDateString('es-ES', {
                                             year: 'numeric',
                                             month: 'long',
@@ -100,8 +183,31 @@ export default function PublicReglamentosPage() {
                                     href={reg.url}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="inline-flex items-center justify-center gap-2 w-full py-2 px-4 bg-transparent text-text-elite rounded-elite-sm text-[0.8125rem] font-medium no-underline border border-border-elite mt-5 transition-all duration-200 hover:shadow-elite-sm hover:border-border-hover hover:bg-blue-50/30 active:scale-[0.97]"
                                     aria-label={`Descargar ${reg.titulo} en PDF`}
+                                    style={{
+                                        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                                        gap: '0.5rem', width: '100%', padding: '0.625rem 1rem',
+                                        background: 'transparent', color: '#1E3A8A',
+                                        borderRadius: '10px', fontSize: '0.8125rem', fontWeight: 600,
+                                        textDecoration: 'none',
+                                        border: '1.5px solid rgba(30, 58, 138, 0.15)',
+                                        marginTop: '1.25rem',
+                                        transition: 'all 0.2s ease',
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        const el = e.currentTarget;
+                                        el.style.background = 'linear-gradient(135deg, #1E3A8A, #2D4BA6)';
+                                        el.style.color = '#FFFFFF';
+                                        el.style.borderColor = '#1E3A8A';
+                                        el.style.boxShadow = '0 4px 16px rgba(30, 58, 138, 0.2)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        const el = e.currentTarget;
+                                        el.style.background = 'transparent';
+                                        el.style.color = '#1E3A8A';
+                                        el.style.borderColor = 'rgba(30, 58, 138, 0.15)';
+                                        el.style.boxShadow = 'none';
+                                    }}
                                 >
                                     <Download size={15} strokeWidth={1.5} />
                                     Descargar PDF
@@ -110,6 +216,17 @@ export default function PublicReglamentosPage() {
                         ))}
                     </div>
                 )}
+
+                <style>{`
+                    @keyframes fadeSlideUp {
+                        from { opacity: 0; transform: translateY(16px); }
+                        to { opacity: 1; transform: translateY(0); }
+                    }
+                    @keyframes shimmer {
+                        0% { background-position: -200% 0; }
+                        100% { background-position: 200% 0; }
+                    }
+                `}</style>
             </main>
             <Footer />
         </div>

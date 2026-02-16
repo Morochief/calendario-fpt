@@ -437,41 +437,55 @@ a {
    ======================================== */
 
 .month-card {
-  background: var(--color-surface);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
+  background: #FFFFFF;
+  border-radius: 14px;
+  border: 1.5px solid rgba(30, 58, 138, 0.14);
   overflow: hidden;
-  transition: all var(--transition-normal) var(--ease-smooth);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 2px 8px rgba(30, 58, 138, 0.06);
 }
 
 .month-card:hover {
-  box-shadow: var(--shadow-lg);
-  border-color: var(--color-border-hover);
-  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(30, 58, 138, 0.14), 0 4px 12px rgba(30, 58, 138, 0.08);
+  border-color: rgba(30, 58, 138, 0.25);
+  transform: translateY(-3px);
 }
 
 .month-header {
-  background: var(--color-surface);
-  color: var(--color-text);
+  background: linear-gradient(135deg, #F0F4FF 0%, #E8EEFF 100%);
+  color: #1E3A8A;
   padding: 1rem 1.25rem;
   font-size: 0.8125rem;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  border-bottom: 1px solid var(--color-border);
+  letter-spacing: 0.06em;
+  border-bottom: 1.5px solid rgba(30, 58, 138, 0.1);
+  position: relative;
+}
+
+.month-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #D91E18, #1E3A8A);
+  opacity: 0.4;
 }
 
 .month-content {
   padding: 1rem;
   min-height: 100px;
-  background: var(--color-surface);
+  background: #FFFFFF;
 }
 
 .month-empty {
-  color: var(--color-text-muted);
+  color: #94A3B8;
   font-size: 0.8125rem;
   text-align: center;
   padding: 2rem 1rem;
+  font-style: italic;
 }
 
 /* ========================================
@@ -905,12 +919,12 @@ a {
 
 /* ===== NEW: Card-like Rows ===== */
 .admin-table tbody tr {
-  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
   position: relative;
-  background: var(--color-surface);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
-  /* Subtle row shadow */
+  background: #FFFFFF;
+  box-shadow: 0 2px 6px rgba(30, 58, 138, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
   border-radius: 12px;
+  border: 1px solid rgba(30, 58, 138, 0.06);
 }
 
 /* Fix for border-radius on table rows (applied to cells) */
@@ -928,34 +942,34 @@ a {
   content: '';
   position: absolute;
   left: 0;
-  top: 12px;
-  bottom: 12px;
+  top: 10px;
+  bottom: 10px;
   width: 4px;
-  background: var(--color-fpt-red);
+  background: linear-gradient(180deg, #D91E18, #1E3A8A);
   transform: scaleY(0);
-  transition: transform 0.2s var(--ease-bounce);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
   border-radius: 0 4px 4px 0;
   z-index: 1;
 }
 
 .admin-table tbody tr:hover {
-  background: #fff;
-  transform: translateY(-2px) scale(1.005);
-  /* Slight pop */
+  background: #FFFFFF;
+  transform: translateY(-3px) scale(1.008);
   box-shadow:
-    0 10px 15px -3px rgba(30, 58, 138, 0.08),
-    0 4px 6px -2px rgba(30, 58, 138, 0.04);
+    0 14px 28px -4px rgba(30, 58, 138, 0.12),
+    0 6px 12px -2px rgba(30, 58, 138, 0.06);
+  border-color: rgba(30, 58, 138, 0.12);
   z-index: 10;
-  /* Bring to front */
 }
 
 .admin-table tbody tr:hover::before {
   transform: scaleY(1);
 }
 
-/* ===== NEW: Row click effect ===== */
+/* ===== Row click effect ===== */
 .admin-table tbody tr:active {
-  background: rgba(30, 58, 138, 0.05);
+  transform: translateY(-1px) scale(1.002);
+  background: rgba(30, 58, 138, 0.03);
 }
 
 .admin-actions {
