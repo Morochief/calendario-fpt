@@ -12,6 +12,7 @@ import { Modalidad, EventoConModalidad, MESES } from '@/lib/types';
 import { AlertTriangle } from 'lucide-react';
 import ScrollReveal from '@/components/ui/ScrollReveal';
 import SectionTitle from '@/components/SectionTitle';
+import { motion, AnimatePresence } from 'framer-motion';
 
 type ViewType = 'mensual' | 'anual';
 
@@ -154,20 +155,41 @@ export default function CalendarPage() {
             />
           )}
 
-          {vista === 'mensual' ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-20">
-              {MESES.map((mes, index) => (
-                <MonthCard
-                  key={mes}
-                  mes={mes}
-                  mesIndex={index}
-                  eventos={eventosFiltrados}
-                />
-              ))}
-            </div>
-          ) : (
-            <AnnualCalendar eventos={eventosFiltrados} year={2026} />
-          )}
+
+
+          <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 min-h-[600px] relative overflow-hidden">
+            <AnimatePresence mode="wait">
+              {vista === 'mensual' ? (
+                <motion.div
+                  key="mensual"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-20"
+                >
+                  {MESES.map((mes, index) => (
+                    <MonthCard
+                      key={mes}
+                      mes={mes}
+                      mesIndex={index}
+                      eventos={eventosFiltrados}
+                    />
+                  ))}
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="anual"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                >
+                  <AnnualCalendar eventos={eventosFiltrados} year={2026} />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </ScrollReveal>
       </main>
       <Footer />

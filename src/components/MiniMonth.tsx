@@ -70,7 +70,7 @@ export default function MiniMonth({ mes, mesIndex, year, eventos }: MiniMonthPro
     const tieneEventosOcultos = eventosDelMes.length > 3 && !expandido;
 
     return (
-        <div className={`bg-white rounded-[12px] p-4 text-xs transition-all border border-[var(--color-border)] shadow-[var(--shadow-xs)] hover:shadow-[var(--shadow-sm)] ${expandido ? 'ring-2 ring-[var(--color-cop-blue)]/10' : ''}`}>
+        <div className={`bg-white rounded-[12px] p-4 text-xs transition-all border border-[var(--color-border)] shadow-[var(--shadow-xs)] hover:shadow-[var(--shadow-sm)] border-t-[3px] border-t-[#D91E18] ${expandido ? 'ring-2 ring-[#1E3A8A]/10' : ''}`}>
             <div
                 className="font-semibold uppercase tracking-wider text-text-elite mb-2 text-xs flex items-center justify-between"
                 onClick={() => eventosDelMes.length > 0 && setExpandido(!expandido)}

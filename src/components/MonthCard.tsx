@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { MESES, EventoConModalidad } from '@/lib/types';
 import EventRow from './EventRow';
@@ -11,7 +11,7 @@ interface MonthCardProps {
     eventos: EventoConModalidad[];
 }
 
-export default function MonthCard({ mes, mesIndex, eventos }: MonthCardProps) {
+const MonthCard = ({ mes, mesIndex, eventos }: MonthCardProps) => {
     const [selectedEvent, setSelectedEvent] = useState<EventoConModalidad | null>(null);
 
     // Filtrar eventos de este mes (mesIndex es 0-based, pero enero = 1, feb = 2...)
@@ -23,14 +23,13 @@ export default function MonthCard({ mes, mesIndex, eventos }: MonthCardProps) {
 
     return (
         <>
-            <div className="bg-white rounded-[16px] border border-[var(--color-border)] overflow-hidden transition-all duration-300 shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-lg)] hover:-translate-y-1 group relative">
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[var(--color-fpt-red)] via-[var(--color-cop-blue)] to-[var(--color-fpt-red)] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-                <div className="relative bg-gradient-to-br from-slate-50 to-white p-5 flex items-center justify-between border-b border-[var(--color-border)]">
-                    <span className="text-[14px] font-black text-[var(--color-cop-blue)] uppercase tracking-widest">
-                        {mes} <span className="text-slate-400 font-normal">2026</span>
+            <div className="bg-white rounded-[16px] border border-[var(--color-border)] overflow-hidden transition-all duration-300 shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-lg)] hover:-translate-y-1 group relative border-t-4 border-t-[#D91E18]">
+                
+                <div className="relative p-5 flex items-center justify-between border-b border-[var(--color-border)] bg-gradient-to-br from-white to-blue-50/30">
+                    <span className="text-[14px] font-black text-[#1E3A8A] uppercase tracking-widest flex items-center gap-2">
+                        {mes} <span className="text-[#D91E18] font-bold">2026</span>
                     </span>
-                    <div className="h-2 w-2 rounded-full bg-[var(--color-cop-blue)] opacity-20 group-hover:opacity-100 transition-opacity"></div>
+                    <div className="h-2 w-2 rounded-full bg-[#1E3A8A] opacity-20 group-hover:opacity-100 transition-opacity animate-pulse"></div>
                 </div>
 
                 <div className="p-2 bg-white min-h-[100px]">
@@ -60,4 +59,6 @@ export default function MonthCard({ mes, mesIndex, eventos }: MonthCardProps) {
             )}
         </>
     );
-}
+};
+
+export default MonthCard;
