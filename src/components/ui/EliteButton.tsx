@@ -22,16 +22,14 @@ export default function EliteButton({
 }: EliteButtonProps) {
 
     const variants = {
-        primary: "bg-gradient-to-r from-blue-700 to-indigo-700 text-white shadow-lg shadow-blue-900/20 border-transparent hover:shadow-blue-900/30",
-        secondary: "bg-white text-slate-700 border-slate-200 shadow-sm hover:bg-slate-50 hover:border-slate-300",
-        danger: "bg-white text-red-600 border-red-100 shadow-sm hover:bg-red-50 hover:border-red-200",
+        primary: "bg-gradient-to-br from-blue-700 to-indigo-800 text-white shadow-lg shadow-blue-900/25 border-b-4 border-blue-900 active:border-b-0 active:translate-y-1 hover:shadow-blue-900/40 hover:-translate-y-0.5 transition-all",
+        secondary: "bg-white text-slate-700 border border-slate-200 border-b-4 border-slate-300 shadow-sm active:border-b-0 active:translate-y-1 hover:bg-slate-50 hover:border-slate-300",
+        danger: "bg-white text-red-600 border border-red-100 border-b-4 border-red-200 shadow-sm active:border-b-0 active:translate-y-1 hover:bg-red-50 hover:border-red-200",
         ghost: "bg-transparent text-slate-600 hover:bg-slate-100 border-transparent shadow-none"
     };
 
     return (
         <motion.button
-            whileHover={{ scale: 1.02, y: -1 }}
-            whileTap={{ scale: 0.98 }}
             disabled={isLoading || disabled}
             className={`
                 relative inline-flex items-center justify-center
