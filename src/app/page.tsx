@@ -116,17 +116,29 @@ export default function CalendarPage() {
             className="mb-0" // Override margin if needed by layout
           />
 
-          <div className="view-toggle">
+          <div className="flex bg-white p-1 rounded-full border border-[var(--color-border)] shadow-[var(--shadow-sm)] w-fit relative z-10">
             <button
-              className={`view-btn ${vista === 'mensual' ? 'active' : ''}`}
               onClick={() => setVista('mensual')}
+              className={`relative px-6 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${vista === 'mensual'
+                  ? 'text-[var(--color-cop-blue)] shadow-sm bg-blue-50/50'
+                  : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text)]'
+                }`}
             >
+              {vista === 'mensual' && (
+                <div className="absolute inset-0 bg-white rounded-full shadow-[var(--shadow-xs)] border border-[var(--color-border-hover)] -z-10 animate-in fade-in zoom-in-95 duration-200" />
+              )}
               Vista Mensual
             </button>
             <button
-              className={`view-btn ${vista === 'anual' ? 'active' : ''}`}
               onClick={() => setVista('anual')}
+              className={`relative px-6 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${vista === 'anual'
+                  ? 'text-[var(--color-cop-blue)] shadow-sm bg-blue-50/50'
+                  : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text)]'
+                }`}
             >
+              {vista === 'anual' && (
+                <div className="absolute inset-0 bg-white rounded-full shadow-[var(--shadow-xs)] border border-[var(--color-border-hover)] -z-10 animate-in fade-in zoom-in-95 duration-200" />
+              )}
               Vista Anual
             </button>
           </div>
@@ -141,7 +153,7 @@ export default function CalendarPage() {
         )}
 
         {vista === 'mensual' ? (
-          <div className="calendar-grid">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-20">
             {MESES.map((mes, index) => (
               <MonthCard
                 key={mes}

@@ -32,9 +32,9 @@ export default function ModalityFilter({ modalidades, selected, onSelect }: Moda
     };
 
     return (
-        <div className="sticky top-[80px] z-[var(--z-filter)] flex py-2 pointer-events-none mb-10" ref={dropdownRef}>
+        <div className="sticky top-[80px] z-[var(--z-filter)] flex py-4 pointer-events-none mb-4" ref={dropdownRef}>
             <button
-                className={`pointer-events-auto flex items-center justify-between gap-4 px-4 py-2.5 bg-surface border border-border-elite rounded-elite-sm font-medium text-sm text-text-elite cursor-pointer shadow-elite-xs transition-all hover:border-border-hover hover:shadow-elite-sm active:scale-98 min-w-[240px] ${selected ? 'border-border-hover shadow-[0_0_0_3px_rgba(30,58,138,0.08)]' : ''}`}
+                className={`pointer-events-auto flex items-center justify-between gap-4 px-5 py-3 bg-white border border-[var(--color-border)] rounded-full font-semibold text-sm text-[var(--color-text)] cursor-pointer shadow-[0_2px_8px_rgba(30,58,138,0.06)] transition-all hover:border-[var(--color-cop-blue)] hover:shadow-[0_4px_12px_rgba(30,58,138,0.1)] active:scale-98 min-w-[260px] backdrop-blur-md bg-white/90 ${selected ? 'border-[var(--color-cop-blue)] ring-2 ring-[var(--color-cop-blue)]/10' : ''}`}
                 onClick={() => setIsOpen(!isOpen)}
             >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
