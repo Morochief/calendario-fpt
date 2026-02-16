@@ -2920,44 +2920,47 @@ a.user-dropdown-item,
    Admin Form Inputs — Premium Styling
    ======================================== */
 
-/* Admin Form Inputs — Clean Standard */
+/* Admin Form Inputs — Modern SaaS */
 .admin-input {
   display: block;
   width: 100%;
-  padding: 0.5rem 0.75rem;
+  padding: 0.625rem 0.875rem;
+  /* Taller, py-2.5 */
   font-size: 0.875rem;
-  line-height: 1.5;
-  color: #374151;
-  /* gray-700 */
+  line-height: 1.25rem;
+  color: #1e293b;
+  /* slate-800 */
   background-color: #fff;
-  border: 1px solid #d1d5db;
-  /* gray-300 */
-  border-radius: 6px;
-  /* rounded-md */
+  border: 1px solid #cbd5e1;
+  /* slate-300 */
+  border-radius: 8px;
+  /* rounded-lg */
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  /* shadow-sm */
-  transition: all 0.2s ease;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
   outline: none;
+}
+
+.admin-input:hover {
+  border-color: #94a3b8;
+  /* slate-400 */
 }
 
 .admin-input:focus {
   border-color: #3b82f6;
   /* blue-500 */
-  box-shadow: 0 0 0 1px #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  /* Ring effect */
 }
 
-/* Color Picker Container Standard */
+/* Color Picker Container SaaS */
 .color-picker-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
   padding: 1rem;
-  border: 1px solid #e5e7eb;
-  /* gray-200 */
-  border-radius: 8px;
-  /* rounded-lg */
-  background: #f9fafb;
-  /* gray-50 */
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #f8fafc;
 }
 
 .admin-card {

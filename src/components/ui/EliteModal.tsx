@@ -53,8 +53,9 @@ export default function EliteModal({
                             transition={{ type: "spring", duration: 0.4, bounce: 0.3 }}
                             className={`
                                 w-full ${width}
-                                bg-white rounded-lg
-                                shadow-xl
+                                bg-white rounded-xl
+                                shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)]
+                                border border-slate-100
                                 overflow-hidden
                                 pointer-events-auto
                             `}

@@ -335,7 +335,7 @@ export default function AdminClubesPage() {
 
                     {/* Color Distintivo */}
                     <div>
-                        <label className="admin-label">Color Distintivo</label>
+                        <label className="admin-label mb-2 block">Color Distintivo</label>
                         <div className="color-picker-container">
                             {PRESET_COLORS.map((c) => (
                                 <button
