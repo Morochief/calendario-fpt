@@ -5,6 +5,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { createClient } from '@/lib/supabase';
 import { FileText, Download, BookOpen } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface Reglamento {
     id: string;
@@ -34,196 +35,106 @@ export default function PublicReglamentosPage() {
     }, []);
 
     return (
-        <div style={{ minHeight: '100vh', background: '#F9FBFF', display: 'flex', flexDirection: 'column' }}>
+        <div className="min-h-screen bg-slate-50 flex flex-col relative overflow-hidden">
+            {/* Fixed Watermark Background - FPDT Lion in color */}
+            <div className="fixed inset-0 pointer-events-none z-0 flex items-center justify-center opacity-[0.04]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                    src="/LOGO_FPDT-removebg-preview.svg"
+                    alt="FPDT Watermark"
+                    className="w-[90vw] max-w-[900px] h-auto object-contain"
+                />
+            </div>
+
             <Header />
-            <main style={{ flexGrow: 1, padding: '3.5rem 1.25rem', maxWidth: '1120px', margin: '0 auto', width: '100%' }}>
-
+            <main className="flex-grow relative z-10">
                 {/* Hero Section */}
-                <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
-                    <div style={{
-                        width: '64px', height: '64px',
-                        background: 'linear-gradient(135deg, #EEF2FF, #DBEAFE)',
-                        borderRadius: '16px',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        margin: '0 auto 1.25rem',
-                        border: '1.5px solid rgba(30, 58, 138, 0.1)',
-                        boxShadow: '0 4px 16px rgba(30, 58, 138, 0.08)',
-                    }}>
-                        <BookOpen size={28} strokeWidth={1.5} style={{ color: '#1E3A8A' }} />
-                    </div>
-                    <h1 style={{
-                        fontSize: '1.75rem', fontWeight: 700,
-                        color: '#1E3A8A', margin: '0 0 0.75rem',
-                        letterSpacing: '-0.03em',
-                    }}>
-                        Reglamentos y Documentos
-                    </h1>
-                    <p style={{
-                        color: '#94A3B8', fontSize: '0.9375rem',
-                        maxWidth: '520px', margin: '0 auto',
-                        lineHeight: 1.7,
-                    }}>
-                        Accede a la documentación oficial, reglamentos técnicos y normativas vigentes de la Federación Paraguaya de Tiro.
-                    </p>
-                </div>
+                <div className="bg-[#1E3A8A] text-white py-20 px-4 text-center relative overflow-hidden shadow-lg border-b-4 border-[#D91E18]">
+                    {/* Background Effects */}
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white/5 rounded-full blur-[100px] pointer-events-none" />
+                    <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-400/10 via-transparent to-transparent pointer-events-none" />
 
-                {/* Loading State */}
-                {loading ? (
-                    <div style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-                        gap: '1.25rem',
-                    }}>
-                        {[1, 2, 3].map(i => (
-                            <div key={i} style={{
-                                height: '200px', borderRadius: '14px',
-                                background: 'linear-gradient(110deg, #F1F5F9 30%, #E2E8F0 50%, #F1F5F9 70%)',
-                                backgroundSize: '200% 100%',
-                                animation: 'shimmer 1.5s ease-in-out infinite',
-                            }} />
-                        ))}
-                    </div>
-                ) : reglamentos.length === 0 ? (
-                    /* Empty State */
-                    <div style={{
-                        textAlign: 'center', padding: '4rem 2rem',
-                        background: 'white', borderRadius: '16px',
-                        border: '1.5px solid rgba(30, 58, 138, 0.1)',
-                        boxShadow: '0 4px 16px rgba(30, 58, 138, 0.05)',
-                    }}>
-                        <div style={{
-                            width: '64px', height: '64px',
-                            background: 'linear-gradient(135deg, #EEF2FF, #DBEAFE)',
-                            borderRadius: '50%',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            margin: '0 auto 1.25rem',
-                        }}>
-                            <FileText size={28} strokeWidth={1.5} style={{ color: '#94A3B8' }} />
+                    <div className="max-w-4xl mx-auto relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                        <div className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mx-auto mb-6 border border-white/20 shadow-xl ring-1 ring-white/10">
+                            <BookOpen size={36} className="text-white" strokeWidth={1.5} />
                         </div>
-                        <h3 style={{
-                            fontWeight: 600, color: '#1E3A8A', margin: '0 0 0.5rem',
-                            fontSize: '1.0625rem', letterSpacing: '-0.01em',
-                        }}>
-                            No hay documentos disponibles
-                        </h3>
-                        <p style={{ color: '#94A3B8', margin: 0, fontSize: '0.875rem' }}>
-                            Disculpa las molestias, vuelve a revisar pronto.
+                        <h1 className="text-4xl md:text-5xl font-black mb-6 tracking-tight drop-shadow-sm uppercase">
+                            Reglamentos y <span className="text-red-500">Documentos</span>
+                        </h1>
+                        <p className="text-blue-100/90 max-w-2xl mx-auto text-lg leading-relaxed font-light">
+                            Accede a la documentación oficial, reglamentos técnicos y normativas vigentes de la Federación Paraguaya de Tiro.
                         </p>
                     </div>
-                ) : (
-                    /* Document Cards Grid */
-                    <div style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-                        gap: '1.25rem',
-                    }}>
-                        {reglamentos.map((reg, index) => (
-                            <div
-                                key={reg.id}
-                                style={{
-                                    background: 'rgba(255, 255, 255, 0.85)',
-                                    backdropFilter: 'blur(12px)',
-                                    WebkitBackdropFilter: 'blur(12px)',
-                                    borderRadius: '16px',
-                                    padding: '1.75rem',
-                                    border: '1.5px solid rgba(30, 58, 138, 0.1)',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    justifyContent: 'space-between',
-                                    minHeight: '210px',
-                                    transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
-                                    boxShadow: '0 2px 8px rgba(30, 58, 138, 0.05)',
-                                    cursor: 'default',
-                                    animation: `fadeSlideUp 0.4s ease ${index * 60}ms both`,
-                                }}
-                                onMouseEnter={(e) => {
-                                    const el = e.currentTarget;
-                                    el.style.boxShadow = '0 16px 48px rgba(30, 58, 138, 0.14), 0 6px 16px rgba(30, 58, 138, 0.06)';
-                                    el.style.borderColor = 'rgba(30, 58, 138, 0.2)';
-                                    el.style.transform = 'translateY(-4px) scale(1.01)';
-                                }}
-                                onMouseLeave={(e) => {
-                                    const el = e.currentTarget;
-                                    el.style.boxShadow = '0 2px 8px rgba(30, 58, 138, 0.05)';
-                                    el.style.borderColor = 'rgba(30, 58, 138, 0.1)';
-                                    el.style.transform = 'translateY(0) scale(1)';
-                                }}
-                            >
-                                <div>
-                                    <div style={{
-                                        width: '44px', height: '44px',
-                                        background: 'linear-gradient(135deg, #EEF2FF, #DBEAFE)',
-                                        borderRadius: '12px',
-                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                        marginBottom: '1rem',
-                                        border: '1px solid rgba(30, 58, 138, 0.08)',
-                                    }}>
-                                        <FileText size={20} strokeWidth={1.5} style={{ color: '#1E3A8A' }} />
-                                    </div>
-                                    <h3 style={{
-                                        fontWeight: 600, color: '#1E3A8A',
-                                        margin: '0 0 0.5rem', fontSize: '0.9375rem',
-                                        lineHeight: 1.5, letterSpacing: '-0.01em',
-                                    }}>
-                                        {reg.titulo}
-                                    </h3>
-                                    <p style={{
-                                        color: '#94A3B8', fontSize: '0.75rem', margin: 0,
-                                    }}>
-                                        Publicado: {new Date(reg.created_at).toLocaleDateString('es-ES', {
-                                            year: 'numeric',
-                                            month: 'long',
-                                            day: 'numeric'
-                                        })}
-                                    </p>
-                                </div>
+                </div>
 
-                                <a
-                                    href={reg.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    aria-label={`Descargar ${reg.titulo} en PDF`}
-                                    style={{
-                                        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                                        gap: '0.5rem', width: '100%', padding: '0.625rem 1rem',
-                                        background: 'transparent', color: '#1E3A8A',
-                                        borderRadius: '10px', fontSize: '0.8125rem', fontWeight: 600,
-                                        textDecoration: 'none',
-                                        border: '1.5px solid rgba(30, 58, 138, 0.15)',
-                                        marginTop: '1.25rem',
-                                        transition: 'all 0.2s ease',
-                                    }}
-                                    onMouseEnter={(e) => {
-                                        const el = e.currentTarget;
-                                        el.style.background = 'linear-gradient(135deg, #1E3A8A, #2D4BA6)';
-                                        el.style.color = '#FFFFFF';
-                                        el.style.borderColor = '#1E3A8A';
-                                        el.style.boxShadow = '0 4px 16px rgba(30, 58, 138, 0.2)';
-                                    }}
-                                    onMouseLeave={(e) => {
-                                        const el = e.currentTarget;
-                                        el.style.background = 'transparent';
-                                        el.style.color = '#1E3A8A';
-                                        el.style.borderColor = 'rgba(30, 58, 138, 0.15)';
-                                        el.style.boxShadow = 'none';
-                                    }}
-                                >
-                                    <Download size={15} strokeWidth={1.5} />
-                                    Descargar PDF
-                                </a>
+                {/* Grid Section */}
+                <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-12 pb-24 relative z-20">
+                    {loading ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {[1, 2, 3].map(i => (
+                                <div key={i} className="h-[240px] rounded-2xl bg-white/80 animate-pulse border border-white/40 shadow-sm" />
+                            ))}
+                        </div>
+                    ) : reglamentos.length === 0 ? (
+                        /* Empty State */
+                        <div className="text-center py-20 bg-white/60 backdrop-blur-md rounded-3xl border border-white shadow-lg max-w-2xl mx-auto">
+                            <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <FileText size={32} className="text-slate-400" strokeWidth={1.5} />
                             </div>
-                        ))}
-                    </div>
-                )}
+                            <h3 className="text-xl font-bold text-slate-800 mb-2">
+                                No hay documentos disponibles
+                            </h3>
+                            <p className="text-slate-500">
+                                Disculpa las molestias, vuelve a revisar pronto.
+                            </p>
+                        </div>
+                    ) : (
+                        /* Document Cards Grid */
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {reglamentos.map((reg, index) => (
+                                <div
+                                    key={reg.id}
+                                    className="group relative bg-white/90 backdrop-blur-sm rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between min-h-[220px] overflow-hidden"
+                                    style={{ animation: `fadeSlideUp 0.5s ease ${index * 100}ms both` }}
+                                >
+                                    {/* Top Border Accent */}
+                                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 to-blue-400 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+
+                                    <div>
+                                        <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center mb-4 group-hover:bg-blue-600 group-hover:border-blue-600 transition-colors duration-300">
+                                            <FileText size={22} className="text-blue-700 group-hover:text-white transition-colors duration-300" strokeWidth={1.5} />
+                                        </div>
+                                        <h3 className="font-bold text-slate-800 text-lg mb-2 leading-snug group-hover:text-blue-700 transition-colors">
+                                            {reg.titulo}
+                                        </h3>
+                                        <p className="text-xs font-medium text-slate-400 uppercase tracking-wide">
+                                            Publicado: {new Date(reg.created_at).toLocaleDateString('es-ES', {
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric'
+                                            })}
+                                        </p>
+                                    </div>
+
+                                    <a
+                                        href={reg.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="mt-6 flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl border border-blue-100 bg-blue-50/50 text-blue-700 font-semibold text-sm transition-all duration-300 group-hover:bg-blue-600 group-hover:text-white group-hover:border-blue-600 group-hover:shadow-md"
+                                    >
+                                        <Download size={16} strokeWidth={2} />
+                                        Descargar PDF
+                                    </a>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
 
                 <style>{`
                     @keyframes fadeSlideUp {
-                        from { opacity: 0; transform: translateY(16px); }
+                        from { opacity: 0; transform: translateY(20px); }
                         to { opacity: 1; transform: translateY(0); }
-                    }
-                    @keyframes shimmer {
-                        0% { background-position: -200% 0; }
-                        100% { background-position: 200% 0; }
                     }
                 `}</style>
             </main>
