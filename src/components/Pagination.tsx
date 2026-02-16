@@ -89,8 +89,8 @@ export default function Pagination({
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                     className={`relative flex items-center justify-center w-10 h-10 rounded-xl text-sm font-black transition-all ${currentPage === page
-                                        ? 'bg-cop-blue text-white shadow-lg shadow-blue-900/40 active:bg-blue-800'
-                                        : 'text-slate-800 hover:text-fpt-red hover:bg-white hover:shadow-md hover:border hover:border-red-100'
+                                        ? 'bg-[#1E3A8A] text-white shadow-lg shadow-blue-900/40'
+                                        : 'text-[#1E3A8A] hover:text-[#D91E18] hover:bg-white hover:shadow-md hover:border hover:border-red-100'
                                         }`}
                                     onClick={() => onPageChange(page)}
                                     aria-current={currentPage === page ? 'page' : undefined}
@@ -100,7 +100,7 @@ export default function Pagination({
                                     {currentPage === page && (
                                         <motion.div
                                             layoutId="pageHighlight"
-                                            className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-5 h-1.5 bg-fpt-red rounded-full shadow-sm shadow-red-500/50"
+                                            className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-5 h-1.5 bg-[#D91E18] rounded-full shadow-sm shadow-red-500/50"
                                         />
                                     )}
                                 </motion.button>
