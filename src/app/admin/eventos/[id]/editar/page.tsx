@@ -73,9 +73,9 @@ export default function EditarEventoPage() {
                 <div className="max-w-4xl mx-auto space-y-8">
                     <Breadcrumbs />
 
-                    <div className="flex items-center justify-between border-b border-border-elite pb-6">
+                    <div className="flex items-center justify-between">
                         <div>
-                            <h1 className="text-3xl font-bold text-text-elite tracking-tight">Editar Evento</h1>
+                            <h1 className="text-3xl font-bold text-text-elite">Editar Evento</h1>
                             <p className="text-text-secondary mt-1 text-sm">Modifica los detalles del evento seleccionado.</p>
                         </div>
 
