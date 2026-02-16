@@ -26,7 +26,8 @@ import {
     Home,
     ChevronDown,
     Activity,
-    Tag
+    Tag,
+    Building2
 } from 'lucide-react';
 
 import { createClient } from '@/lib/supabase';
@@ -321,7 +322,7 @@ export default function AdminPage() {
                             </div>
                             Configuración
                         </h3>
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 relative z-10 w-full">
+                        <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 relative z-10 w-full">
                             <Link className="flex flex-col items-center justify-center gap-3 p-4 bg-white hover:bg-white text-text-secondary rounded-xl border border-slate-200 transition-all duration-200 font-semibold text-sm hover:border-cop-blue hover:shadow-lg hover:-translate-y-1 active:scale-95 group/link h-full"
                                 href="/admin/modalidades">
                                 <div className="p-3 bg-slate-50 rounded-full group-hover/link:bg-blue-50 transition-colors">
@@ -349,6 +350,13 @@ export default function AdminPage() {
                                     <ClipboardList size={24} className="text-slate-400 group-hover/link:text-cop-blue transition-colors" />
                                 </div>
                                 <span className="group-hover/link:text-cop-blue transition-colors text-center">Categorías</span>
+                            </Link>
+                            <Link className="flex flex-col items-center justify-center gap-3 p-4 bg-white hover:bg-white text-text-secondary rounded-xl border border-slate-200 transition-all duration-200 font-semibold text-sm hover:border-cop-blue hover:shadow-lg hover:-translate-y-1 active:scale-95 group/link h-full"
+                                href="/admin/clubes">
+                                <div className="p-3 bg-slate-50 rounded-full group-hover/link:bg-blue-50 transition-colors">
+                                    <Building2 size={24} className="text-slate-400 group-hover/link:text-cop-blue transition-colors" />
+                                </div>
+                                <span className="group-hover/link:text-cop-blue transition-colors text-center">Clubes</span>
                             </Link>
                         </div>
                     </div>
