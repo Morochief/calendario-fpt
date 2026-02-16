@@ -71,7 +71,7 @@ export default function Footer() {
             {/* Location Link */}
             <div style={{ marginTop: '3.5rem', textAlign: 'center' }}>
                 <a
-                    href="https://maps.app.goo.gl/kLX6aWhqLyPnvNxs6"
+                    href="https://maps.app.goo.gl/LHxG6PDQyFMjYaFC6"
                     target="_blank"
                     rel="noopener noreferrer"
                     style={{
