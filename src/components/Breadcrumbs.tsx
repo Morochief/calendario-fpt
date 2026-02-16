@@ -53,7 +53,7 @@ export default function Breadcrumbs() {
 
     return (
         <nav aria-label="Breadcrumb" className="mb-4">
-            <ol className="flex items-center flex-wrap gap-2 text-sm text-slate-500">
+            <ol className="flex items-center flex-wrap gap-2 text-sm text-text-muted">
                 {breadcrumbs.map((item, index) => {
                     const isLast = index === breadcrumbs.length - 1;
 
@@ -63,15 +63,15 @@ export default function Breadcrumbs() {
                                 <>
                                     <Link
                                         href={item.href}
-                                        className="flex items-center gap-1 hover:text-blue-600 transition-colors"
+                                        className="flex items-center gap-1 hover:text-cop-blue transition-colors"
                                     >
                                         {item.icon}
                                         <span>{item.label}</span>
                                     </Link>
-                                    <ChevronRight size={14} className="text-slate-300" />
+                                    <ChevronRight size={14} className="text-border-elite" />
                                 </>
                             ) : (
-                                <span className="flex items-center gap-1 font-medium text-slate-900">
+                                <span className="flex items-center gap-1 font-medium text-text-elite">
                                     {item.icon}
                                     <span>{item.label}</span>
                                 </span>

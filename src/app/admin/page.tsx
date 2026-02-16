@@ -203,7 +203,7 @@ export default function AdminPage() {
                 {/* ========== HEADER CON ACCIONES ========== */}
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 my-10">
                     <div>
-                        <h1 className="text-4xl font-bold text-text-elite tracking-tight">Panel de Administración</h1>
+                        <h1 className="text-4xl font-bold text-text-elite">Panel de Administración</h1>
                         <p className="text-text-secondary mt-2 text-lg font-light">Gestiona eventos, inscripciones y configuraciones del sistema.</p>
                     </div>
                     <div className="flex items-center gap-3">
@@ -377,7 +377,7 @@ export default function AdminPage() {
                                     <Calendar size={24} className="text-slate-400 group-hover:text-cop-blue transition-colors duration-300" strokeWidth={2} />
                                 </div>
                                 <div>
-                                    <h3 className="font-bold text-text-elite text-xl tracking-tight flex items-center gap-2">
+                                    <h3 className="font-bold text-text-elite text-xl flex items-center gap-2">
                                         Eventos Programados
                                     </h3>
                                     <span className="inline-flex items-center gap-1.5 mt-1">
