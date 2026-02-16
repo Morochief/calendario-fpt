@@ -2920,39 +2920,44 @@ a.user-dropdown-item,
    Admin Form Inputs — Premium Styling
    ======================================== */
 
-/* Admin Form Inputs — Premium Styling */
+/* Admin Form Inputs — Clean Standard */
 .admin-input {
   display: block;
   width: 100%;
-  padding: 0.75rem 1rem;
+  padding: 0.5rem 0.75rem;
   font-size: 0.875rem;
   line-height: 1.5;
-  color: #1E3A8A;
+  color: #374151;
+  /* gray-700 */
   background-color: #fff;
-  border: 2px solid #e2e8f0;
-  border-bottom-width: 4px;
-  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  /* gray-300 */
+  border-radius: 6px;
+  /* rounded-md */
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  /* shadow-sm */
   transition: all 0.2s ease;
   outline: none;
 }
 
 .admin-input:focus {
   border-color: #3b82f6;
-  border-bottom-color: #1d4ed8;
-  transform: translateY(1px);
-  border-bottom-width: 3px;
+  /* blue-500 */
+  box-shadow: 0 0 0 1px #3b82f6;
 }
 
-/* Color Picker Container 3D */
+/* Color Picker Container Standard */
 .color-picker-container {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   padding: 1rem;
-  border: 2px solid #e2e8f0;
-  border-bottom-width: 4px;
+  border: 1px solid #e5e7eb;
+  /* gray-200 */
   border-radius: 8px;
-  background: #f8fafc;
+  /* rounded-lg */
+  background: #f9fafb;
+  /* gray-50 */
 }
 
 .admin-card {
@@ -2961,9 +2966,7 @@ a.user-dropdown-item,
   border: 1px solid rgba(0, 0, 0, 0.05);
   box-shadow:
     0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06),
-    0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
   overflow: hidden;
 }
 

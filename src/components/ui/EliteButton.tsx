@@ -22,9 +22,9 @@ export default function EliteButton({
 }: EliteButtonProps) {
 
     const variants = {
-        primary: "bg-blue-600 text-white border-b-4 border-blue-800 active:border-b-0 active:translate-y-1 hover:bg-blue-500 transition-all shadow-lg shadow-blue-900/20",
-        secondary: "bg-white text-slate-700 border-2 border-slate-200 border-b-4 border-slate-300 active:border-b-0 active:translate-y-1 hover:bg-slate-50 hover:border-slate-300 transition-all",
-        danger: "bg-white text-red-600 border-2 border-red-100 border-b-4 border-red-200 active:border-b-0 active:translate-y-1 hover:bg-red-50 hover:border-red-200 transition-all",
+        primary: "bg-blue-600 text-white hover:bg-blue-700 shadow-sm border border-transparent",
+        secondary: "bg-slate-200 text-slate-700 hover:bg-slate-300 shadow-sm border border-transparent",
+        danger: "bg-white text-red-600 border border-red-200 hover:bg-red-50 hover:border-red-300 shadow-sm",
         ghost: "bg-transparent text-slate-600 hover:bg-slate-100 border-transparent shadow-none"
     };
 
@@ -33,8 +33,8 @@ export default function EliteButton({
             disabled={isLoading || disabled}
             className={`
                 relative inline-flex items-center justify-center
-                px-4 py-2.5 rounded-lg
-                font-semibold text-sm transition-all duration-200
+                px-4 py-2 rounded-md
+                font-medium text-sm transition-colors duration-200
                 border
                 disabled:opacity-70 disabled:cursor-not-allowed
                 ${variants[variant]}
