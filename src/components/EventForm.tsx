@@ -9,13 +9,13 @@ import { createClient } from '@/lib/supabase';
 import { Modalidad, TipoEvento, Club } from '@/lib/types';
 import { eventoCreateSchema, EventoInput } from '@/lib/schemas';
 import { Save, X, Calendar, MapPin, Link as LinkIcon, Image as ImageIcon, AlignLeft, UploadCloud, Loader2, Building2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import EliteButton from '@/components/ui/EliteButton';
 
 interface EventFormProps {
     initialData?: Partial<EventoInput> & { id?: string };
     isEditing?: boolean;
 }
-
-import EliteButton from '@/components/ui/EliteButton';
 
 export default function EventForm({ initialData, isEditing = false }: EventFormProps) {
     const [modalidades, setModalidades] = useState<Modalidad[]>([]);

@@ -58,7 +58,7 @@ export default function NuevoEventoPage() {
                 <img src="/logo_cop-removebg-preview.svg" alt="" className="w-full h-full object-contain" />
             </div>
             <div className="absolute bottom-[-10%] right-[-5%] w-[500px] h-[500px] opacity-[0.04] pointer-events-none rotate-12 z-0">
-                <img src="/fpdt_lion.png" alt="" className="w-full h-full object-contain" />
+                <img src="/LOGO_FPDT-removebg-preview.svg" alt="" className="w-full h-full object-contain" />
             </div>
 
             <Header />

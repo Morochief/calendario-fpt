@@ -19,6 +19,7 @@ const config: Config = {
                 // Core palette
                 "bg-elite": "var(--color-bg)",
                 surface: "var(--color-surface)",
+
                 "cop-blue": {
                     DEFAULT: "var(--color-cop-blue)",
                     50: "rgba(30, 58, 138, 0.02)",
@@ -28,8 +29,9 @@ const config: Config = {
                     400: "rgba(30, 58, 138, 0.12)",
                     500: "rgba(30, 58, 138, 0.15)",
                     600: "rgba(30, 58, 138, 0.25)",
-                    700: "#1E3A8A",
+                    700: "var(--color-cop-blue)", // ✅ Usa CSS var
                 },
+
                 "fpt-red": {
                     DEFAULT: "var(--color-fpt-red)",
                     50: "rgba(217, 30, 24, 0.04)",
@@ -39,7 +41,7 @@ const config: Config = {
                     400: "rgba(217, 30, 24, 0.2)",
                     500: "rgba(217, 30, 24, 0.25)",
                     600: "#c41a15",
-                    700: "#D91E18",
+                    700: "var(--color-fpt-red)", // ✅ Usa CSS var
                     800: "#b91c1b",
                 },
 
@@ -72,20 +74,16 @@ const config: Config = {
                Shadows — Blue-tinted elevation system
                ======================================== */
             boxShadow: {
-                "elite-xs": "0 1px 3px rgba(30, 58, 138, 0.08)",
-                "elite-sm":
-                    "0 2px 8px rgba(30, 58, 138, 0.10), 0 1px 3px rgba(30, 58, 138, 0.06)",
-                "elite-md":
-                    "0 4px 20px rgba(30, 58, 138, 0.12), 0 2px 6px rgba(30, 58, 138, 0.08)",
-                "elite-lg":
-                    "0 10px 40px rgba(30, 58, 138, 0.14), 0 4px 12px rgba(30, 58, 138, 0.08)",
-                "elite-xl":
-                    "0 20px 60px rgba(30, 58, 138, 0.16), 0 8px 20px rgba(30, 58, 138, 0.08)",
+                "elite-xs": "var(--shadow-xs)",
+                "elite-sm": "var(--shadow-sm)",
+                "elite-md": "var(--shadow-md)",
+                "elite-lg": "var(--shadow-lg)",
+                "elite-xl": "var(--shadow-xl)",
 
                 // Glow effects
-                "glow-blue": "0 0 0 3px rgba(30, 58, 138, 0.12)",
-                "glow-red": "0 0 0 3px rgba(217, 30, 24, 0.12)",
-                "glow-success": "0 0 0 3px rgba(34, 197, 94, 0.15)",
+                "glow-blue": "var(--glow-blue)",
+                "glow-red": "var(--glow-red)",
+                "glow-success": "var(--glow-success)",
 
                 // Button-specific shadows
                 "btn-red": "0 2px 8px rgba(217, 30, 24, 0.25)",
@@ -104,9 +102,9 @@ const config: Config = {
                Border Radius — System tokens
                ======================================== */
             borderRadius: {
-                "elite-sm": "8px",
-                "elite-md": "12px",
-                "elite-lg": "16px",
+                "elite-sm": "var(--radius-sm)",
+                "elite-md": "var(--radius-md)",
+                "elite-lg": "var(--radius-lg)",
             },
 
             /* ========================================
@@ -163,15 +161,15 @@ const config: Config = {
                Transitions — Timing functions
                ======================================== */
             transitionTimingFunction: {
-                bounce: "cubic-bezier(0.34, 1.56, 0.64, 1)",
-                smooth: "cubic-bezier(0.4, 0, 0.2, 1)",
-                "out-back": "cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+                bounce: "var(--ease-bounce)",
+                smooth: "var(--ease-smooth)",
+                "out-back": "var(--ease-out-back)",
             },
 
             transitionDuration: {
-                fast: "150ms",
-                normal: "250ms",
-                slow: "400ms",
+                fast: "var(--transition-fast)",
+                normal: "var(--transition-normal)",
+                slow: "var(--transition-slow)",
             },
 
             /* ========================================
@@ -336,14 +334,15 @@ const config: Config = {
             },
 
             /* ========================================
-               Z-index scale
+               Z-index scale — ✅ CORREGIDO
                ======================================== */
             zIndex: {
                 header: "100",
                 filter: "90",
                 dropdown: "50",
-                overlay: "200",
-                toast: "9999",
+                overlay: "200",      // ✅ Modal backdrop
+                modal: "201",        // ✅ Modal content
+                toast: "9999",       // ✅ Toast siempre encima
             },
 
             /* ========================================
