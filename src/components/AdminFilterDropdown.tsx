@@ -54,10 +54,10 @@ export default function AdminFilterDropdown({
         <div className="relative" ref={dropdownRef}>
             <button
                 type="button"
-                className={`flex items-center justify-between gap-3 px-4 py-2.5 bg-white border rounded-xl text-sm font-medium text-slate-700 shadow-sm transition-all duration-200 min-w-[200px] hover:shadow-md hover:border-blue-300 ${isOpen ? 'border-blue-500 ring-4 ring-blue-500/10' : 'border-slate-200'}`}
+                className={`filter-trigger ${isOpen ? 'active' : ''} !min-w-[200px] !justify-between`}
                 onClick={() => setIsOpen(!isOpen)}
             >
-                <div className="flex items-center gap-2.5 truncate">
+                <div className="flex items-center gap-3 truncate">
                     {/* Icon - fades out when selection is active, optional style choice */}
                     <Icon size={16} className={`text-slate-400 ${!isDefault ? 'text-blue-600' : ''}`} />
 
@@ -74,13 +74,13 @@ export default function AdminFilterDropdown({
 
             {/* Dropdown Menu */}
             {isOpen && (
-                <div className="absolute top-[calc(100%+6px)] left-0 z-50 w-full min-w-[200px] bg-white border border-slate-100 rounded-xl shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-100 p-1.5 origin-top-left">
+                <div className="filter-dropdown-menu" style={{ zIndex: 100, minWidth: '220px' }}>
                     {options.map((option) => (
                         <button
                             key={option.value}
                             type="button"
                             onClick={() => handleSelect(option.value)}
-                            className={`w-full flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-colors text-left mb-0.5 ${value === option.value ? 'bg-blue-50 text-blue-700 font-medium' : 'text-slate-600 hover:bg-slate-50'}`}
+                            className={`dropdown-item ${value === option.value ? 'selected' : ''}`}
                         >
                             <div className="flex items-center gap-2.5">
                                 {option.color && (
@@ -93,7 +93,7 @@ export default function AdminFilterDropdown({
                             </div>
 
                             {value === option.value && (
-                                <Check size={14} className="text-blue-600" />
+                                <Check size={14} className="text-blue-600 ml-auto" />
                             )}
                         </button>
                     ))}

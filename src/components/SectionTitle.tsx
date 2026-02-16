@@ -11,9 +11,9 @@ interface SectionTitleProps {
 
 export default function SectionTitle({ title, type = 'institucional', subtitle, className = '' }: SectionTitleProps) {
     const colorClasses = {
-        institucional: "text-[#1E3A8A] border-l-4 border-[#D91E18] pl-4", // Blue with Red accent border
-        competencia: "text-[#D91E18] font-bold tracking-tight", // Red for High Impact
-        minimal: "text-[#475569]" // Neutral slate
+        institucional: "text-cop-blue border-l-4 border-fpt-red pl-4",
+        competencia: "text-fpt-red font-bold tracking-tight",
+        minimal: "text-text-secondary"
     };
 
     return (
@@ -22,7 +22,7 @@ export default function SectionTitle({ title, type = 'institucional', subtitle, 
                 {title}
             </h2>
             {subtitle && (
-                <p className="mt-2 text-[#475569] text-sm md:text-base font-medium opacity-80">
+                <p className="mt-2 text-text-secondary text-sm md:text-base font-medium opacity-80">
                     {subtitle}
                 </p>
             )}

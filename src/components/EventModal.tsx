@@ -2,7 +2,7 @@
 
 import { EventoConModalidad } from '@/lib/types';
 import { Clock, MapPin, Map, X, Calendar as CalendarIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 
 interface EventModalProps {
@@ -10,18 +10,33 @@ interface EventModalProps {
     onClose: () => void;
 }
 
+function isValidImageUrl(url: string): boolean {
+    try {
+        const parsed = new URL(url);
+        return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+    } catch {
+        return false;
+    }
+}
+
 export default function EventModal({ evento, onClose }: EventModalProps) {
     const [mounted, setMounted] = useState(false);
+
+    const handleEscape = useCallback((e: KeyboardEvent) => {
+        if (e.key === 'Escape') onClose();
+    }, [onClose]);
 
     useEffect(() => {
         setMounted(true);
         if (evento) {
             document.body.style.overflow = 'hidden';
+            document.addEventListener('keydown', handleEscape);
         }
         return () => {
             document.body.style.overflow = 'unset';
+            document.removeEventListener('keydown', handleEscape);
         };
-    }, [evento]);
+    }, [evento, handleEscape]);
 
     if (!mounted || !evento) return null;
 
@@ -32,134 +47,95 @@ export default function EventModal({ evento, onClose }: EventModalProps) {
     const anio = fecha.getFullYear();
 
     const tipoNombre = evento.tipos_evento?.nombre || evento.tipo || '';
-    const tipoColor = evento.tipos_evento?.color || '#737373';
+    const tipoColor = evento.tipos_evento?.color || '#94A3B8';
 
-    const modalContent = (
-        <div style={{
-            position: 'fixed',
-            inset: 0,
-            zIndex: 9999,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '1rem',
-            background: 'rgba(0, 0, 0, 0.4)',
-            backdropFilter: 'blur(4px)',
-            animation: 'fadeIn 0.2s ease-out'
-        }} onClick={(e) => {
-            if (e.target === e.currentTarget) onClose();
-        }}>
-            <div style={{
-                background: '#fff',
-                borderRadius: '16px',
-                width: '100%',
-                maxWidth: '500px',
-                maxHeight: '90vh',
-                overflowY: 'auto',
-                boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-                position: 'relative',
-                animation: 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
-            }}>
+    const hasValidImage = !!evento.imagen_url && isValidImageUrl(evento.imagen_url);
+
+    return createPortal(
+        <div
+            className="fixed inset-0 z-[9999] flex items-center justify-center p-4 animate-overlay-in"
+            style={{
+                background: 'rgba(30, 58, 138, 0.15)',
+                backdropFilter: 'blur(4px)',
+                WebkitBackdropFilter: 'blur(4px)',
+            }}
+            onClick={(e) => {
+                if (e.target === e.currentTarget) onClose();
+            }}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="event-modal-title"
+        >
+            <div
+                className="bg-surface rounded-elite-lg w-full max-w-[500px] max-h-[90vh] overflow-y-auto shadow-elite-xl relative animate-dialog-in"
+            >
                 <button
                     onClick={onClose}
-                    style={{
-                        position: 'absolute',
-                        top: '1rem',
-                        right: '1rem',
-                        background: 'rgba(255,255,255,0.8)',
-                        border: 'none',
-                        borderRadius: '50%',
-                        width: '32px',
-                        height: '32px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'pointer',
-                        zIndex: 10,
-                        boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-                        color: '#404040'
-                    }}
+                    aria-label="Cerrar modal"
+                    className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 border border-border-elite text-text-secondary cursor-pointer shadow-elite-xs transition-all duration-150 hover:bg-surface hover:shadow-elite-sm hover:text-text-elite active:scale-95"
                 >
                     <X size={18} />
                 </button>
 
-                {evento.imagen_url && (
-                    <div style={{
-                        width: '100%',
-                        background: '#f5f5f5',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        borderBottom: '1px solid rgba(0,0,0,0.05)'
-                    }}>
+                {hasValidImage && (
+                    <div className="w-full bg-bg-elite flex justify-center items-center border-b border-border-elite">
                         <img
-                            src={evento.imagen_url}
+                            src={evento.imagen_url!}
                             alt={evento.titulo}
-                            style={{
-                                maxWidth: '100%',
-                                maxHeight: '300px',
-                                objectFit: 'contain',
-                                display: 'block'
-                            }}
+                            className="max-w-full max-h-[300px] object-contain block"
                         />
                     </div>
                 )}
 
-                <div style={{ padding: '1.5rem' }}>
-                    <div style={{ marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <span style={{
-                            fontSize: '0.75rem',
-                            fontWeight: 600,
-                            color: evento.modalidades?.color || '#171717',
-                            background: `${evento.modalidades?.color}15`,
-                            padding: '0.25rem 0.6rem',
-                            borderRadius: '100px',
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '0.25rem'
-                        }}>
-                            <span style={{ width: 6, height: 6, borderRadius: '50%', background: evento.modalidades?.color }} />
-                            {evento.modalidades?.nombre}
-                        </span>
+                <div className="p-6">
+                    <div className="mb-2 flex items-center gap-2">
+                        {evento.modalidades && (
+                            <span
+                                className="text-xs font-semibold py-1 px-2.5 rounded-full inline-flex items-center gap-1"
+                                style={{
+                                    color: evento.modalidades.color,
+                                    background: `${evento.modalidades.color}15`,
+                                }}
+                            >
+                                <span className="w-1.5 h-1.5 rounded-full" style={{ background: evento.modalidades.color }} />
+                                {evento.modalidades.nombre}
+                            </span>
+                        )}
                         {tipoNombre && (
-                            <span style={{
-                                fontSize: '0.75rem',
-                                fontWeight: 500,
-                                color: tipoColor,
-                                border: `1px solid ${tipoColor}30`,
-                                padding: '0.2rem 0.5rem',
-                                borderRadius: '4px'
-                            }}>
+                            <span
+                                className="text-xs font-medium py-0.5 px-2 rounded"
+                                style={{
+                                    color: tipoColor,
+                                    border: `1px solid ${tipoColor}30`,
+                                }}
+                            >
                                 {tipoNombre}
                             </span>
                         )}
                     </div>
 
-                    <h2 style={{
-                        fontSize: '1.5rem',
-                        fontWeight: 700,
-                        color: '#171717',
-                        marginBottom: '1rem',
-                        lineHeight: 1.2
-                    }}>
+                    <h2
+                        id="event-modal-title"
+                        className="text-2xl font-bold text-text-elite mb-4 leading-tight tracking-[-0.02em]"
+                    >
                         {evento.titulo}
                     </h2>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#525252' }}>
+                    <div className="flex flex-col gap-3 mb-6">
+                        <div className="flex items-center gap-3 text-text-secondary">
                             <CalendarIcon size={18} />
-                            <span style={{ textTransform: 'capitalize' }}>
+                            <span className="capitalize">
                                 {diaSemana}, {dia} de {mes} {anio}
                             </span>
                         </div>
                         {evento.hora && (
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#525252' }}>
+                            <div className="flex items-center gap-3 text-text-secondary">
                                 <Clock size={18} />
                                 <span>{evento.hora.slice(0, 5)} hs</span>
                             </div>
                         )}
                         {evento.ubicacion && (
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#525252' }}>
+                            <div className="flex items-center gap-3 text-text-secondary">
                                 <MapPin size={18} />
                                 <span>{evento.ubicacion}</span>
                             </div>
@@ -167,15 +143,7 @@ export default function EventModal({ evento, onClose }: EventModalProps) {
                     </div>
 
                     {evento.descripcion && (
-                        <div style={{
-                            background: '#F9FAFB',
-                            padding: '1rem',
-                            borderRadius: '8px',
-                            marginBottom: '1.5rem',
-                            color: '#404040',
-                            lineHeight: 1.6,
-                            fontSize: '0.9375rem'
-                        }}>
+                        <div className="bg-bg-elite p-4 rounded-elite-sm mb-6 text-text-secondary leading-relaxed text-[0.9375rem]">
                             {evento.descripcion}
                         </div>
                     )}
@@ -185,22 +153,7 @@ export default function EventModal({ evento, onClose }: EventModalProps) {
                             href={evento.ubicacion_url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                gap: '0.5rem',
-                                width: '100%',
-                                padding: '0.75rem',
-                                background: '#171717',
-                                color: '#fff',
-                                borderRadius: '8px',
-                                textDecoration: 'none',
-                                fontWeight: 500,
-                                transition: 'opacity 0.2s'
-                            }}
-                            onMouseOver={(e) => e.currentTarget.style.opacity = '0.9'}
-                            onMouseOut={(e) => e.currentTarget.style.opacity = '1'}
+                            className="flex items-center justify-center gap-2 w-full py-3 bg-cop-blue text-white rounded-elite-sm no-underline font-medium transition-all duration-250 hover:bg-cop-blue/90 hover:shadow-elite-md active:scale-[0.97]"
                         >
                             <Map size={18} />
                             Ver ubicación en Google Maps
@@ -208,18 +161,7 @@ export default function EventModal({ evento, onClose }: EventModalProps) {
                     )}
                 </div>
             </div>
-            <style jsx>{`
-                @keyframes fadeIn {
-                    from { opacity: 0; }
-                    to { opacity: 1; }
-                }
-                @keyframes slideUp {
-                    from { opacity: 0; transform: translateY(20px) scale(0.95); }
-                    to { opacity: 1; transform: translateY(0) scale(1); }
-                }
-            `}</style>
-        </div>
+        </div>,
+        document.body
     );
-
-    return createPortal(modalContent, document.body);
 }

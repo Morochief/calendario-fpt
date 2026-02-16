@@ -62,10 +62,10 @@ export default function EditarEventoPage({ params }: { params: Promise<{ id: str
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-slate-50 flex flex-col">
+            <div className="min-h-screen bg-bg-elite flex flex-col">
                 <Header />
                 <div className="flex-grow flex items-center justify-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cop-blue"></div>
                 </div>
             </div>
         );
@@ -73,14 +73,14 @@ export default function EditarEventoPage({ params }: { params: Promise<{ id: str
 
     if (notFound) {
         return (
-            <div className="min-h-screen bg-slate-50 flex flex-col">
+            <div className="min-h-screen bg-bg-elite flex flex-col">
                 <Header />
                 <main className="flex-grow py-8 px-4 sm:px-6 lg:px-8">
                     <div className="max-w-4xl mx-auto">
                         <Breadcrumbs />
                         <div className="mt-8">
                             <EmptyState
-                                icon={<Search size={48} className="text-slate-300" />}
+                                icon={<Search size={48} className="text-text-muted" />}
                                 title="Evento no encontrado"
                                 description="El evento que buscas no existe o fue eliminado."
                                 actionLabel="Volver al panel"
@@ -94,17 +94,17 @@ export default function EditarEventoPage({ params }: { params: Promise<{ id: str
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 flex flex-col">
+        <div className="min-h-screen bg-bg-elite flex flex-col">
             <Header />
-            <main className="flex-grow py-8 px-4 sm:px-6 lg:px-8">
+            <main className="flex-grow py-8 px-4 sm:px-6 lg:px-8 animate-page-enter">
                 <div className="max-w-4xl mx-auto space-y-6">
                     <Breadcrumbs />
 
                     <div className="flex items-center justify-between">
-                        <h1 className="text-2xl font-bold text-slate-900">Editar Evento</h1>
+                        <h1 className="text-2xl font-bold text-text-elite">Editar Evento</h1>
                         <Link
                             href="/admin"
-                            className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-blue-600 transition-colors"
+                            className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-cop-blue transition-colors"
                         >
                             <ArrowLeft size={16} />
                             Volver al panel

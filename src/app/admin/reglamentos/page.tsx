@@ -6,7 +6,11 @@ import Link from 'next/link';
 import Header from '@/components/Header';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { createClient } from '@/lib/supabase';
+import { useToast } from '@/components/Toast';
 import { Plus, Save, Trash2, FileText, ArrowLeft, Upload, X, BookOpen, Loader2 } from 'lucide-react';
+
+const ALLOWED_MIME_TYPES = ['application/pdf'];
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
 interface Reglamento {
     id: string;
@@ -26,6 +30,7 @@ export default function AdminReglamentosPage() {
     const [file, setFile] = useState<File | null>(null);
 
     const router = useRouter();
+    const { showToast } = useToast();
 
     useEffect(() => {
         checkAuthAndLoad();
@@ -56,9 +61,30 @@ export default function AdminReglamentosPage() {
         setLoading(false);
     }
 
+    function handleFileChange(selectedFile: File | null) {
+        if (!selectedFile) {
+            setFile(null);
+            return;
+        }
+
+        // Validate MIME type
+        if (!ALLOWED_MIME_TYPES.includes(selectedFile.type)) {
+            showToast('Solo se permiten archivos PDF', 'error');
+            return;
+        }
+
+        // Validate file size
+        if (selectedFile.size > MAX_FILE_SIZE) {
+            showToast('El archivo supera el tamaño máximo de 10MB', 'error');
+            return;
+        }
+
+        setFile(selectedFile);
+    }
+
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
-        if (!file || !titulo) return;
+        if (!file || !titulo.trim()) return;
 
         setUploading(true);
         const supabase = createClient();
@@ -84,18 +110,19 @@ export default function AdminReglamentosPage() {
             const { error: dbError } = await supabase
                 .from('reglamentos')
                 .insert({
-                    titulo,
+                    titulo: titulo.trim(),
                     url: publicUrl
                 });
 
             if (dbError) throw dbError;
 
             // Success
+            showToast('Reglamento subido correctamente', 'success');
             resetForm();
             loadReglamentos();
         } catch (error) {
             console.error('Error uploading:', error);
-            alert('Error al subir el reglamento. Verifica que el bucket "reglamentos" exista y tenga políticas públicas.');
+            showToast('Error al subir el reglamento. Verifica que el bucket "reglamentos" exista y tenga políticas públicas.', 'error');
         } finally {
             setUploading(false);
         }
@@ -121,35 +148,40 @@ export default function AdminReglamentosPage() {
                 .remove([fileName]);
         }
 
-        await supabase.from('reglamentos').delete().eq('id', id);
-        loadReglamentos();
+        const { error } = await supabase.from('reglamentos').delete().eq('id', id);
+        if (error) {
+            showToast('Error al eliminar el reglamento', 'error');
+        } else {
+            showToast('Reglamento eliminado', 'success');
+            loadReglamentos();
+        }
     }
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-slate-50 flex flex-col">
+            <div className="min-h-screen bg-bg-elite flex flex-col">
                 <Header />
                 <div className="flex-grow flex items-center justify-center">
-                    <Loader2 size={48} className="text-blue-600 animate-spin" />
+                    <Loader2 size={48} className="text-cop-blue animate-spin" />
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 flex flex-col">
+        <div className="min-h-screen bg-bg-elite flex flex-col">
             <Header />
-            <main className="flex-grow py-8 px-4 sm:px-6 lg:px-8">
+            <main className="flex-grow py-8 px-4 sm:px-6 lg:px-8 animate-page-enter">
                 <div className="max-w-5xl mx-auto space-y-6">
                     <Breadcrumbs />
 
                     {/* Header Section */}
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
-                            <h1 className="text-2xl font-bold text-[#1E3A8A]">Gestión de Reglamentos</h1>
+                            <h1 className="text-2xl font-bold text-text-elite">Gestión de Reglamentos</h1>
                             <Link
                                 href="/admin"
-                                className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-blue-600 transition-colors mt-1"
+                                className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-cop-blue transition-colors mt-1"
                             >
                                 <ArrowLeft size={16} />
                                 Volver al panel
@@ -158,7 +190,7 @@ export default function AdminReglamentosPage() {
                         {!showForm && (
                             <button
                                 onClick={() => setShowForm(true)}
-                                className="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-[#D91E18] hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors"
+                                className="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-elite-sm shadow-elite-xs text-sm font-medium text-white bg-fpt-red hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-fpt-red transition-all active:scale-[0.97]"
                             >
                                 <Plus size={18} className="mr-2" />
                                 Nuevo Reglamento
@@ -168,19 +200,19 @@ export default function AdminReglamentosPage() {
 
                     {/* Upload Form */}
                     {showForm && (
-                        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                            <div className="border-b border-slate-200 px-6 py-4 flex items-center justify-between">
-                                <h3 className="text-lg font-medium text-[#1E3A8A]">
+                        <div className="bg-surface rounded-elite-md shadow-elite-sm border border-border-elite overflow-hidden">
+                            <div className="border-b border-border-elite px-6 py-4 flex items-center justify-between">
+                                <h3 className="text-lg font-medium text-text-elite">
                                     Nuevo Reglamento
                                 </h3>
-                                <button onClick={resetForm} className="text-slate-400 hover:text-slate-500">
+                                <button onClick={resetForm} className="text-text-muted hover:text-text-secondary transition-colors" aria-label="Cerrar formulario">
                                     <X size={20} />
                                 </button>
                             </div>
 
                             <form onSubmit={handleSubmit} className="p-6 space-y-6">
                                 <div>
-                                    <label htmlFor="titulo" className="block text-sm font-medium text-slate-700 mb-1">
+                                    <label htmlFor="titulo" className="block text-sm font-medium text-text-secondary mb-1">
                                         Título del Reglamento *
                                     </label>
                                     <input
@@ -190,23 +222,24 @@ export default function AdminReglamentosPage() {
                                         onChange={(e) => setTitulo(e.target.value)}
                                         placeholder="Ej: Reglamento Técnico IPSC 2024"
                                         required
-                                        className="block w-full rounded-lg border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                        maxLength={200}
+                                        className="block w-full rounded-elite-sm border border-border-elite shadow-elite-xs focus:border-cop-blue focus:ring-1 focus:ring-cop-blue sm:text-sm transition-colors hover:border-border-hover px-3 py-2"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                                    <label className="block text-sm font-medium text-text-secondary mb-1">
                                         Archivo PDF *
                                     </label>
-                                    <div className="relative border-2 border-dashed border-slate-300 rounded-lg p-8 text-center bg-slate-50 hover:bg-slate-100 transition-colors">
-                                        <Upload size={40} className="mx-auto text-slate-400 mb-3" />
-                                        <p className="text-sm text-slate-600 mb-1">
-                                            <span className="font-medium text-blue-600">Sube un archivo</span> o arrástralo aquí
+                                    <div className="relative border-2 border-dashed border-border-elite rounded-elite-md p-8 text-center bg-bg-elite hover:bg-blue-50/30 transition-colors">
+                                        <Upload size={40} className="mx-auto text-text-muted mb-3" />
+                                        <p className="text-sm text-text-secondary mb-1">
+                                            <span className="font-medium text-cop-blue">Sube un archivo</span> o arrástralo aquí
                                         </p>
-                                        <p className="text-xs text-slate-400">PDF hasta 10MB</p>
+                                        <p className="text-xs text-text-muted">PDF hasta 10MB</p>
 
                                         {file && (
-                                            <div className="mt-3 inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-medium">
+                                            <div className="mt-3 inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-cop-blue rounded-full text-sm font-medium">
                                                 <FileText size={14} />
                                                 {file.name}
                                             </div>
@@ -214,26 +247,27 @@ export default function AdminReglamentosPage() {
 
                                         <input
                                             type="file"
-                                            accept=".pdf"
-                                            onChange={(e) => setFile(e.target.files?.[0] || null)}
-                                            required
+                                            accept=".pdf,application/pdf"
+                                            onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
+                                            required={!file}
                                             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                            aria-label="Seleccionar archivo PDF"
                                         />
                                     </div>
                                 </div>
 
-                                <div className="flex justify-end gap-3 pt-4 border-t border-slate-200">
+                                <div className="flex justify-end gap-3 pt-4 border-t border-border-elite">
                                     <button
                                         type="button"
                                         onClick={resetForm}
-                                        className="px-4 py-2 border border-slate-300 rounded-lg shadow-sm text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                                        className="px-4 py-2 border border-border-elite rounded-elite-sm shadow-elite-xs text-sm font-medium text-text-secondary bg-surface hover:bg-blue-50/30 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cop-blue transition-all active:scale-[0.97]"
                                     >
                                         Cancelar
                                     </button>
                                     <button
                                         type="submit"
                                         disabled={uploading}
-                                        className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-[#D91E18] hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="inline-flex items-center px-4 py-2 border border-transparent rounded-elite-sm shadow-elite-xs text-sm font-medium text-white bg-fpt-red hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-fpt-red transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.97]"
                                     >
                                         {uploading ? (
                                             <>
@@ -253,45 +287,45 @@ export default function AdminReglamentosPage() {
                     )}
 
                     {/* Documents List */}
-                    <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                        <div className="px-6 py-4 border-b border-slate-200 bg-slate-50/50 flex items-center justify-between">
+                    <div className="bg-surface rounded-elite-md shadow-elite-sm border border-border-elite overflow-hidden">
+                        <div className="px-6 py-4 border-b border-border-elite bg-bg-elite/50 flex items-center justify-between">
                             <div className="flex items-center gap-2">
-                                <BookOpen size={20} className="text-slate-400" />
-                                <h3 className="text-lg font-medium text-[#1E3A8A]">
+                                <BookOpen size={20} className="text-text-muted" />
+                                <h3 className="text-lg font-medium text-text-elite">
                                     Documentos Publicados
                                 </h3>
                             </div>
-                            <span className="bg-blue-100 text-blue-700 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                            <span className="bg-blue-50 text-cop-blue text-xs font-semibold px-2.5 py-0.5 rounded-full">
                                 {reglamentos.length} archivos
                             </span>
                         </div>
 
                         {reglamentos.length === 0 ? (
-                            <div className="p-12 text-center text-slate-500">
-                                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 mb-4">
-                                    <FileText size={32} className="text-slate-400" />
+                            <div className="p-12 text-center text-text-secondary">
+                                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 mb-4">
+                                    <FileText size={32} className="text-text-muted" />
                                 </div>
-                                <p className="text-lg font-medium text-slate-900 mb-1">No hay reglamentos cargados</p>
-                                <p>Sube el primer reglamento utilizando el botón "Nuevo Reglamento".</p>
+                                <p className="text-lg font-medium text-text-elite mb-1">No hay reglamentos cargados</p>
+                                <p>Sube el primer reglamento utilizando el botón &quot;Nuevo Reglamento&quot;.</p>
                             </div>
                         ) : (
                             <div className="overflow-x-auto">
-                                <table className="min-w-full divide-y divide-slate-200">
-                                    <thead className="bg-slate-50">
+                                <table className="min-w-full divide-y divide-border-elite">
+                                    <thead className="bg-bg-elite/50">
                                         <tr>
-                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Fecha</th>
-                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Título</th>
-                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Archivo</th>
-                                            <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">Acciones</th>
+                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">Fecha</th>
+                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">Título</th>
+                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">Archivo</th>
+                                            <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-text-muted uppercase tracking-wider">Acciones</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="bg-white divide-y divide-slate-200">
+                                    <tbody className="bg-surface divide-y divide-border-elite">
                                         {reglamentos.map((reg) => (
-                                            <tr key={reg.id} className="hover:bg-slate-50 transition-colors group">
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                                            <tr key={reg.id} className="hover:bg-blue-50/30 transition-colors group">
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
                                                     {new Date(reg.created_at).toLocaleDateString('es-ES')}
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-text-elite">
                                                     {reg.titulo}
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm">
@@ -299,7 +333,7 @@ export default function AdminReglamentosPage() {
                                                         href={reg.url}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
-                                                        className="inline-flex items-center gap-1.5 text-blue-600 hover:text-blue-800 font-medium transition-colors"
+                                                        className="inline-flex items-center gap-1.5 text-cop-blue hover:text-cop-blue/80 font-medium transition-colors"
                                                     >
                                                         <FileText size={16} />
                                                         Ver PDF
@@ -308,8 +342,9 @@ export default function AdminReglamentosPage() {
                                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                                     <button
                                                         onClick={() => handleDelete(reg.id, reg.url)}
-                                                        className="text-slate-400 hover:text-red-600 transition-colors p-1 rounded-md hover:bg-red-50"
+                                                        className="text-text-muted hover:text-fpt-red transition-all p-1 rounded-elite-sm hover:bg-red-50 active:scale-95"
                                                         title="Eliminar"
+                                                        aria-label={`Eliminar reglamento ${reg.titulo}`}
                                                     >
                                                         <Trash2 size={18} />
                                                     </button>

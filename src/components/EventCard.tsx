@@ -7,6 +7,15 @@ interface EventCardProps {
     evento: EventoConModalidad;
 }
 
+function isValidImageUrl(url: string): boolean {
+    try {
+        const parsed = new URL(url);
+        return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+    } catch {
+        return false;
+    }
+}
+
 export default function EventCard({ evento }: EventCardProps) {
     const fecha = new Date(evento.fecha + 'T12:00:00');
     const dia = fecha.getDate();
@@ -14,14 +23,14 @@ export default function EventCard({ evento }: EventCardProps) {
     const diaSemana = fecha.toLocaleDateString('es-ES', { weekday: 'long' });
 
     const tipoNombre = evento.tipos_evento?.nombre || evento.tipo || '';
-    const tipoColor = evento.tipos_evento?.color || '#737373';
-    const hasImage = !!evento.imagen_url;
+    const tipoColor = evento.tipos_evento?.color || '#94A3B8';
+    const hasImage = !!evento.imagen_url && isValidImageUrl(evento.imagen_url);
 
     return (
         <div
             className={`event-card ${hasImage ? 'has-image' : ''}`}
             style={{
-                borderLeftColor: evento.modalidades?.color || '#171717',
+                borderLeftColor: evento.modalidades?.color || 'var(--color-cop-blue)',
             }}
         >
             {hasImage && (
@@ -56,7 +65,7 @@ export default function EventCard({ evento }: EventCardProps) {
                             style={{
                                 display: 'inline-block',
                                 padding: '0.15rem 0.5rem',
-                                borderRadius: '4px',
+                                borderRadius: 'var(--radius-sm)',
                                 fontSize: '0.6875rem',
                                 fontWeight: 500,
                                 background: `${tipoColor}0A`,
@@ -70,14 +79,14 @@ export default function EventCard({ evento }: EventCardProps) {
                 </div>
 
                 {evento.ubicacion && (
-                    <div style={{ marginTop: '0.75rem', fontSize: '0.8125rem', color: '#737373', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                    <div className="mt-3 text-[0.8125rem] text-text-secondary flex items-center gap-1.5">
                         <MapPin size={14} strokeWidth={1.5} className="flex-shrink-0" />
                         <span style={{ lineHeight: 1.4 }}>{evento.ubicacion}</span>
                     </div>
                 )}
 
                 {evento.modalidades && (
-                    <div style={{ marginTop: '0.875rem', paddingTop: '0.875rem', borderTop: '1px solid rgba(0,0,0,0.04)' }}>
+                    <div className="mt-3.5 pt-3.5 border-t border-border-elite">
                         <span
                             className="event-modalidad"
                             style={{
@@ -104,12 +113,7 @@ export default function EventCard({ evento }: EventCardProps) {
                 )}
 
                 {evento.descripcion && (
-                    <p style={{
-                        marginTop: '0.75rem',
-                        fontSize: '0.8125rem',
-                        color: '#737373',
-                        lineHeight: 1.6
-                    }}>
+                    <p className="mt-3 text-[0.8125rem] text-text-secondary leading-relaxed">
                         {evento.descripcion}
                     </p>
                 )}
@@ -119,24 +123,7 @@ export default function EventCard({ evento }: EventCardProps) {
                         href={evento.ubicacion_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="btn-location-action"
-                        style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '0.5rem',
-                            marginTop: '1rem',
-                            width: '100%',
-                            padding: '0.5rem',
-                            background: 'transparent',
-                            color: '#171717',
-                            borderRadius: '8px',
-                            textDecoration: 'none',
-                            fontSize: '0.8125rem',
-                            fontWeight: 500,
-                            border: '1px solid rgba(0,0,0,0.06)',
-                            transition: 'all 0.25s ease'
-                        }}
+                        className="btn-location-action inline-flex items-center justify-center gap-2 mt-4 w-full py-2 bg-transparent text-text-elite rounded-elite-sm text-[0.8125rem] font-medium no-underline border border-border-elite transition-all duration-250 hover:shadow-elite-sm hover:border-border-hover hover:bg-blue-50/30 active:scale-[0.97]"
                     >
                         <Map size={15} strokeWidth={1.5} />
                         Cómo llegar

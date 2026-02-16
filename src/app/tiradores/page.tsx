@@ -14,47 +14,37 @@ const MOCK_SHOOTERS = [
 
 export default function ShootersPage() {
     return (
-        <div style={{ minHeight: '100vh', background: '#FAFAFA', display: 'flex', flexDirection: 'column' }}>
+        <div className="min-h-screen bg-bg-elite flex flex-col">
             <Header />
-            <main style={{ flexGrow: 1 }}>
+            <main className="flex-grow">
                 {/* Hero Section */}
-                <div style={{
-                    background: '#171717',
-                    color: 'white',
-                    padding: '4rem 1.25rem',
-                    textAlign: 'center'
-                }}>
-                    <div style={{ maxWidth: '1120px', margin: '0 auto' }}>
-                        <h1 style={{
-                            fontSize: '2rem',
-                            fontWeight: 600,
-                            marginBottom: '0.75rem',
-                            letterSpacing: '-0.03em',
-                            color: '#FFFFFF'
-                        }}>
+                <div className="bg-cop-blue text-white py-16 px-5 text-center">
+                    <div className="max-w-[1120px] mx-auto">
+                        <h1 className="text-[2rem] font-semibold mb-3 tracking-[-0.03em] text-white">
                             Tiradores Registrados
                         </h1>
-                        <p style={{ color: 'rgba(255,255,255,0.5)', maxWidth: '520px', margin: '0 auto', fontSize: '0.9375rem', lineHeight: 1.7 }}>
+                        <p className="text-white/50 max-w-[520px] mx-auto text-[0.9375rem] leading-relaxed">
                             Lista oficial de atletas federados de la Federación Paraguaya de Tiro para la temporada 2026.
                         </p>
                     </div>
                 </div>
 
                 {/* Grid Section */}
-                <div style={{ maxWidth: '1120px', margin: '-2rem auto 4rem', padding: '0 1.25rem', position: 'relative', zIndex: 10 }}>
-                    <div style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-                        gap: '1.25rem'
-                    }}>
-                        {MOCK_SHOOTERS.map((shooter) => (
-                            <ShooterCard
+                <div className="max-w-[1120px] mx-auto -mt-8 mb-16 px-5 relative z-10 animate-page-enter">
+                    <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-5">
+                        {MOCK_SHOOTERS.map((shooter, index) => (
+                            <div
                                 key={shooter.id}
-                                name={shooter.name}
-                                division={shooter.division}
-                                category={shooter.category}
-                                club={shooter.club}
-                            />
+                                className="animate-stagger-in"
+                                style={{ animationDelay: `${index * 50}ms` }}
+                            >
+                                <ShooterCard
+                                    name={shooter.name}
+                                    division={shooter.division}
+                                    category={shooter.category}
+                                    club={shooter.club}
+                                />
+                            </div>
                         ))}
                     </div>
                 </div>

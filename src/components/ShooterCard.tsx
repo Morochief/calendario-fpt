@@ -10,47 +10,29 @@ interface ShooterCardProps {
 
 export default function ShooterCard({ name, division, category, club }: ShooterCardProps) {
     return (
-        <div style={{
-            background: 'white',
-            borderRadius: '14px',
-            padding: '1.5rem',
-            border: '1px solid rgba(0,0,0,0.06)',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '0.5rem',
-            transition: 'box-shadow 0.25s ease, border-color 0.25s ease'
-        }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
-                <div style={{
-                    width: '38px',
-                    height: '38px',
-                    background: 'rgba(0,0,0,0.03)',
-                    borderRadius: '50%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#737373'
-                }}>
+        <div className="bg-surface rounded-elite-md border border-border-elite flex flex-col gap-2 p-6 transition-all duration-250 ease-smooth hover:shadow-elite-md hover:-translate-y-0.5 hover:border-border-hover">
+            <div className="flex items-center gap-3 mb-2">
+                <div className="w-[38px] h-[38px] bg-blue-50 rounded-full flex items-center justify-center text-cop-blue">
                     <Target size={18} strokeWidth={1.5} />
                 </div>
                 <div>
-                    <h3 style={{ margin: 0, fontSize: '0.9375rem', fontWeight: 600, color: '#171717', letterSpacing: '-0.01em' }}>{name}</h3>
-                    <span style={{ fontSize: '0.75rem', color: '#A3A3A3' }}>Tirador FPT</span>
+                    <h3 className="m-0 text-[0.9375rem] font-semibold text-text-elite tracking-[-0.01em]">{name}</h3>
+                    <span className="text-xs text-text-muted">Tirador FPT</span>
                 </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', fontSize: '0.8125rem' }}>
+            <div className="grid grid-cols-2 gap-2 text-[0.8125rem]">
                 <div>
-                    <span style={{ display: 'block', color: '#A3A3A3', fontSize: '0.6875rem', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.125rem' }}>División</span>
-                    <span style={{ color: '#171717', fontWeight: 500 }}>{division}</span>
+                    <span className="block text-text-muted text-[0.6875rem] uppercase tracking-[0.04em] mb-0.5">División</span>
+                    <span className="text-text-elite font-medium">{division}</span>
                 </div>
                 <div>
-                    <span style={{ display: 'block', color: '#A3A3A3', fontSize: '0.6875rem', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.125rem' }}>Categoría</span>
-                    <span style={{ color: '#171717', fontWeight: 500 }}>{category}</span>
+                    <span className="block text-text-muted text-[0.6875rem] uppercase tracking-[0.04em] mb-0.5">Categoría</span>
+                    <span className="text-text-elite font-medium">{category}</span>
                 </div>
-                <div style={{ gridColumn: 'span 2' }}>
-                    <span style={{ display: 'block', color: '#A3A3A3', fontSize: '0.6875rem', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.125rem' }}>Club</span>
-                    <span style={{ color: '#171717', fontWeight: 500 }}>{club}</span>
+                <div className="col-span-2">
+                    <span className="block text-text-muted text-[0.6875rem] uppercase tracking-[0.04em] mb-0.5">Club</span>
+                    <span className="text-text-elite font-medium">{club}</span>
                 </div>
             </div>
         </div>
