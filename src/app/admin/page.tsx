@@ -356,10 +356,10 @@ export default function AdminPage() {
 
                 {/* ========== TABLA DE EVENTOS ========== */}
                 {/* ========== TABLA DE EVENTOS ========== */}
-                <div className="bg-surface rounded-[16px] border border-[rgba(30,58,138,0.08)] shadow-[0_4px_6px_-1px_rgba(0,0,0,0.02),0_2px_4px_-1px_rgba(0,0,0,0.02)] relative overflow-hidden animate-fade-in-up group" style={{ animationDelay: '0.2s' }}>
+                <div className="bg-surface rounded-[16px] border border-[rgba(30,58,138,0.08)] shadow-[0_4px_6px_-1px_rgba(0,0,0,0.02),0_2px_4px_-1px_rgba(0,0,0,0.02)] relative animate-fade-in-up group" style={{ animationDelay: '0.2s' }}>
 
                     {/* Decorative Top Bar */}
-                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cop-blue via-blue-500 to-cop-blue opacity-80"></div>
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cop-blue via-blue-500 to-cop-blue opacity-80" style={{ borderRadius: '16px 16px 0 0' }}></div>
 
                     {/* Header de tabla con búsqueda + Filtros */}
                     <div className="p-6 border-b border-border-elite bg-white/50 backdrop-blur-sm">
@@ -473,16 +473,16 @@ export default function AdminPage() {
                         <table className="admin-table">
                             <thead>
                                 <tr>
-                                    <th className="px-6 py-4 w-12 rounded-l-lg">
+                                    <th style={{ width: '48px', paddingLeft: '1rem', paddingRight: '0.5rem' }} className="py-4 rounded-l-lg">
                                         <input type="checkbox" className="admin-checkbox" />
                                     </th>
-                                    <th className="sortable">Fecha</th>
-                                    <th className="sortable">Título</th>
-                                    <th>Estado</th>
-                                    <th>Modalidad</th>
-                                    <th>Tipo</th>
-                                    <th className="text-center">Inscritos</th>
-                                    <th className="text-right rounded-r-lg">Acciones</th>
+                                    <th style={{ width: '130px' }} className="sortable py-4 px-4">Fecha</th>
+                                    <th className="sortable py-4 px-4">Título</th>
+                                    <th style={{ width: '120px', textAlign: 'center' }} className="py-4 px-4">Estado</th>
+                                    <th style={{ width: '160px', textAlign: 'center' }} className="py-4 px-4">Modalidad</th>
+                                    <th style={{ width: '110px', textAlign: 'center' }} className="py-4 px-4">Tipo</th>
+                                    <th style={{ width: '90px', textAlign: 'center' }} className="py-4 px-4">Inscritos</th>
+                                    <th style={{ width: '100px', textAlign: 'right' }} className="py-4 px-4 rounded-r-lg">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody className="space-y-2">
@@ -516,10 +516,10 @@ export default function AdminPage() {
 
                                         return (
                                             <tr key={evento.id} className="group">
-                                                <td className="px-6 py-5">
+                                                <td style={{ paddingLeft: '1rem', paddingRight: '0.5rem', paddingTop: '1.25rem', paddingBottom: '1.25rem' }}>
                                                     <input type="checkbox" className="admin-checkbox" />
                                                 </td>
-                                                <td className="px-6 py-5 whitespace-nowrap">
+                                                <td style={{ padding: '1.25rem 1rem', whiteSpace: 'nowrap' }}>
                                                     <div className="flex flex-col">
                                                         <span className="text-text-elite font-bold text-sm">
                                                             {fecha.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })}
@@ -532,12 +532,12 @@ export default function AdminPage() {
                                                         )}
                                                     </div>
                                                 </td>
-                                                <td className="px-6 py-5">
-                                                    <Link href={`/admin/eventos/${evento.id}/editar`} className="font-bold text-text-elite text-base hover:text-cop-blue transition-colors line-clamp-1 block max-w-[200px]" title={evento.titulo}>
+                                                <td style={{ padding: '1.25rem 1rem' }}>
+                                                    <Link href={`/admin/eventos/${evento.id}/editar`} className="font-bold text-text-elite text-base hover:text-cop-blue transition-colors line-clamp-1 block" title={evento.titulo}>
                                                         {evento.titulo}
                                                     </Link>
                                                 </td>
-                                                <td className="px-6 py-5">
+                                                <td style={{ padding: '1.25rem 1rem', textAlign: 'center' }}>
                                                     {status === 'activo' ? (
                                                         <span className="status-badge status-active shadow-sm border border-green-200/50">
                                                             <span className="status-dot"></span>
@@ -550,7 +550,7 @@ export default function AdminPage() {
                                                         </span>
                                                     )}
                                                 </td>
-                                                <td className="px-6 py-5">
+                                                <td style={{ padding: '1.25rem 1rem', textAlign: 'center' }}>
                                                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide border shadow-sm"
                                                         style={{
                                                             backgroundColor: 'white',
@@ -561,12 +561,12 @@ export default function AdminPage() {
                                                         {evento.modalidades?.nombre}
                                                     </span>
                                                 </td>
-                                                <td className="px-6 py-5">
+                                                <td style={{ padding: '1.25rem 1rem', textAlign: 'center' }}>
                                                     <span className="inline-flex px-3 py-1 rounded-md text-xs font-semibold border bg-slate-50 text-slate-600 border-slate-200">
                                                         {evento.tipos_evento?.nombre || evento.tipo || '-'}
                                                     </span>
                                                 </td>
-                                                <td className="px-6 py-5 text-center">
+                                                <td style={{ padding: '1.25rem 1rem', textAlign: 'center' }}>
                                                     <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full font-bold text-xs border shadow-sm transition-transform group-hover:scale-110 ${(evento.inscripciones?.[0]?.count || 0) > 0
                                                         ? 'bg-blue-50 text-cop-blue border-blue-100'
                                                         : 'bg-slate-50 text-slate-400 border-slate-100'
@@ -574,7 +574,7 @@ export default function AdminPage() {
                                                         {evento.inscripciones?.[0]?.count || 0}
                                                     </span>
                                                 </td>
-                                                <td className="px-6 py-5 text-right">
+                                                <td style={{ padding: '1.25rem 1rem', textAlign: 'right' }}>
                                                     <div className="admin-actions justify-end gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                                                         <Link href={`/admin/eventos/${evento.id}/editar`} className="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-border-elite text-text-muted hover:text-cop-blue hover:border-cop-blue hover:shadow-md transition-all active:scale-95" title="Editar">
                                                             <Edit size={16} />
