@@ -2817,3 +2817,216 @@ a.user-dropdown-item,
 .animate-dropdown-fade {
   animation: dropdown-fade 0.2s var(--ease-out-back);
 }
+
+/* ========================================
+   Buttons — Premium Component System
+   ======================================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.25rem;
+  border-radius: 10px;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Primary — FPT Red */
+.btn-primary {
+  background: linear-gradient(to bottom, #D91E18, #b81a15);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 2px 8px rgba(217, 30, 24, 0.3);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: linear-gradient(to bottom, #e62e28, #c91e18);
+  box-shadow: 0 6px 20px rgba(217, 30, 24, 0.4);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0) scale(0.97);
+  box-shadow: 0 2px 6px rgba(217, 30, 24, 0.3);
+}
+
+/* Secondary — Outlined */
+.btn-secondary {
+  background: white;
+  color: #475569;
+  border-color: rgba(30, 58, 138, 0.2);
+  box-shadow: 0 1px 3px rgba(30, 58, 138, 0.06);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #F9FBFF;
+  border-color: rgba(30, 58, 138, 0.3);
+  color: #1E3A8A;
+  box-shadow: 0 4px 12px rgba(30, 58, 138, 0.1);
+  transform: translateY(-1px);
+}
+
+.btn-secondary:active:not(:disabled) {
+  transform: translateY(0) scale(0.97);
+}
+
+/* Blue Button */
+.btn-blue {
+  background: linear-gradient(to bottom, #1E3A8A, #162e6e);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 2px 8px rgba(30, 58, 138, 0.3);
+}
+
+.btn-blue:hover:not(:disabled) {
+  background: linear-gradient(to bottom, #2548a0, #1E3A8A);
+  box-shadow: 0 6px 20px rgba(30, 58, 138, 0.4);
+  transform: translateY(-1px);
+}
+
+/* ========================================
+   Admin Form Inputs — Premium Styling
+   ======================================== */
+
+.admin-input {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: #1E3A8A;
+  background-color: #fff;
+  border: 1.5px solid rgba(30, 58, 138, 0.18);
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(30, 58, 138, 0.06);
+  transition: all 0.2s ease;
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.admin-input::placeholder {
+  color: #94A3B8;
+}
+
+.admin-input:hover {
+  border-color: rgba(30, 58, 138, 0.3);
+  box-shadow: 0 4px 12px rgba(30, 58, 138, 0.08);
+}
+
+.admin-input:focus {
+  border-color: #1E3A8A;
+  box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.12), 0 4px 12px rgba(30, 58, 138, 0.08);
+}
+
+.admin-input.error {
+  border-color: #D91E18;
+  box-shadow: 0 0 0 3px rgba(217, 30, 24, 0.1);
+}
+
+/* Select specific */
+select.admin-input {
+  cursor: pointer;
+  padding-right: 2.5rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%231E3A8A' d='M6 8.825a.7.7 0 01-.5-.2L1.725 4.85a.681.681 0 01-.2-.5.7.7 0 01.713-.713.7.7 0 01.5.213L6 7.112l3.262-3.262a.67.67 0 01.5-.2.7.7 0 01.713.713.681.681 0 01-.2.5L6.5 8.625a.7.7 0 01-.5.2z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 12px;
+}
+
+/* Date and Time inputs */
+input[type="date"].admin-input,
+input[type="time"].admin-input {
+  cursor: pointer;
+}
+
+/* Textarea */
+textarea.admin-input {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Admin Card Section */
+.admin-card {
+  background: white;
+  border-radius: 16px;
+  border: 1.5px solid rgba(30, 58, 138, 0.12);
+  box-shadow: 0 4px 20px rgba(30, 58, 138, 0.08), 0 1px 4px rgba(30, 58, 138, 0.05);
+  overflow: hidden;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.admin-card:hover {
+  box-shadow: 0 8px 32px rgba(30, 58, 138, 0.12), 0 2px 8px rgba(30, 58, 138, 0.06);
+}
+
+.admin-card-header {
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.admin-card-header.blue {
+  background: linear-gradient(135deg, #1E3A8A 0%, #2548a0 50%, #1E3A8A 100%);
+}
+
+.admin-card-header.red {
+  background: linear-gradient(135deg, #D91E18 0%, #e63e39 50%, #D91E18 100%);
+}
+
+.admin-card-header .icon-box {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.admin-card-header h3 {
+  color: white;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.admin-card-body {
+  padding: 1.5rem;
+}
+
+.admin-label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #1E3A8A;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.01em;
+}
+
+.admin-label .required {
+  color: #D91E18;
+  margin-left: 0.25rem;
+}

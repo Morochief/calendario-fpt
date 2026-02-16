@@ -15,11 +15,6 @@ interface EventFormProps {
     isEditing?: boolean;
 }
 
-/**
- * Reusable Event Form Component
- * Handles both creating and editing events with Zod validation
- * & Image Upload to Supabase Storage
- */
 export default function EventForm({ initialData, isEditing = false }: EventFormProps) {
     const [modalidades, setModalidades] = useState<Modalidad[]>([]);
     const [tiposEvento, setTiposEvento] = useState<TipoEvento[]>([]);
@@ -30,23 +25,18 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
     const { showToast } = useToast();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    // Form state
     const [titulo, setTitulo] = useState(initialData?.titulo || '');
     const [modalidadId, setModalidadId] = useState(initialData?.modalidad_id || '');
     const [fecha, setFecha] = useState(initialData?.fecha || '');
     const [hora, setHora] = useState(initialData?.hora || '08:30');
     const [ubicacion, setUbicacion] = useState(initialData?.ubicacion || '');
-    const [ubicacionUrl, setUbicacionUrl] = useState(
-        initialData?.ubicacion_url || ''
-    );
+    const [ubicacionUrl, setUbicacionUrl] = useState(initialData?.ubicacion_url || '');
     const [imagenUrl, setImagenUrl] = useState(initialData?.imagen_url || '');
     const [imagenPosition, setImagenPosition] = useState(initialData?.imagen_position || 'center');
     const [descripcion, setDescripcion] = useState(initialData?.descripcion || '');
     const [tipoEventoId, setTipoEventoId] = useState(initialData?.tipo_evento_id || '');
 
-    useEffect(() => {
-        loadOptions();
-    }, []);
+    useEffect(() => { loadOptions(); }, []);
 
     useEffect(() => {
         if (initialData) {
@@ -65,73 +55,36 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
 
     async function loadOptions() {
         const supabase = createClient();
-
-        // Load modalidades
-        const { data: modalidadesData } = await supabase
-            .from('modalidades')
-            .select('*')
-            .order('nombre');
-
+        const { data: modalidadesData } = await supabase.from('modalidades').select('*').order('nombre');
         if (modalidadesData) {
             setModalidades(modalidadesData);
-            if (modalidadesData.length > 0 && !modalidadId && !isEditing) {
-                setModalidadId(modalidadesData[0].id);
-            }
+            if (modalidadesData.length > 0 && !modalidadId && !isEditing) setModalidadId(modalidadesData[0].id);
         }
-
-        // Load tipos de evento
-        const { data: tiposData } = await supabase
-            .from('tipos_evento')
-            .select('*')
-            .order('nombre');
-
+        const { data: tiposData } = await supabase.from('tipos_evento').select('*').order('nombre');
         if (tiposData) {
             setTiposEvento(tiposData);
-            if (tiposData.length > 0 && !tipoEventoId && !isEditing) {
-                setTipoEventoId(tiposData[0].id);
-            }
+            if (tiposData.length > 0 && !tipoEventoId && !isEditing) setTipoEventoId(tiposData[0].id);
         }
     }
 
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (!e.target.files || e.target.files.length === 0) {
-            return;
-        }
-
+        if (!e.target.files || e.target.files.length === 0) return;
         const file = e.target.files[0];
         const fileExt = file.name.split('.').pop();
         const fileName = `${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
-        const filePath = `${fileName}`;
-
         setUploading(true);
-
         try {
             const supabase = createClient();
-
-            // 1. Upload file to 'eventos' bucket
-            const { error: uploadError } = await supabase.storage
-                .from('eventos')
-                .upload(filePath, file);
-
-            if (uploadError) {
-                throw uploadError;
-            }
-
-            // 2. Get Public URL
-            const { data: { publicUrl } } = supabase.storage
-                .from('eventos')
-                .getPublicUrl(filePath);
-
+            const { error: uploadError } = await supabase.storage.from('eventos').upload(fileName, file);
+            if (uploadError) throw uploadError;
+            const { data: { publicUrl } } = supabase.storage.from('eventos').getPublicUrl(fileName);
             setImagenUrl(publicUrl);
             showToast('Imagen subida correctamente', 'success');
         } catch (error: any) {
-            console.error('Error uploading image:', error);
             showToast(`Error al subir imagen: ${error.message}`, 'error');
         } finally {
             setUploading(false);
-            if (fileInputRef.current) {
-                fileInputRef.current.value = '';
-            }
+            if (fileInputRef.current) fileInputRef.current.value = '';
         }
     };
 
@@ -140,27 +93,18 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
         setLoading(true);
         setErrors({});
 
-        // Build form data
         const formData = {
-            titulo,
-            modalidad_id: modalidadId,
-            fecha,
-            hora: hora.slice(0, 5),
-            ubicacion: ubicacion || null,
-            ubicacion_url: ubicacionUrl || null,
-            imagen_url: imagenUrl || null,
-            imagen_position: imagenPosition,
-            descripcion: descripcion || null,
-            tipo_evento_id: tipoEventoId || null,
+            titulo, modalidad_id: modalidadId, fecha, hora: hora.slice(0, 5),
+            ubicacion: ubicacion || null, ubicacion_url: ubicacionUrl || null,
+            imagen_url: imagenUrl || null, imagen_position: imagenPosition,
+            descripcion: descripcion || null, tipo_evento_id: tipoEventoId || null,
         };
 
         const validation = eventoCreateSchema.safeParse(formData);
-
         if (!validation.success) {
             const fieldErrors: Record<string, string> = {};
             validation.error.issues.forEach(issue => {
-                const field = issue.path[0]?.toString() || 'general';
-                fieldErrors[field] = issue.message;
+                fieldErrors[issue.path[0]?.toString() || 'general'] = issue.message;
             });
             setErrors(fieldErrors);
             showToast('Por favor corrige los errores del formulario', 'error');
@@ -170,352 +114,322 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
 
         try {
             const supabase = createClient();
-
             if (isEditing && initialData?.id) {
-                const { error } = await supabase
-                    .from('eventos')
-                    .update(validation.data)
-                    .eq('id', initialData.id);
-
+                const { error } = await supabase.from('eventos').update(validation.data).eq('id', initialData.id);
                 if (error) throw error;
                 showToast('Evento actualizado correctamente', 'success');
             } else {
-                const { error } = await supabase
-                    .from('eventos')
-                    .insert(validation.data);
-
+                const { error } = await supabase.from('eventos').insert(validation.data);
                 if (error) throw error;
                 showToast('Evento creado correctamente', 'success');
             }
-
             router.push('/admin');
             router.refresh();
         } catch (err) {
-            console.error('Error saving event:', err);
             showToast('Error al guardar el evento', 'error');
         } finally {
             setLoading(false);
         }
     }
 
-    // Premium input styles
-    const inputStyle = `block w-full rounded-xl border border-[rgba(30,58,138,0.15)] bg-white px-4 py-3 text-sm text-[#1E3A8A] placeholder:text-[#94A3B8] shadow-[0_2px_8px_rgba(30,58,138,0.06)] transition-all duration-200 hover:border-[rgba(30,58,138,0.25)] hover:shadow-[0_4px_12px_rgba(30,58,138,0.10)] focus:border-[#1E3A8A] focus:ring-2 focus:ring-[rgba(30,58,138,0.15)] focus:shadow-[0_4px_16px_rgba(30,58,138,0.12)] outline-none`;
-    const errorInputStyle = "!border-[#D91E18] !ring-[rgba(217,30,24,0.1)] focus:!border-[#D91E18] focus:!ring-[rgba(217,30,24,0.15)]";
-
     return (
-        <form onSubmit={handleSubmit} noValidate className="space-y-8 animate-in fade-in duration-500">
+        <form onSubmit={handleSubmit} noValidate style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
 
-            {/* --- General Information --- */}
-            <div className="rounded-2xl overflow-hidden shadow-elite-md hover:shadow-elite-lg transition-shadow duration-300 border border-[rgba(30,58,138,0.12)]">
-                {/* Gradient Header */}
-                <div className="bg-gradient-to-r from-[#1E3A8A] via-[#2548a0] to-[#1E3A8A] px-6 py-4 flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                        <AlignLeft size={18} className="text-white" />
-                    </div>
-                    <h3 className="text-white font-semibold text-base tracking-tight">
-                        Información General
-                    </h3>
+            {/* ═══════ INFORMACIÓN GENERAL ═══════ */}
+            <div className="admin-card">
+                <div className="admin-card-header blue">
+                    <div className="icon-box"><AlignLeft size={16} /></div>
+                    <h3>Información General</h3>
                 </div>
-
-                <div className="bg-white p-6 space-y-5">
+                <div className="admin-card-body" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                    {/* Título */}
                     <div>
-                        <label htmlFor="titulo" className="block text-sm font-semibold text-[#1E3A8A] mb-2">
-                            Título del evento <span className="text-[#D91E18]">*</span>
+                        <label htmlFor="titulo" className="admin-label">
+                            Título del evento <span className="required">*</span>
                         </label>
                         <input
                             id="titulo"
-                            name="titulo"
                             type="text"
                             value={titulo}
                             onChange={(e) => setTitulo(e.target.value)}
                             placeholder="Ej: Torneo Apertura 2026"
-                            required
-                            className={`${inputStyle} ${errors.titulo ? errorInputStyle : ''}`}
+                            maxLength={120}
+                            className={`admin-input ${errors.titulo ? 'error' : ''}`}
                         />
-                        {errors.titulo && <p className="mt-1.5 text-sm text-[#D91E18] font-medium">{errors.titulo}</p>}
+                        {errors.titulo && <p style={{ color: '#D91E18', fontSize: '0.8125rem', marginTop: '0.375rem', fontWeight: 500 }}>{errors.titulo}</p>}
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    {/* Modalidad + Tipo */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
                         {modalidades.length === 0 ? (
-                            <div className="col-span-2">
+                            <div style={{ gridColumn: 'span 2' }}>
                                 <SelectEmptyState entityName="modalidades" createHref="/admin/modalidades" />
                             </div>
                         ) : (
                             <div>
-                                <label htmlFor="modalidad" className="block text-sm font-semibold text-[#1E3A8A] mb-2">
-                                    Modalidad <span className="text-[#D91E18]">*</span>
+                                <label htmlFor="modalidad" className="admin-label">
+                                    Modalidad <span className="required">*</span>
                                 </label>
                                 <select
                                     id="modalidad"
-                                    name="modalidad_id"
                                     value={modalidadId}
                                     onChange={(e) => setModalidadId(e.target.value)}
-                                    required
-                                    className={`${inputStyle} cursor-pointer ${errors.modalidad_id ? errorInputStyle : ''}`}
+                                    className={`admin-input ${errors.modalidad_id ? 'error' : ''}`}
                                 >
-                                    {modalidades.map(mod => (
-                                        <option key={mod.id} value={mod.id}>{mod.nombre}</option>
-                                    ))}
+                                    {modalidades.map(m => <option key={m.id} value={m.id}>{m.nombre}</option>)}
                                 </select>
                             </div>
                         )}
-
                         <div>
-                            <label htmlFor="tipo" className="block text-sm font-semibold text-[#1E3A8A] mb-2">
-                                Tipo de evento <span className="text-[#D91E18]">*</span>
+                            <label htmlFor="tipo" className="admin-label">
+                                Tipo de evento <span className="required">*</span>
                             </label>
                             <select
                                 id="tipo"
-                                name="tipo_evento_id"
                                 value={tipoEventoId}
                                 onChange={(e) => setTipoEventoId(e.target.value)}
-                                required
-                                className={`${inputStyle} cursor-pointer ${errors.tipo_evento_id ? errorInputStyle : ''}`}
+                                className={`admin-input ${errors.tipo_evento_id ? 'error' : ''}`}
                             >
-                                {tiposEvento.map(t => (
-                                    <option key={t.id} value={t.id}>{t.nombre}</option>
-                                ))}
+                                {tiposEvento.map(t => <option key={t.id} value={t.id}>{t.nombre}</option>)}
                             </select>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* --- Date & Location --- */}
-            <div className="rounded-2xl overflow-hidden shadow-elite-md hover:shadow-elite-lg transition-shadow duration-300 border border-[rgba(30,58,138,0.12)]">
-                <div className="bg-gradient-to-r from-[#1E3A8A] via-[#2548a0] to-[#1E3A8A] px-6 py-4 flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                        <Calendar size={18} className="text-white" />
-                    </div>
-                    <h3 className="text-white font-semibold text-base tracking-tight">
-                        Fecha y Ubicación
-                    </h3>
+            {/* ═══════ FECHA Y UBICACIÓN ═══════ */}
+            <div className="admin-card">
+                <div className="admin-card-header blue">
+                    <div className="icon-box"><Calendar size={16} /></div>
+                    <h3>Fecha y Ubicación</h3>
                 </div>
-
-                <div className="bg-white p-6 space-y-5">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div className="admin-card-body" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                    {/* Fecha + Hora */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
                         <div>
-                            <label htmlFor="fecha" className="block text-sm font-semibold text-[#1E3A8A] mb-2">
-                                Fecha <span className="text-[#D91E18]">*</span>
+                            <label htmlFor="fecha" className="admin-label">
+                                Fecha <span className="required">*</span>
                             </label>
                             <input
                                 id="fecha"
-                                name="fecha"
                                 type="date"
                                 value={fecha}
                                 onChange={(e) => setFecha(e.target.value)}
-                                required
-                                className={`${inputStyle} ${errors.fecha ? errorInputStyle : ''}`}
+                                className={`admin-input ${errors.fecha ? 'error' : ''}`}
                             />
-                            {errors.fecha && <p className="mt-1.5 text-sm text-[#D91E18] font-medium">{errors.fecha}</p>}
+                            {errors.fecha && <p style={{ color: '#D91E18', fontSize: '0.8125rem', marginTop: '0.375rem', fontWeight: 500 }}>{errors.fecha}</p>}
                         </div>
-
                         <div>
-                            <label htmlFor="hora" className="block text-sm font-semibold text-[#1E3A8A] mb-2">Hora</label>
+                            <label htmlFor="hora" className="admin-label">Hora</label>
                             <input
                                 id="hora"
-                                name="hora"
                                 type="time"
                                 value={hora}
                                 onChange={(e) => setHora(e.target.value)}
-                                className={inputStyle}
+                                className="admin-input"
                             />
                         </div>
                     </div>
 
+                    {/* Ubicación */}
                     <div>
-                        <label htmlFor="ubicacion" className="block text-sm font-semibold text-[#1E3A8A] mb-2">Ubicación / Polígono</label>
-                        <div className="relative group">
-                            <MapPin size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#94A3B8] group-focus-within:text-[#1E3A8A] transition-colors" />
+                        <label htmlFor="ubicacion" className="admin-label">Ubicación / Polígono</label>
+                        <div style={{ position: 'relative' }}>
+                            <MapPin size={16} style={{ position: 'absolute', left: '0.875rem', top: '50%', transform: 'translateY(-50%)', color: '#94A3B8', pointerEvents: 'none' }} />
                             <input
                                 id="ubicacion"
-                                name="ubicacion"
                                 type="text"
                                 value={ubicacion}
                                 onChange={(e) => setUbicacion(e.target.value)}
                                 placeholder="Ej: COP - Polígono de 10m"
-                                className={`${inputStyle} pl-11`}
+                                className="admin-input"
+                                style={{ paddingLeft: '2.5rem' }}
                             />
                         </div>
                     </div>
 
+                    {/* Google Maps Link */}
                     <div>
-                        <label htmlFor="ubicacion_url" className="block text-sm font-semibold text-[#1E3A8A] mb-2">Link Google Maps</label>
-                        <div className="relative group">
-                            <LinkIcon size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#94A3B8] group-focus-within:text-[#1E3A8A] transition-colors" />
+                        <label htmlFor="ubicacion_url" className="admin-label">Link Google Maps</label>
+                        <div style={{ position: 'relative' }}>
+                            <LinkIcon size={16} style={{ position: 'absolute', left: '0.875rem', top: '50%', transform: 'translateY(-50%)', color: '#94A3B8', pointerEvents: 'none' }} />
                             <input
                                 id="ubicacion_url"
-                                name="ubicacion_url"
                                 type="url"
                                 value={ubicacionUrl}
                                 onChange={(e) => setUbicacionUrl(e.target.value)}
                                 placeholder="https://maps.app.goo.gl/..."
-                                className={`${inputStyle} pl-11`}
+                                className="admin-input"
+                                style={{ paddingLeft: '2.5rem' }}
                             />
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* --- Multimedia & Description --- */}
-            <div className="rounded-2xl overflow-hidden shadow-elite-md hover:shadow-elite-lg transition-shadow duration-300 border border-[rgba(30,58,138,0.12)]">
-                <div className="bg-gradient-to-r from-[#D91E18] via-[#e63e39] to-[#D91E18] px-6 py-4 flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                        <ImageIcon size={18} className="text-white" />
-                    </div>
-                    <h3 className="text-white font-semibold text-base tracking-tight">
-                        Multimedia
-                    </h3>
+            {/* ═══════ MULTIMEDIA ═══════ */}
+            <div className="admin-card">
+                <div className="admin-card-header red">
+                    <div className="icon-box"><ImageIcon size={16} /></div>
+                    <h3>Multimedia</h3>
                 </div>
+                <div className="admin-card-body" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                    <span className="admin-label">Imagen del Evento</span>
 
-                <div className="bg-white p-6 space-y-5">
-                    <div>
-                        <span className="block text-sm font-semibold text-[#1E3A8A] mb-3">Imagen del Evento</span>
-                        <div className="flex flex-col md:flex-row gap-5 items-start">
-                            {/* Preview Area */}
-                            <div className="w-full md:w-1/3 aspect-video bg-gradient-to-br from-[#F9FBFF] to-[#EEF2FF] rounded-xl border-2 border-dashed border-[rgba(30,58,138,0.2)] flex items-center justify-center overflow-hidden relative group hover:border-[#1E3A8A] hover:shadow-[0_4px_16px_rgba(30,58,138,0.12)] transition-all duration-300">
-                                {imagenUrl ? (
-                                    <>
-                                        <div
-                                            className="w-full h-full bg-cover bg-no-repeat transition-all duration-300"
-                                            style={{
-                                                backgroundImage: `url(${imagenUrl})`,
-                                                backgroundPosition: imagenPosition
-                                            }}
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => setImagenUrl('')}
-                                            className="absolute top-2 right-2 bg-white/95 p-1.5 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-all hover:text-[#D91E18] hover:scale-110 focus:opacity-100"
-                                            aria-label="Eliminar imagen"
-                                        >
-                                            <X size={16} />
-                                        </button>
-                                    </>
-                                ) : (
-                                    <div className="text-center p-4">
-                                        <ImageIcon size={32} className="mx-auto text-[#94A3B8] mb-2" />
-                                        <p className="text-xs text-[#94A3B8] font-medium">Sin imagen</p>
+                    <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+                        {/* Preview */}
+                        <div style={{
+                            width: '200px', height: '130px',
+                            background: 'linear-gradient(135deg, #F9FBFF, #EEF2FF)',
+                            borderRadius: '12px', border: '2px dashed rgba(30,58,138,0.2)',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            overflow: 'hidden', position: 'relative', flexShrink: 0,
+                            transition: 'all 0.3s ease'
+                        }}>
+                            {imagenUrl ? (
+                                <>
+                                    <div style={{
+                                        width: '100%', height: '100%',
+                                        backgroundImage: `url(${imagenUrl})`,
+                                        backgroundSize: 'cover', backgroundRepeat: 'no-repeat',
+                                        backgroundPosition: imagenPosition
+                                    }} />
+                                    <button
+                                        type="button"
+                                        onClick={() => setImagenUrl('')}
+                                        aria-label="Eliminar imagen"
+                                        style={{
+                                            position: 'absolute', top: '6px', right: '6px',
+                                            background: 'rgba(255,255,255,0.95)', border: 'none',
+                                            borderRadius: '50%', width: '28px', height: '28px',
+                                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                            cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                                            transition: 'all 0.2s'
+                                        }}
+                                    >
+                                        <X size={14} />
+                                    </button>
+                                </>
+                            ) : (
+                                <div style={{ textAlign: 'center' }}>
+                                    <ImageIcon size={28} style={{ color: '#94A3B8', marginBottom: '4px' }} />
+                                    <p style={{ fontSize: '0.75rem', color: '#94A3B8', fontWeight: 500 }}>Sin imagen</p>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Upload Controls */}
+                        <div style={{ flex: 1, minWidth: '250px', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                            <p style={{ fontSize: '0.875rem', color: '#475569' }}>
+                                Sube una imagen (JPG, PNG) o pega una URL directa.
+                            </p>
+
+                            <button
+                                type="button"
+                                onClick={() => fileInputRef.current?.click()}
+                                disabled={uploading}
+                                className="btn btn-secondary"
+                                style={{ alignSelf: 'flex-start' }}
+                            >
+                                {uploading ? <Loader2 size={16} className="animate-spin" /> : <UploadCloud size={16} />}
+                                Subir Archivo
+                            </button>
+                            <input
+                                ref={fileInputRef}
+                                type="file"
+                                accept="image/*"
+                                style={{ display: 'none' }}
+                                onChange={handleFileUpload}
+                                aria-label="Subir archivo de imagen"
+                            />
+
+                            {/* Position buttons */}
+                            {imagenUrl && (
+                                <div style={{
+                                    background: 'linear-gradient(135deg, #F9FBFF, #F1F5FF)',
+                                    padding: '0.875rem', borderRadius: '10px',
+                                    border: '1px solid rgba(30,58,138,0.1)'
+                                }}>
+                                    <span style={{ fontSize: '0.6875rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: '0.5rem' }}>
+                                        Ajustar Enfoque
+                                    </span>
+                                    <div style={{ display: 'flex', gap: '0.375rem', flexWrap: 'wrap' }}>
+                                        {(['top', 'center', 'bottom', 'left', 'right'] as const).map(pos => (
+                                            <button
+                                                key={pos}
+                                                type="button"
+                                                onClick={() => setImagenPosition(pos)}
+                                                style={{
+                                                    padding: '0.375rem 0.75rem',
+                                                    fontSize: '0.75rem',
+                                                    fontWeight: 600,
+                                                    borderRadius: '8px',
+                                                    border: imagenPosition === pos ? '1.5px solid #1E3A8A' : '1.5px solid rgba(30,58,138,0.15)',
+                                                    background: imagenPosition === pos ? '#1E3A8A' : 'white',
+                                                    color: imagenPosition === pos ? 'white' : '#475569',
+                                                    cursor: 'pointer',
+                                                    transition: 'all 0.2s',
+                                                    boxShadow: imagenPosition === pos ? '0 2px 8px rgba(30,58,138,0.3)' : 'none'
+                                                }}
+                                            >
+                                                {pos === 'top' ? 'Arriba' : pos === 'center' ? 'Centro' : pos === 'bottom' ? 'Abajo' : pos === 'left' ? 'Izq' : 'Der'}
+                                            </button>
+                                        ))}
                                     </div>
-                                )}
+                                </div>
+                            )}
+
+                            {/* Divider */}
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                <div style={{ flex: 1, height: '1px', background: 'rgba(30,58,138,0.1)' }} />
+                                <span style={{ fontSize: '0.6875rem', color: '#94A3B8', textTransform: 'uppercase', fontWeight: 600, letterSpacing: '0.05em' }}>O usa URL</span>
+                                <div style={{ flex: 1, height: '1px', background: 'rgba(30,58,138,0.1)' }} />
                             </div>
 
-                            {/* Upload Actions */}
-                            <div className="flex-1 space-y-4 w-full">
-                                <div>
-                                    <p className="text-sm text-[#475569] mb-3">Sube una imagen (JPG, PNG) o pega una URL directa.</p>
-
-                                    <div className="flex gap-2 mb-4">
-                                        <button
-                                            type="button"
-                                            onClick={() => fileInputRef.current?.click()}
-                                            disabled={uploading}
-                                            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-b from-[#F9FBFF] to-[#EEF2FF] hover:from-[#EEF2FF] hover:to-[#E0E7FF] text-[#1E3A8A] border border-[rgba(30,58,138,0.2)] rounded-xl text-sm font-semibold transition-all duration-200 disabled:opacity-50 shadow-sm hover:shadow-md active:scale-95"
-                                        >
-                                            {uploading ? <Loader2 size={16} className="animate-spin" /> : <UploadCloud size={16} />}
-                                            Subir Archivo
-                                        </button>
-                                        <input
-                                            id="file-upload"
-                                            ref={fileInputRef}
-                                            type="file"
-                                            accept="image/*"
-                                            className="hidden"
-                                            onChange={handleFileUpload}
-                                            aria-label="Subir archivo de imagen"
-                                        />
-                                    </div>
-
-                                    {/* Position Control */}
-                                    {imagenUrl && (
-                                        <div className="bg-gradient-to-b from-[#F9FBFF] to-[#F1F5FF] p-4 rounded-xl border border-[rgba(30,58,138,0.12)]">
-                                            <span className="text-xs font-bold text-[#475569] uppercase tracking-wider mb-3 block">Ajustar Enfoque</span>
-                                            <div className="flex flex-wrap gap-2">
-                                                {['top', 'center', 'bottom', 'left', 'right'].map((pos) => (
-                                                    <button
-                                                        key={pos}
-                                                        type="button"
-                                                        onClick={() => setImagenPosition(pos)}
-                                                        className={`px-4 py-2 text-xs font-semibold rounded-lg border transition-all duration-200 ${imagenPosition === pos
-                                                            ? 'bg-[#1E3A8A] text-white border-[#1E3A8A] shadow-[0_2px_8px_rgba(30,58,138,0.3)] scale-105'
-                                                            : 'bg-white text-[#475569] border-[rgba(30,58,138,0.15)] hover:border-[#1E3A8A] hover:text-[#1E3A8A] hover:shadow-sm'
-                                                            }`}
-                                                    >
-                                                        {pos === 'top' ? 'Arriba' :
-                                                            pos === 'center' ? 'Centro' :
-                                                                pos === 'bottom' ? 'Abajo' :
-                                                                    pos === 'left' ? 'Izq' : 'Der'}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-
-                                <div className="relative">
-                                    <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                                        <div className="w-full border-t border-[rgba(30,58,138,0.12)]"></div>
-                                    </div>
-                                    <div className="relative flex justify-center">
-                                        <span className="bg-white px-3 text-xs text-[#94A3B8] uppercase font-semibold">O usa URL</span>
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label htmlFor="imagen-url-input" className="sr-only">URL de la imagen</label>
-                                    <div className="relative group">
-                                        <LinkIcon size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#94A3B8] group-focus-within:text-[#1E3A8A] transition-colors" />
-                                        <input
-                                            id="imagen-url-input"
-                                            type="url"
-                                            value={imagenUrl}
-                                            onChange={(e) => setImagenUrl(e.target.value)}
-                                            placeholder="https://pagina.com/imagen.jpg"
-                                            className={`${inputStyle} pl-11`}
-                                        />
-                                    </div>
-                                </div>
+                            <div style={{ position: 'relative' }}>
+                                <LinkIcon size={16} style={{ position: 'absolute', left: '0.875rem', top: '50%', transform: 'translateY(-50%)', color: '#94A3B8', pointerEvents: 'none' }} />
+                                <input
+                                    type="url"
+                                    value={imagenUrl}
+                                    onChange={(e) => setImagenUrl(e.target.value)}
+                                    placeholder="https://pagina.com/imagen.jpg"
+                                    className="admin-input"
+                                    style={{ paddingLeft: '2.5rem' }}
+                                    aria-label="URL de la imagen"
+                                />
                             </div>
                         </div>
                     </div>
 
+                    {/* Descripción */}
                     <div>
-                        <label htmlFor="descripcion" className="block text-sm font-semibold text-[#1E3A8A] mb-2">Descripción Adicional</label>
+                        <label htmlFor="descripcion" className="admin-label">Descripción Adicional</label>
                         <textarea
                             id="descripcion"
                             value={descripcion}
                             onChange={(e) => setDescripcion(e.target.value)}
                             rows={4}
-                            className={`${inputStyle} resize-y`}
+                            className="admin-input"
                             placeholder="Detalles sobre inscripciones, requisitos, etc..."
                         />
                     </div>
                 </div>
             </div>
 
-            {/* --- Actions --- */}
-            <div className="flex items-center justify-end gap-4 pt-4">
-                <Link
-                    href="/admin"
-                    className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold text-[#475569] bg-white border border-[rgba(30,58,138,0.15)] rounded-xl hover:bg-[#F9FBFF] hover:border-[rgba(30,58,138,0.25)] shadow-sm hover:shadow-md transition-all duration-200 active:scale-95"
-                >
+            {/* ═══════ ACTIONS ═══════ */}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', paddingTop: '0.5rem' }}>
+                <Link href="/admin" className="btn btn-secondary">
                     Cancelar
                 </Link>
                 <button
                     type="submit"
                     disabled={loading || uploading}
-                    className="inline-flex items-center gap-2 px-8 py-3 text-sm font-bold text-white bg-gradient-to-b from-[#D91E18] to-[#b81a15] rounded-xl shadow-[0_4px_14px_rgba(217,30,24,0.35)] hover:shadow-[0_6px_24px_rgba(217,30,24,0.45)] hover:from-[#e62e28] hover:to-[#c91e18] transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="btn btn-primary"
                 >
                     {loading ? (
-                        <>
-                            <Loader2 size={18} className="animate-spin" />
-                            Guardando...
-                        </>
+                        <><Loader2 size={16} className="animate-spin" /> Guardando...</>
                     ) : (
-                        <>
-                            <Save size={18} />
-                            {isEditing ? 'Guardar Cambios' : 'Crear Evento'}
-                        </>
+                        <><Save size={16} /> {isEditing ? 'Guardar Cambios' : 'Crear Evento'}</>
                     )}
                 </button>
             </div>
