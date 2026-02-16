@@ -8,7 +8,7 @@ import { SelectEmptyState } from '@/components/EmptyState';
 import { createClient } from '@/lib/supabase';
 import { Modalidad, TipoEvento, Club } from '@/lib/types';
 import { eventoCreateSchema, EventoInput } from '@/lib/schemas';
-import { Save, X, Calendar, MapPin, Link as LinkIcon, Image as ImageIcon, AlignLeft, UploadCloud, Loader2, Building2, Tag } from 'lucide-react';
+import { Save, X, Calendar, MapPin, Link as LinkIcon, Image as ImageIcon, AlignLeft, UploadCloud, Loader2, Building2, Tag, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import EliteButton from '@/components/ui/EliteButton';
 import EliteSelect from '@/components/ui/EliteSelect';
@@ -143,17 +143,17 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
     }
 
     return (
-        <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-10">
+        <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-6">
 
-            {/* ═══════ INFORMACIÓN GENERAL ═══════ */}
-            <section className="space-y-6">
-                <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
-                    <div className="w-10 h-10 rounded-xl bg-fpt-red/10 flex items-center justify-center text-fpt-red shadow-sm border border-fpt-red/10">
-                        <AlignLeft size={20} />
+            {/* ═══════ CLUSTER 1: IDENTIDAD ═══════ */}
+            <section className="bg-white p-6 sm:p-8 rounded-[2rem] border border-slate-100 shadow-sm space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="flex items-center gap-4 border-b border-slate-50 pb-6">
+                    <div className="w-12 h-12 rounded-2xl bg-fpt-red/10 flex items-center justify-center text-fpt-red shadow-inner border border-fpt-red/5">
+                        <AlignLeft size={24} strokeWidth={1.5} />
                     </div>
                     <div>
-                        <h3 className="text-lg font-bold text-cop-blue tracking-tight leading-none">Información General</h3>
-                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.15em] mt-1.5 opacity-80">Datos principales de la competencia</p>
+                        <h3 className="text-xl font-bold text-cop-blue tracking-tight leading-none uppercase">Identidad del Evento</h3>
+                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] mt-2 opacity-80">Definición y categorización oficial</p>
                     </div>
                 </div>
 
@@ -248,15 +248,15 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                 </div>
             </section>
 
-            {/* ═══════ FECHA Y UBICACIÓN ═══════ */}
-            <section className="space-y-6">
-                <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
-                    <div className="w-10 h-10 rounded-xl bg-fpt-red/10 flex items-center justify-center text-fpt-red shadow-sm border border-fpt-red/10">
-                        <Calendar size={20} />
+            {/* ═══════ CLUSTER 2: LOGÍSTICA ═══════ */}
+            <section className="bg-slate-50/80 p-6 sm:p-8 rounded-[2rem] border border-slate-200/50 shadow-inner space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                <div className="flex items-center gap-4 border-b border-white pb-6">
+                    <div className="w-12 h-12 rounded-2xl bg-cop-blue/10 flex items-center justify-center text-cop-blue shadow-inner border border-cop-blue/5">
+                        <Calendar size={24} strokeWidth={1.5} />
                     </div>
                     <div>
-                        <h3 className="text-lg font-bold text-cop-blue tracking-tight leading-none">Fecha y Ubicación</h3>
-                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.15em] mt-1.5 opacity-80">Cronograma y coordenadas del evento</p>
+                        <h3 className="text-xl font-bold text-cop-blue tracking-tight leading-none uppercase">Fecha y Ubicación</h3>
+                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] mt-2 opacity-80">Coordenadas y cronograma del evento</p>
                     </div>
                 </div>
 
@@ -326,15 +326,15 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                 </div>
             </section>
 
-            {/* ═══════ MULTIMEDIA ═══════ */}
-            <section className="space-y-6">
-                <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
-                    <div className="w-10 h-10 rounded-xl bg-fpt-red/10 flex items-center justify-center text-fpt-red shadow-sm border border-fpt-red/10">
-                        <ImageIcon size={20} />
+            {/* ═══════ CLUSTER 3: IMPACTO VISUAL ═══════ */}
+            <section className="bg-white p-6 sm:p-8 rounded-[2rem] border border-slate-100 shadow-sm space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+                <div className="flex items-center gap-4 border-b border-slate-50 pb-6">
+                    <div className="w-12 h-12 rounded-2xl bg-fpt-red/10 flex items-center justify-center text-fpt-red shadow-inner border border-fpt-red/5">
+                        <ImageIcon size={24} strokeWidth={1.5} />
                     </div>
                     <div>
-                        <h3 className="text-lg font-bold text-cop-blue tracking-tight leading-none">Multimedia</h3>
-                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.15em] mt-1.5 opacity-80">Identidad visual del evento</p>
+                        <h3 className="text-xl font-bold text-cop-blue tracking-tight leading-none uppercase">Presencia Visual</h3>
+                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] mt-2 opacity-80">Material multimedia y flyer oficial</p>
                     </div>
                 </div>
 
@@ -450,19 +450,45 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                 </div>
             </section>
 
+            {/* ═══════ CLUSTER 4: OBSERVACIONES ═══════ */}
+            <section className="bg-slate-50 p-6 sm:p-8 rounded-[2rem] border border-slate-200/60 shadow-inner space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+                <div className="flex items-center gap-4 border-b border-white pb-6">
+                    <div className="w-12 h-12 rounded-2xl bg-cop-blue/10 flex items-center justify-center text-cop-blue shadow-inner border border-cop-blue/5">
+                        <FileText size={24} strokeWidth={1.5} />
+                    </div>
+                    <div>
+                        <h3 className="text-xl font-bold text-cop-blue tracking-tight leading-none uppercase">Observaciones</h3>
+                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] mt-2 opacity-80">Información adicional y reglamentos específicos</p>
+                    </div>
+                </div>
+
+                <div className="group">
+                    <textarea
+                        value={descripcion}
+                        onChange={(e) => setDescripcion(e.target.value)}
+                        placeholder="Detalla aquí información relevante como requisitos de inscripción, vestimenta o aclaraciones técnicas..."
+                        rows={5}
+                        className={cn(
+                            "w-full px-6 py-5 rounded-3xl bg-white border-2 border-slate-100 outline-none text-slate-700 font-medium",
+                            "transition-all duration-300 focus:border-cop-blue/20 focus:shadow-xl focus:shadow-blue-900/5 placeholder:text-slate-300"
+                        )}
+                    />
+                </div>
+            </section>
+
             {/* ═══════ ACTIONS ═══════ */}
-            <div className="flex items-center justify-end gap-4 pt-6 border-t border-slate-100">
+            <div className="flex items-center justify-end gap-6 pt-10 pb-4">
                 <Link
                     href="/admin"
-                    className="px-8 py-3.5 rounded-2xl font-bold text-slate-400 hover:text-slate-600 transition-colors uppercase text-xs tracking-widest"
+                    className="px-8 py-4 rounded-2xl font-black text-slate-400 hover:text-fpt-red hover:bg-fpt-red/5 transition-all uppercase text-[10px] tracking-[0.2em] border border-transparent hover:border-fpt-red/10"
                 >
-                    Descartar
+                    Descartar Cambios
                 </Link>
                 <EliteButton
                     type="submit"
                     isLoading={loading}
-                    icon={<Save size={18} />}
-                    className="px-10 py-4 rounded-2xl text-xs font-black uppercase tracking-[0.1em]"
+                    icon={<Save size={20} />}
+                    className="px-12 py-5 rounded-[1.5rem] text-xs font-black uppercase tracking-[0.2em] shadow-xl shadow-blue-900/20"
                 >
                     {isEditing ? 'Actualizar Evento' : 'Publicar Competencia'}
                 </EliteButton>
