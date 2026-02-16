@@ -10,6 +10,7 @@ import AnnualCalendar from '@/components/AnnualCalendar';
 import { createClient } from '@/lib/supabase';
 import { Modalidad, EventoConModalidad, MESES } from '@/lib/types';
 import { AlertTriangle } from 'lucide-react';
+import ScrollReveal from '@/components/ui/ScrollReveal';
 import SectionTitle from '@/components/SectionTitle';
 
 type ViewType = 'mensual' | 'anual';
@@ -107,65 +108,67 @@ export default function CalendarPage() {
     <>
       <Header />
       <Hero />
-      <main className="main" id="calendario">
-        <div className="calendar-header">
-          <SectionTitle
-            title="Calendario de Eventos"
-            subtitle="Temporada Oficial 2026"
-            type="institucional"
-            className="mb-0" // Override margin if needed by layout
-          />
+      <main className="main relative z-10 bg-white" id="calendario">
+        <ScrollReveal>
+          <div className="calendar-header pt-16 md:pt-24">
+            <SectionTitle
+              title="Calendario de Eventos"
+              subtitle="Temporada Oficial 2026"
+              type="institucional"
+              className="mb-0" // Override margin if needed by layout
+            />
 
-          <div className="flex bg-white p-1 rounded-full border border-[var(--color-border)] shadow-[var(--shadow-sm)] w-fit relative z-10">
-            <button
-              onClick={() => setVista('mensual')}
-              className={`relative px-6 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${vista === 'mensual'
+            <div className="flex bg-white p-1 rounded-full border border-[var(--color-border)] shadow-[var(--shadow-sm)] w-fit relative z-10">
+              <button
+                onClick={() => setVista('mensual')}
+                className={`relative px-6 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${vista === 'mensual'
                   ? 'text-[var(--color-cop-blue)] shadow-sm bg-blue-50/50'
                   : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text)]'
-                }`}
-            >
-              {vista === 'mensual' && (
-                <div className="absolute inset-0 bg-white rounded-full shadow-[var(--shadow-xs)] border border-[var(--color-border-hover)] -z-10 animate-in fade-in zoom-in-95 duration-200" />
-              )}
-              Vista Mensual
-            </button>
-            <button
-              onClick={() => setVista('anual')}
-              className={`relative px-6 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${vista === 'anual'
+                  }`}
+              >
+                {vista === 'mensual' && (
+                  <div className="absolute inset-0 bg-white rounded-full shadow-[var(--shadow-xs)] border border-[var(--color-border-hover)] -z-10 animate-in fade-in zoom-in-95 duration-200" />
+                )}
+                Vista Mensual
+              </button>
+              <button
+                onClick={() => setVista('anual')}
+                className={`relative px-6 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${vista === 'anual'
                   ? 'text-[var(--color-cop-blue)] shadow-sm bg-blue-50/50'
                   : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text)]'
-                }`}
-            >
-              {vista === 'anual' && (
-                <div className="absolute inset-0 bg-white rounded-full shadow-[var(--shadow-xs)] border border-[var(--color-border-hover)] -z-10 animate-in fade-in zoom-in-95 duration-200" />
-              )}
-              Vista Anual
-            </button>
+                  }`}
+              >
+                {vista === 'anual' && (
+                  <div className="absolute inset-0 bg-white rounded-full shadow-[var(--shadow-xs)] border border-[var(--color-border-hover)] -z-10 animate-in fade-in zoom-in-95 duration-200" />
+                )}
+                Vista Anual
+              </button>
+            </div>
           </div>
-        </div>
 
-        {modalidades.length > 0 && (
-          <ModalityFilter
-            modalidades={modalidades}
-            selected={selectedModalidad}
-            onSelect={setSelectedModalidad}
-          />
-        )}
+          {modalidades.length > 0 && (
+            <ModalityFilter
+              modalidades={modalidades}
+              selected={selectedModalidad}
+              onSelect={setSelectedModalidad}
+            />
+          )}
 
-        {vista === 'mensual' ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-20">
-            {MESES.map((mes, index) => (
-              <MonthCard
-                key={mes}
-                mes={mes}
-                mesIndex={index}
-                eventos={eventosFiltrados}
-              />
-            ))}
-          </div>
-        ) : (
-          <AnnualCalendar eventos={eventosFiltrados} year={2026} />
-        )}
+          {vista === 'mensual' ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-20">
+              {MESES.map((mes, index) => (
+                <MonthCard
+                  key={mes}
+                  mes={mes}
+                  mesIndex={index}
+                  eventos={eventosFiltrados}
+                />
+              ))}
+            </div>
+          ) : (
+            <AnnualCalendar eventos={eventosFiltrados} year={2026} />
+          )}
+        </ScrollReveal>
       </main>
       <Footer />
     </>

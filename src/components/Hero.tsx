@@ -11,7 +11,7 @@ export default function Hero() {
     };
 
     return (
-        <section className="min-h-[85vh] flex items-center justify-center bg-gray-50 relative overflow-hidden border-b border-gray-200">
+        <section className="min-h-screen flex items-center justify-center bg-gray-50 relative overflow-hidden border-b border-gray-200">
             <div className="text-center max-w-[800px] p-8 z-10 animate-in fade-in slide-in-from-bottom-8 duration-700">
                 <div className="mb-8 flex justify-center">
                     <div className="w-[180px] h-[180px] bg-white rounded-full flex items-center justify-center p-4">
