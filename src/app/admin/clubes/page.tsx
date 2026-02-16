@@ -6,13 +6,20 @@ import { createClient } from '@/lib/supabase';
 import { Club } from '@/lib/types';
 import { useToast } from '@/components/Toast';
 import Header from '@/components/Header';
+import Breadcrumbs from '@/components/Breadcrumbs';
 import EliteCard from '@/components/ui/EliteCard';
 import EliteTable, { EliteHeader, EliteCell } from '@/components/ui/EliteTable';
 import EliteButton from '@/components/ui/EliteButton';
 import EliteModal from '@/components/ui/EliteModal';
 import {
-    ArrowLeft, Plus, Edit2, Trash2, Building2, Save, X
+    Plus, Edit2, Trash2, Save, Building2, Phone, User
 } from 'lucide-react';
+
+const PRESET_COLORS = [
+    '#D91E18', '#1E3A8A', '#059669', '#DC2626', '#2563EB',
+    '#7C3AED', '#DB2777', '#EA580C', '#0891B2', '#4F46E5',
+    '#65A30D', '#CA8A04', '#6B7280', '#0D9488', '#BE185D',
+];
 
 export default function AdminClubesPage() {
     const [clubes, setClubes] = useState<Club[]>([]);
@@ -21,19 +28,18 @@ export default function AdminClubesPage() {
     const [editingId, setEditingId] = useState<string | null>(null);
     const [saving, setSaving] = useState(false);
 
-    // Form State
     const [formData, setFormData] = useState({
         nombre: '',
         siglas: '',
         estado: 'pendiente' as Club['estado'],
-        color: '#1E3A8A'
+        color: '#1E3A8A',
+        contacto_nombre: '',
+        contacto_telefono: '',
     });
 
     const { showToast } = useToast();
 
-    useEffect(() => {
-        loadClubes();
-    }, []);
+    useEffect(() => { loadClubes(); }, []);
 
     async function loadClubes() {
         const supabase = createClient();
@@ -41,27 +47,25 @@ export default function AdminClubesPage() {
             .from('clubes')
             .select('*')
             .order('nombre');
-
         if (data) setClubes(data);
         if (error) console.error('Error loading clubs:', error);
         setLoading(false);
     }
 
-    // Sanitization Helper
     const sanitize = (text: string) => text.replace(/[<>]/g, '').trim();
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         setSaving(true);
-
         const supabase = createClient();
         const payload = {
             nombre: sanitize(formData.nombre),
             siglas: sanitize(formData.siglas).toUpperCase(),
             estado: formData.estado,
-            color: formData.color
+            color: formData.color,
+            contacto_nombre: sanitize(formData.contacto_nombre) || null,
+            contacto_telefono: sanitize(formData.contacto_telefono) || null,
         };
-
         try {
             if (editingId) {
                 const { error } = await supabase.from('clubes').update(payload).eq('id', editingId);
@@ -84,10 +88,8 @@ export default function AdminClubesPage() {
 
     async function handleDelete(club: Club) {
         if (!confirm(`¿Estás seguro de eliminar el club ${club.nombre}? Esta acción no se puede deshacer.`)) return;
-
         const supabase = createClient();
         const { error } = await supabase.from('clubes').delete().eq('id', club.id);
-
         if (error) {
             console.error('Error deleting club:', error);
             showToast('Error al eliminar el club', 'error');
@@ -104,7 +106,9 @@ export default function AdminClubesPage() {
                 nombre: club.nombre,
                 siglas: club.siglas,
                 estado: club.estado,
-                color: club.color
+                color: club.color,
+                contacto_nombre: club.contacto_nombre || '',
+                contacto_telefono: club.contacto_telefono || '',
             });
         } else {
             setEditingId(null);
@@ -112,7 +116,9 @@ export default function AdminClubesPage() {
                 nombre: '',
                 siglas: '',
                 estado: 'pendiente',
-                color: '#1E3A8A'
+                color: '#1E3A8A',
+                contacto_nombre: '',
+                contacto_telefono: '',
             });
         }
         setIsModalOpen(true);
@@ -125,28 +131,25 @@ export default function AdminClubesPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <div className="min-h-screen bg-bg-elite flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cop-blue"></div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-900">
+        <div className="min-h-screen bg-bg-elite flex flex-col font-sans text-text-elite">
             <Header />
             <main className="flex-grow py-8 px-4 sm:px-6 lg:px-8">
-                <div className="max-w-6xl mx-auto space-y-8">
+                <div className="max-w-main mx-auto space-y-6">
+
+                    <Breadcrumbs />
 
                     {/* Page Header */}
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                        <div>
-                            <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
-                                Gestión de Clubes
-                            </h1>
-                            <Link href="/admin" className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-blue-600 font-medium mt-2 transition-colors">
-                                <ArrowLeft size={16} /> Volver al panel
-                            </Link>
-                        </div>
+                        <h1 className="text-2xl font-bold text-text-elite">
+                            Gestión de Clubes
+                        </h1>
                         <EliteButton
                             onClick={() => openModal()}
                             icon={<Plus size={18} />}
@@ -159,14 +162,15 @@ export default function AdminClubesPage() {
                     <EliteCard title="Listado Oficial de Clubes">
                         <EliteTable
                             data={clubes}
-                            gridCols="60px 2fr 100px 140px 100px"
+                            gridCols="48px 2fr 80px 120px 1fr 90px"
                             keyExtractor={(club) => club.id}
                             header={
                                 <>
                                     <EliteHeader align="center">Color</EliteHeader>
-                                    <EliteHeader>Nombre / Siglas</EliteHeader>
+                                    <EliteHeader>Nombre</EliteHeader>
                                     <EliteHeader align="center">Siglas</EliteHeader>
                                     <EliteHeader align="center">Estado</EliteHeader>
+                                    <EliteHeader>Contacto</EliteHeader>
                                     <EliteHeader align="right">Acciones</EliteHeader>
                                 </>
                             }
@@ -174,46 +178,60 @@ export default function AdminClubesPage() {
                                 <>
                                     <EliteCell align="center">
                                         <div
-                                            className="w-8 h-8 rounded-full border border-black/10 shadow-sm mx-auto"
+                                            className="w-6 h-6 rounded-full border border-black/10 shadow-sm mx-auto"
                                             style={{ backgroundColor: club.color }}
                                         />
                                     </EliteCell>
                                     <EliteCell>
-                                        <div className="flex flex-col">
-                                            <span className="font-bold text-slate-800 text-sm">{club.nombre}</span>
-                                        </div>
+                                        <span className="font-semibold text-text-elite text-sm">{club.nombre}</span>
                                     </EliteCell>
                                     <EliteCell align="center">
-                                        <span className="inline-block px-2 py-1 bg-slate-100 rounded text-xs font-mono font-semibold text-slate-600">
+                                        <span className="inline-block px-2 py-0.5 bg-cop-blue/5 rounded text-xs font-mono font-semibold text-cop-blue">
                                             {club.siglas}
                                         </span>
                                     </EliteCell>
                                     <EliteCell align="center">
                                         {club.estado === 'afiliado' ? (
-                                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                                 Afiliado
                                             </span>
+                                        ) : club.estado === 'inactivo' ? (
+                                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
+                                                Inactivo
+                                            </span>
                                         ) : (
-                                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
                                                 Pendiente
                                             </span>
                                         )}
                                     </EliteCell>
+                                    <EliteCell>
+                                        {club.contacto_nombre ? (
+                                            <div className="text-xs text-text-secondary leading-relaxed">
+                                                <div className="font-medium text-text-elite">{club.contacto_nombre}</div>
+                                                {club.contacto_telefono && (
+                                                    <div className="text-text-muted">{club.contacto_telefono}</div>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            <span className="text-xs text-text-muted italic">Sin contacto</span>
+                                        )}
+                                    </EliteCell>
                                     <EliteCell align="right">
-                                        <div className="flex justify-end gap-2">
+                                        <div className="flex justify-end gap-1">
                                             <button
                                                 onClick={() => openModal(club)}
-                                                className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                                                className="p-1.5 text-text-muted hover:text-cop-blue hover:bg-cop-blue/5 rounded-lg transition-all"
                                                 title="Editar"
                                             >
-                                                <Edit2 size={16} />
+                                                <Edit2 size={15} />
                                             </button>
                                             <button
                                                 onClick={() => handleDelete(club)}
-                                                className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                                                className="p-1.5 text-text-muted hover:text-fpt-red hover:bg-fpt-red/5 rounded-lg transition-all"
                                                 title="Eliminar"
                                             >
-                                                <Trash2 size={16} />
+                                                <Trash2 size={15} />
                                             </button>
                                         </div>
                                     </EliteCell>
@@ -230,43 +248,51 @@ export default function AdminClubesPage() {
                 onClose={closeModal}
                 title={editingId ? "Editar Club" : "Registrar Nuevo Club"}
             >
-                <form onSubmit={handleSubmit} className="space-y-5">
+                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
 
-                    {/* Name */}
+                    {/* Nombre Oficial */}
                     <div>
-                        <label className="block text-sm font-semibold text-slate-700 mb-1">Nombre Oficial</label>
+                        <label htmlFor="club-nombre" className="admin-label">
+                            Nombre Oficial <span className="required">*</span>
+                        </label>
                         <input
+                            id="club-nombre"
                             type="text"
                             value={formData.nombre}
                             onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
-                            className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-medium text-slate-800"
+                            className="admin-input"
                             placeholder="Ej. Club de Tiro Práctico..."
                             required
                         />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                        {/* Siglas */}
+                    {/* Siglas + Estado */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                         <div>
-                            <label className="block text-sm font-semibold text-slate-700 mb-1">Siglas</label>
+                            <label htmlFor="club-siglas" className="admin-label">
+                                Siglas <span className="required">*</span>
+                            </label>
                             <input
+                                id="club-siglas"
                                 type="text"
                                 value={formData.siglas}
                                 onChange={(e) => setFormData({ ...formData, siglas: e.target.value.toUpperCase() })}
-                                className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 uppercase font-mono text-sm"
+                                className="admin-input"
                                 placeholder="Ej. CPTP"
+                                style={{ fontFamily: 'monospace', textTransform: 'uppercase' }}
                                 required
                                 maxLength={8}
                             />
                         </div>
-
-                        {/* Estado */}
                         <div>
-                            <label className="block text-sm font-semibold text-slate-700 mb-1">Estado</label>
+                            <label htmlFor="club-estado" className="admin-label">
+                                Estado
+                            </label>
                             <select
+                                id="club-estado"
                                 value={formData.estado}
                                 onChange={(e) => setFormData({ ...formData, estado: e.target.value as any })}
-                                className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                className="admin-input"
                             >
                                 <option value="pendiente">Pendiente</option>
                                 <option value="afiliado">Afiliado</option>
@@ -275,30 +301,109 @@ export default function AdminClubesPage() {
                         </div>
                     </div>
 
-                    {/* Color Picker */}
-                    <div>
-                        <label className="block text-sm font-semibold text-slate-700 mb-2">Color Distintivo</label>
-                        <div className="flex items-center gap-4 p-3 border border-slate-200 rounded-xl bg-slate-50/50">
+                    {/* Contacto */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                        <div>
+                            <label htmlFor="club-contacto-nombre" className="admin-label">
+                                <User size={13} className="inline mr-1" style={{ verticalAlign: '-1px' }} />
+                                Referente
+                            </label>
                             <input
-                                type="color"
-                                value={formData.color}
-                                onChange={(e) => setFormData({ ...formData, color: e.target.value })}
-                                className="h-10 w-12 rounded cursor-pointer border-0 p-0 bg-transparent"
+                                id="club-contacto-nombre"
+                                type="text"
+                                value={formData.contacto_nombre}
+                                onChange={(e) => setFormData({ ...formData, contacto_nombre: e.target.value })}
+                                className="admin-input"
+                                placeholder="Ej. Juan Pérez"
                             />
-                            <div className="flex-1">
-                                <div className="text-sm font-mono text-slate-500">{formData.color}</div>
-                                <div className="text-xs text-slate-400">Usado en bordes y gráficas</div>
+                        </div>
+                        <div>
+                            <label htmlFor="club-contacto-telefono" className="admin-label">
+                                <Phone size={13} className="inline mr-1" style={{ verticalAlign: '-1px' }} />
+                                Teléfono
+                            </label>
+                            <input
+                                id="club-contacto-telefono"
+                                type="tel"
+                                value={formData.contacto_telefono}
+                                onChange={(e) => setFormData({ ...formData, contacto_telefono: e.target.value })}
+                                className="admin-input"
+                                placeholder="Ej. 0981 123 456"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Color Distintivo */}
+                    <div>
+                        <label className="admin-label">Color Distintivo</label>
+                        <div style={{
+                            display: 'flex',
+                            flexWrap: 'wrap',
+                            gap: '6px',
+                            padding: '0.75rem',
+                            border: '1.5px solid rgba(30, 58, 138, 0.12)',
+                            borderRadius: '10px',
+                            background: 'rgba(30, 58, 138, 0.02)',
+                        }}>
+                            {PRESET_COLORS.map((c) => (
+                                <button
+                                    key={c}
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, color: c })}
+                                    style={{
+                                        width: '28px',
+                                        height: '28px',
+                                        borderRadius: '8px',
+                                        backgroundColor: c,
+                                        border: formData.color === c
+                                            ? '2.5px solid #1E3A8A'
+                                            : '1.5px solid rgba(0,0,0,0.1)',
+                                        cursor: 'pointer',
+                                        transition: 'all 0.15s ease',
+                                        transform: formData.color === c ? 'scale(1.15)' : 'scale(1)',
+                                        boxShadow: formData.color === c
+                                            ? '0 0 0 3px rgba(30,58,138,0.15)'
+                                            : 'none',
+                                    }}
+                                    title={c}
+                                />
+                            ))}
+                            <div style={{
+                                display: 'flex', alignItems: 'center', gap: '0.5rem',
+                                marginLeft: 'auto', paddingLeft: '0.5rem',
+                            }}>
+                                <input
+                                    type="color"
+                                    value={formData.color}
+                                    onChange={(e) => setFormData({ ...formData, color: e.target.value })}
+                                    style={{
+                                        width: '28px', height: '28px',
+                                        borderRadius: '6px', cursor: 'pointer',
+                                        border: '1.5px solid rgba(0,0,0,0.1)',
+                                        padding: 0, background: 'transparent',
+                                    }}
+                                    title="Color personalizado"
+                                />
+                                <span style={{
+                                    fontFamily: 'monospace',
+                                    fontSize: '0.75rem',
+                                    color: '#94A3B8',
+                                    minWidth: '55px',
+                                }}>{formData.color}</span>
                             </div>
                         </div>
                     </div>
 
                     {/* Actions */}
-                    <div className="flex justify-end gap-3 pt-4">
+                    <div style={{
+                        display: 'flex', justifyContent: 'flex-end',
+                        gap: '0.75rem', paddingTop: '0.5rem',
+                    }}>
                         <EliteButton type="button" variant="secondary" onClick={closeModal}>
                             Cancelar
                         </EliteButton>
                         <EliteButton type="submit" isLoading={saving} icon={<Save size={16} />}>
-                            Guardar Club
+                            {editingId ? 'Actualizar Club' : 'Guardar Club'}
                         </EliteButton>
                     </div>
                 </form>

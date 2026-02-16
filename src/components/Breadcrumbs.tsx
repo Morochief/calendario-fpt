@@ -17,6 +17,7 @@ const ROUTES: Record<string, BreadcrumbItem> = {
     '/admin/modalidades': { label: 'Modalidades' },
     '/admin/tipos-evento': { label: 'Tipos de Evento' },
     '/admin/inscripciones': { label: 'Inscripciones' },
+    '/admin/clubes': { label: 'Clubes' },
 };
 
 export default function Breadcrumbs() {

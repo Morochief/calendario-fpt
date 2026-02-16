@@ -92,6 +92,8 @@ export type Club = {
     siglas: string;
     estado: 'afiliado' | 'pendiente' | 'inactivo';
     color: string;
+    contacto_nombre?: string | null;
+    contacto_telefono?: string | null;
     created_at?: string;
 };
 
