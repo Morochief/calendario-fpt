@@ -150,12 +150,13 @@ export default function AdminClubesPage() {
                         <h1 className="text-2xl font-bold text-text-elite">
                             Gestión de Clubes
                         </h1>
-                        <EliteButton
+                        <button
+                            className="btn btn-primary shadow-btn-red hover:shadow-btn-red-hover active:scale-95"
                             onClick={() => openModal()}
-                            icon={<Plus size={18} />}
                         >
+                            <Plus size={20} />
                             Nuevo Club
-                        </EliteButton>
+                        </button>
                     </div>
 
                     {/* Content Card */}
