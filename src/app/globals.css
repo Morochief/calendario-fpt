@@ -2920,6 +2920,7 @@ a.user-dropdown-item,
    Admin Form Inputs — Premium Styling
    ======================================== */
 
+/* Admin Form Inputs — Premium Styling */
 .admin-input {
   display: block;
   width: 100%;
@@ -2928,65 +2929,42 @@ a.user-dropdown-item,
   line-height: 1.5;
   color: #1E3A8A;
   background-color: #fff;
-  border: 1.5px solid rgba(30, 58, 138, 0.25);
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(30, 58, 138, 0.06);
+  border: 2px solid #e2e8f0;
+  border-bottom-width: 4px;
+  border-radius: 12px;
   transition: all 0.2s ease;
   outline: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-}
-
-.admin-input::placeholder {
-  color: #94A3B8;
-}
-
-.admin-input:hover {
-  border-color: rgba(30, 58, 138, 0.3);
-  box-shadow: 0 4px 12px rgba(30, 58, 138, 0.08);
 }
 
 .admin-input:focus {
-  border-color: #1E3A8A;
-  box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.12), 0 4px 12px rgba(30, 58, 138, 0.08);
+  border-color: #3b82f6;
+  border-bottom-color: #1d4ed8;
+  transform: translateY(1px);
+  border-bottom-width: 3px;
 }
 
-.admin-input.error {
-  border-color: #D91E18;
-  box-shadow: 0 0 0 3px rgba(217, 30, 24, 0.1);
+/* Color Picker Container 3D */
+.color-picker-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 1rem;
+  border: 2px solid #e2e8f0;
+  border-bottom-width: 4px;
+  border-radius: 12px;
+  background: #f8fafc;
 }
 
-/* Select specific */
-select.admin-input {
-  cursor: pointer;
-  padding-right: 2.5rem;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%231E3A8A' d='M6 8.825a.7.7 0 01-.5-.2L1.725 4.85a.681.681 0 01-.2-.5.7.7 0 01.713-.713.7.7 0 01.5.213L6 7.112l3.262-3.262a.67.67 0 01.5-.2.7.7 0 01.713.713.681.681 0 01-.2.5L6.5 8.625a.7.7 0 01-.5.2z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 1rem center;
-  background-size: 12px;
-}
-
-/* Date and Time inputs */
-input[type="date"].admin-input,
-input[type="time"].admin-input {
-  cursor: pointer;
-}
-
-/* Textarea */
-textarea.admin-input {
-  resize: vertical;
-  min-height: 100px;
-}
-
-/* Admin Card Section */
 .admin-card {
   background: white;
-  border-radius: 16px;
-  border: 1.5px solid rgba(30, 58, 138, 0.2);
-  box-shadow: 0 8px 25px rgba(30, 58, 138, 0.1), 0 2px 6px rgba(30, 58, 138, 0.05);
+  border-radius: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06),
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 8px 10px -6px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 .admin-card:hover {

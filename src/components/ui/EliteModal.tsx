@@ -54,7 +54,8 @@ export default function EliteModal({
                             className={`
                                 w-full ${width}
                                 bg-white rounded-2xl
-                                shadow-2xl shadow-blue-900/20
+                                shadow-2xl shadow-blue-900/40
+                                border border-white/20
                                 overflow-hidden
                                 pointer-events-auto
                             `}

@@ -336,15 +336,7 @@ export default function AdminClubesPage() {
                     {/* Color Distintivo */}
                     <div>
                         <label className="admin-label">Color Distintivo</label>
-                        <div style={{
-                            display: 'flex',
-                            flexWrap: 'wrap',
-                            gap: '6px',
-                            padding: '0.75rem',
-                            border: '1.5px solid rgba(30, 58, 138, 0.12)',
-                            borderRadius: '10px',
-                            background: 'rgba(30, 58, 138, 0.02)',
-                        }}>
+                        <div className="color-picker-container">
                             {PRESET_COLORS.map((c) => (
                                 <button
                                     key={c}
