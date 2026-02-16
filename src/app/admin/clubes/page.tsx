@@ -12,7 +12,7 @@ import EliteTable, { EliteHeader, EliteCell } from '@/components/ui/EliteTable';
 import EliteButton from '@/components/ui/EliteButton';
 import EliteModal from '@/components/ui/EliteModal';
 import {
-    Plus, Edit2, Trash2, Save, Building2, Phone, User
+    Plus, Edit2, Trash2, Save, Building2, Phone, User, Loader2
 } from 'lucide-react';
 
 const PRESET_COLORS = [
