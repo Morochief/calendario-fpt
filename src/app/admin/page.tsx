@@ -128,12 +128,12 @@ export default function AdminPage() {
                 evento.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 evento.modalidades?.nombre.toLowerCase().includes(searchTerm.toLowerCase());
 
-            const matchesModalidad = filterModalidad ? evento.modalidades?.nombre === filterModalidad : true;
+            const matchesModalidad = (filterModalidad && filterModalidad !== 'todas') ? evento.modalidades?.nombre === filterModalidad : true;
 
-            const matchesTipo = filterTipo ? (evento.tipos_evento?.nombre === filterTipo || evento.tipo === filterTipo) : true;
+            const matchesTipo = (filterTipo && filterTipo !== 'todos') ? (evento.tipos_evento?.nombre === filterTipo || evento.tipo === filterTipo) : true;
 
             const status = getEventStatus(evento.fecha);
-            const matchesEstado = filterEstado ? status === filterEstado : true;
+            const matchesEstado = (filterEstado && filterEstado !== 'todos') ? status === filterEstado : true;
 
             return matchesSearch && matchesModalidad && matchesTipo && matchesEstado;
         });

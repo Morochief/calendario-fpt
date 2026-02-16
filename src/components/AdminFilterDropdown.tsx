@@ -74,13 +74,13 @@ export default function AdminFilterDropdown({
 
             {/* Dropdown Menu */}
             {isOpen && (
-                <div className="filter-dropdown-menu" style={{ zIndex: 100, minWidth: '220px' }}>
+                <div className="filter-dropdown-menu absolute top-full left-0 mt-2 bg-surface border border-border-elite rounded-elite-md shadow-elite-xl z-[100] min-w-[220px] overflow-hidden animate-dropdown-fade">
                     {options.map((option) => (
                         <button
                             key={option.value}
                             type="button"
                             onClick={() => handleSelect(option.value)}
-                            className={`dropdown-item ${value === option.value ? 'selected' : ''}`}
+                            className={`dropdown-item flex items-center justify-between w-full px-4 py-2.5 text-sm text-text-secondary hover:bg-blue-50/50 hover:text-cop-blue transition-colors ${value === option.value ? 'selected bg-blue-50/50 text-cop-blue font-semibold' : ''}`}
                         >
                             <div className="flex items-center gap-2.5">
                                 {option.color && (
