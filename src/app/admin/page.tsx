@@ -212,27 +212,38 @@ export default function AdminPage() {
                     </ol>
                 </nav>
 
+                {/* ========== WATERMARK BACKGROUND ========== */}
+                <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden flex items-center justify-center opacity-[0.03]">
+                    <img
+                        src="/LOGO_FPDT-removebg-preview.svg"
+                        alt="FPDT Watermark"
+                        className="w-[800px] h-[800px] object-contain grayscale"
+                    />
+                </div>
+
                 {/* ========== HEADER CON ACCIONES ========== */}
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 my-10">
+                <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 my-10 animate-fade-in">
                     <div>
-                        <h1 className="text-4xl font-bold text-text-elite tracking-elite">Panel de Administración</h1>
-                        <p className="text-text-secondary mt-2 text-lg font-light">Gestiona eventos, inscripciones y configuraciones del sistema.</p>
+                        <h1 className="text-4xl font-bold text-slate-800 tracking-tight">Panel de Administración</h1>
+                        <p className="text-slate-500 mt-2 text-lg font-light">
+                            Gestiona eventos, inscripciones y configuraciones del sistema.
+                        </p>
                     </div>
                     <div className="flex items-center gap-3">
                         {/* Botón exportar */}
-                        <EliteButton
-                            variant="secondary"
+                        <button
                             onClick={() => showToast('Funcionalidad de exportación en desarrollo', 'info')}
-                            icon={<Download size={18} />}
+                            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-600 font-medium text-sm transition-all duration-200 hover:border-cop-blue hover:text-cop-blue hover:shadow-md active:scale-95"
                         >
-                            Exportar
-                        </EliteButton>
+                            <Download size={18} strokeWidth={2} />
+                            <span>Exportar</span>
+                        </button>
 
                         <Link
-                            className="inline-flex items-center justify-center px-4 py-2.5 rounded-elite-sm font-medium text-sm transition-all duration-200 bg-fpt-red text-white hover:bg-fpt-red-600 shadow-btn-red hover:shadow-btn-red-hover hover:-translate-y-0.5 active:translate-y-0"
+                            className="inline-flex items-center justify-center px-4 py-2.5 rounded-xl font-medium text-sm transition-all duration-200 bg-fpt-red text-white hover:bg-red-700 shadow-md shadow-red-900/20 hover:shadow-lg hover:shadow-red-900/30 hover:-translate-y-0.5 active:translate-y-0"
                             href="/admin/eventos/nuevo"
                         >
-                            <Plus size={20} className="mr-2" />
+                            <Plus size={20} className="mr-2" strokeWidth={2} />
                             Nuevo Evento
                         </Link>
                     </div>
@@ -275,8 +286,8 @@ export default function AdminPage() {
                 </div>
 
                 {/* ========== CARDS: INSCRIPCIONES + CONFIGURACIÓN ========== */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-                    <Link className="group bg-surface p-6 rounded-elite-lg border border-border-elite shadow-elite-sm hover:shadow-elite-lg hover:border-green-500/50 hover:-translate-y-1 transition-all duration-300 ease-smooth flex items-center gap-6 relative overflow-hidden h-full"
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12 stagger-children" style={{ animationDelay: '0.1s' }}>
+                    <Link className="group bg-white/90 backdrop-blur-sm p-6 rounded-2xl border border-white/20 shadow-lg shadow-slate-200/50 hover:shadow-xl hover:shadow-green-900/5 hover:-translate-y-1 transition-all duration-300 ease-out flex items-center gap-6 relative overflow-hidden h-full"
                         href="/admin/inscripciones">
                         {/* Hover Bar Effect */}
                         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 to-green-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out origin-left"></div>
@@ -288,14 +299,14 @@ export default function AdminPage() {
                             <Users size={32} strokeWidth={2} />
                         </div>
                         <div className="z-10">
-                            <h3 className="font-bold text-text-elite text-xl group-hover:text-green-700 transition-colors">Inscripciones</h3>
-                            <p className="text-text-muted text-sm mt-1 font-medium group-hover:text-green-600/80 transition-colors">Ver lista de inscripciones</p>
+                            <h3 className="font-bold text-slate-800 text-xl group-hover:text-green-700 transition-colors">Inscripciones</h3>
+                            <p className="text-slate-500 text-sm mt-1 font-medium group-hover:text-green-600/80 transition-colors">Ver lista de inscripciones</p>
                         </div>
                         {/* Badge con contador */}
                         <span className="ml-auto bg-white border border-green-200 text-green-700 text-xs font-bold px-3 py-1 rounded-full shadow-sm z-10 group-hover:bg-green-600 group-hover:text-white group-hover:border-green-600 transition-all duration-300 transform group-hover:scale-110 group-hover:shadow-lg shadow-green-900/5">{kpiInscripciones}</span>
                     </Link>
 
-                    <div className="group bg-surface p-6 rounded-elite-lg border border-border-elite shadow-elite-sm hover:shadow-elite-lg hover:border-cop-blue/30 hover:-translate-y-1 transition-all duration-300 ease-smooth col-span-1 md:col-span-2 lg:col-span-2 relative overflow-hidden h-full">
+                    <div className="group bg-white/90 backdrop-blur-sm p-6 rounded-2xl border border-white/20 shadow-lg shadow-slate-200/50 hover:shadow-xl hover:shadow-blue-900/5 transition-all duration-300 ease-out col-span-1 md:col-span-2 lg:col-span-2 relative overflow-hidden h-full">
 
                         {/* Hover Bar Effect */}
                         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cop-blue to-blue-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out origin-left"></div>
@@ -303,40 +314,40 @@ export default function AdminPage() {
                         <div className="absolute top-0 right-0 p-4 opacity-5 transform translate-x-8 -translate-y-8 pointer-events-none group-hover:scale-110 transition-transform duration-500">
                             <Settings size={150} />
                         </div>
-                        <h3 className="font-bold text-text-elite text-xl mb-6 flex items-center gap-3 relative z-10">
-                            <div className="p-2 bg-slate-100 rounded-lg group-hover:bg-blue-50 transition-colors duration-300">
-                                <Settings size={20} className="text-text-secondary group-hover:text-cop-blue transition-colors duration-300" strokeWidth={2} />
+                        <h3 className="font-bold text-slate-800 text-xl mb-6 flex items-center gap-3 relative z-10">
+                            <div className="p-2 bg-slate-50 rounded-lg group-hover:bg-blue-50 transition-colors duration-300">
+                                <Settings size={20} className="text-slate-400 group-hover:text-cop-blue transition-colors duration-300" strokeWidth={2} />
                             </div>
                             Configuración
                         </h3>
                         <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 relative z-10 w-full">
-                            <Link className="flex flex-col items-center justify-center gap-3 p-4 bg-white hover:bg-white text-text-secondary rounded-xl border border-slate-200 transition-all duration-200 font-semibold text-sm hover:border-cop-blue hover:shadow-lg hover:-translate-y-1 active:scale-95 group/link h-full"
+                            <Link className="flex flex-col items-center justify-center gap-3 p-4 bg-white/50 hover:bg-white text-slate-600 rounded-xl border border-slate-200 transition-all duration-200 font-semibold text-sm hover:border-cop-blue hover:text-cop-blue hover:shadow-lg hover:-translate-y-1 active:scale-95 group/link h-full"
                                 href="/admin/modalidades">
                                 <div className="p-3 bg-slate-50 rounded-full group-hover/link:bg-blue-50 transition-colors">
                                     <ClipboardList size={24} className="text-slate-400 group-hover/link:text-cop-blue transition-colors" />
                                 </div>
-                                <span className="group-hover/link:text-cop-blue transition-colors text-center">Modalidades</span>
+                                <span className="text-center">Modalidades</span>
                             </Link>
-                            <Link className="flex flex-col items-center justify-center gap-3 p-4 bg-white hover:bg-white text-text-secondary rounded-xl border border-slate-200 transition-all duration-200 font-semibold text-sm hover:border-cop-blue hover:shadow-lg hover:-translate-y-1 active:scale-95 group/link h-full"
+                            <Link className="flex flex-col items-center justify-center gap-3 p-4 bg-white/50 hover:bg-white text-slate-600 rounded-xl border border-slate-200 transition-all duration-200 font-semibold text-sm hover:border-cop-blue hover:text-cop-blue hover:shadow-lg hover:-translate-y-1 active:scale-95 group/link h-full"
                                 href="/admin/tipos-evento">
                                 <div className="p-3 bg-slate-50 rounded-full group-hover/link:bg-blue-50 transition-colors">
                                     <Filter size={24} className="text-slate-400 group-hover/link:text-cop-blue transition-colors" />
                                 </div>
-                                <span className="group-hover/link:text-cop-blue transition-colors text-center">Tipos de Evento</span>
+                                <span className="text-center">Tipos</span>
                             </Link>
-                            <Link className="flex flex-col items-center justify-center gap-3 p-4 bg-white hover:bg-white text-text-secondary rounded-xl border border-slate-200 transition-all duration-200 font-semibold text-sm hover:border-cop-blue hover:shadow-lg hover:-translate-y-1 active:scale-95 group/link h-full"
+                            <Link className="flex flex-col items-center justify-center gap-3 p-4 bg-white/50 hover:bg-white text-slate-600 rounded-xl border border-slate-200 transition-all duration-200 font-semibold text-sm hover:border-cop-blue hover:text-cop-blue hover:shadow-lg hover:-translate-y-1 active:scale-95 group/link h-full"
                                 href="/admin/reglamentos">
                                 <div className="p-3 bg-slate-50 rounded-full group-hover/link:bg-blue-50 transition-colors">
                                     <BookOpen size={24} className="text-slate-400 group-hover/link:text-cop-blue transition-colors" />
                                 </div>
-                                <span className="group-hover/link:text-cop-blue transition-colors text-center">Reglamentos</span>
+                                <span className="text-center">Reglamentos</span>
                             </Link>
-                            <Link className="flex flex-col items-center justify-center gap-3 p-4 bg-white hover:bg-white text-text-secondary rounded-xl border border-slate-200 transition-all duration-200 font-semibold text-sm hover:border-cop-blue hover:shadow-lg hover:-translate-y-1 active:scale-95 group/link h-full"
+                            <Link className="flex flex-col items-center justify-center gap-3 p-4 bg-white/50 hover:bg-white text-slate-600 rounded-xl border border-slate-200 transition-all duration-200 font-semibold text-sm hover:border-cop-blue hover:text-cop-blue hover:shadow-lg hover:-translate-y-1 active:scale-95 group/link h-full"
                                 href="/admin/categorias">
                                 <div className="p-3 bg-slate-50 rounded-full group-hover/link:bg-blue-50 transition-colors">
                                     <ClipboardList size={24} className="text-slate-400 group-hover/link:text-cop-blue transition-colors" />
                                 </div>
-                                <span className="group-hover/link:text-cop-blue transition-colors text-center">Categorías</span>
+                                <span className="text-center">Categorías</span>
                             </Link>
                             <Link className="flex flex-col items-center justify-center gap-3 p-4 bg-white hover:bg-white text-text-secondary rounded-xl border border-slate-200 transition-all duration-200 font-semibold text-sm hover:border-cop-blue hover:shadow-lg hover:-translate-y-1 active:scale-95 group/link h-full"
                                 href="/admin/clubes">
@@ -351,39 +362,39 @@ export default function AdminPage() {
 
                 {/* ========== TABLA DE EVENTOS ========== */}
                 {/* ========== TABLA DE EVENTOS ========== */}
-                <div className="bg-surface rounded-[16px] border border-[rgba(30,58,138,0.08)] shadow-[0_4px_6px_-1px_rgba(0,0,0,0.02),0_2px_4px_-1px_rgba(0,0,0,0.02)] relative animate-fade-in-up group" style={{ animationDelay: '0.2s' }}>
+                <div className="bg-white/80 backdrop-blur-md rounded-2xl border border-white/20 shadow-xl shadow-slate-200/40 relative animate-fade-in-up group overflow-hidden" style={{ animationDelay: '0.2s' }}>
 
                     {/* Decorative Top Bar */}
-                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cop-blue via-blue-500 to-cop-blue opacity-80" style={{ borderRadius: '16px 16px 0 0' }}></div>
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cop-blue via-blue-500 to-cop-blue opacity-80 z-20"></div>
 
                     {/* Header de tabla con búsqueda + Filtros */}
-                    <div className="p-6 border-b border-border-elite bg-white/50 backdrop-blur-sm">
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 mb-5">
-                            <div className="flex items-center gap-4">
-                                <div className="p-3 bg-slate-50 rounded-xl border border-slate-100 shadow-sm group-hover:bg-blue-50 group-hover:border-blue-100 transition-all duration-300">
-                                    <Calendar size={24} className="text-slate-400 group-hover:text-cop-blue transition-colors duration-300" strokeWidth={2} />
+                    <div className="p-8 border-b border-slate-100 bg-white/40">
+                        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 mb-8">
+                            <div className="flex items-center gap-5">
+                                <div className="p-4 bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-2xl border border-blue-100 shadow-sm group-hover:shadow-md group-hover:scale-105 transition-all duration-500">
+                                    <Calendar size={28} className="text-cop-blue" strokeWidth={2} />
                                 </div>
                                 <div>
-                                    <h3 className="font-bold text-text-elite text-xl flex items-center gap-2">
+                                    <h3 className="font-bold text-slate-800 text-2xl tracking-tight">
                                         Eventos Programados
                                     </h3>
-                                    <span className="inline-flex items-center gap-1.5 mt-1">
+                                    <div className="flex items-center gap-2.5 mt-1.5">
                                         <span className="relative flex h-2 w-2">
                                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cop-blue opacity-75"></span>
                                             <span className="relative inline-flex rounded-full h-2 w-2 bg-cop-blue"></span>
                                         </span>
-                                        <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">{eventos.length} total</span>
-                                    </span>
+                                        <span className="text-sm font-bold text-slate-400 uppercase tracking-widest">{eventos.length} total</span>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="relative w-full sm:w-80 group/search flex items-center bg-white border border-slate-200 rounded-xl shadow-sm focus-within:border-cop-blue/60 focus-within:shadow-[0_0_0_4px_rgba(30,58,138,0.1)] hover:border-cop-blue/40 hover:shadow-md transition-all duration-300">
-                                <div className="pl-4 pr-3 text-slate-400 group-focus-within/search:text-cop-blue transition-colors duration-300 pointer-events-none">
-                                    <Search size={20} />
+                            <div className="relative w-full lg:w-96 group/search flex items-center bg-white/80 border border-slate-200 rounded-2xl shadow-sm focus-within:border-cop-blue focus-within:ring-4 focus-within:ring-blue-900/5 hover:border-slate-300 hover:shadow-md transition-all duration-300">
+                                <div className="pl-5 pr-3 text-slate-400 group-focus-within/search:text-cop-blue transition-colors duration-300 pointer-events-none">
+                                    <Search size={22} />
                                 </div>
-                                <input placeholder="Buscar eventos..."
+                                <input placeholder="Buscar eventos por título o tipo..."
                                     id="search-events"
                                     name="search"
-                                    className="w-full py-3 pr-4 bg-transparent border-none outline-none shadow-none ring-0 focus:ring-0 text-sm font-medium text-text-elite placeholder:text-slate-400 appearance-none"
+                                    className="w-full py-4 pr-5 bg-transparent border-none outline-none shadow-none ring-0 focus:ring-0 text-base font-medium text-slate-700 placeholder:text-slate-400"
                                     type="text"
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
@@ -463,46 +474,39 @@ export default function AdminPage() {
                     </div>
 
                     {/* Grid Table — mathematically aligned columns */}
-                    <div className="p-4 bg-slate-50/30 overflow-x-auto">
+                    <div className="p-6 bg-slate-50/50 overflow-x-auto min-h-[400px]">
                         {/* Shared grid template for perfect column sync */}
                         {(() => {
-                            const gridCols = '48px 130px 1.5fr 120px 180px 110px 80px 100px';
+                            const gridCols = '48px 140px 1.5fr 120px 180px 110px 80px 100px';
                             return (
                                 <>
                                     {/* Header Row */}
                                     <div
                                         style={{ gridTemplateColumns: gridCols }}
-                                        className="grid items-center px-1 mb-1"
+                                        className="grid items-center px-4 mb-3"
                                     >
-                                        <div className="pl-3">
-                                            <input type="checkbox" className="rounded-sm border-slate-300 text-cop-blue focus:ring-cop-blue/20" />
+                                        <div className="flex items-center">
+                                            <input type="checkbox" className="w-4 h-4 rounded border-slate-300 text-cop-blue focus:ring-blue-500/20 transition-all cursor-pointer" />
                                         </div>
-                                        <div className="text-xs font-bold text-text-muted uppercase tracking-wider py-3 px-2">Fecha</div>
-                                        <div className="text-xs font-bold text-text-muted uppercase tracking-wider py-3 px-2">Título</div>
-                                        <div className="text-xs font-bold text-text-muted uppercase tracking-wider py-3 px-2 text-center">Estado</div>
-                                        <div className="text-xs font-bold text-text-muted uppercase tracking-wider py-3 px-2 text-center">Modalidad</div>
-                                        <div className="text-xs font-bold text-text-muted uppercase tracking-wider py-3 px-2 text-center">Tipo</div>
-                                        <div className="text-xs font-bold text-text-muted uppercase tracking-wider py-3 px-2 text-center">Inscritos</div>
-                                        <div className="text-xs font-bold text-text-muted uppercase tracking-wider py-3 px-2 text-right">Acciones</div>
+                                        <div className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em] py-3 px-2">Fecha</div>
+                                        <div className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em] py-3 px-2">Título del Evento</div>
+                                        <div className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em] py-3 px-2 text-center">Estado</div>
+                                        <div className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em] py-3 px-2 text-center">Modalidad</div>
+                                        <div className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em] py-3 px-2 text-center">Tipo</div>
+                                        <div className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em] py-3 px-2 text-center">Inscritos</div>
+                                        <div className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em] py-3 px-2 text-right">Acciones</div>
                                     </div>
 
                                     {/* Data Rows */}
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }} className="stagger-children">
                                         {paginatedEventos.length === 0 ? (
-                                            <div style={{
-                                                padding: '4rem 2rem', textAlign: 'center',
-                                                color: '#94A3B8', background: 'white',
-                                                borderRadius: '12px', border: '1px solid rgba(30,58,138,0.06)',
-                                            }}>
-                                                <div style={{
-                                                    width: '56px', height: '56px', background: '#F1F5F9',
-                                                    borderRadius: '50%', display: 'flex', alignItems: 'center',
-                                                    justifyContent: 'center', margin: '0 auto 1rem',
-                                                }}>
-                                                    <Search size={24} style={{ color: '#94A3B8' }} />
+                                            <div className="py-20 text-center bg-white/50 backdrop-blur-sm rounded-2xl border border-slate-100 flex flex-col items-center justify-center">
+                                                <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-6 shadow-inner">
+                                                    <Search size={32} className="text-slate-300" />
                                                 </div>
-                                                <p style={{ fontWeight: 600, color: '#64748B', marginBottom: '0.5rem' }}>
-                                                    No se encontraron eventos con estos filtros.
+                                                <h4 className="text-lg font-bold text-slate-700 mb-2">No se encontraron eventos</h4>
+                                                <p className="text-slate-400 max-w-xs mx-auto mb-6">
+                                                    Prueba con otros términos de búsqueda o ajusta los filtros.
                                                 </p>
                                                 <button
                                                     onClick={() => {
@@ -511,17 +515,13 @@ export default function AdminPage() {
                                                         setFilterModalidad('');
                                                         setFilterTipo('');
                                                     }}
-                                                    style={{
-                                                        fontSize: '0.875rem', color: '#1E3A8A', fontWeight: 600,
-                                                        background: 'none', border: 'none', cursor: 'pointer',
-                                                        textDecoration: 'underline',
-                                                    }}
+                                                    className="px-6 py-2.5 rounded-xl bg-white border border-slate-200 text-cop-blue font-bold text-sm hover:border-cop-blue hover:bg-blue-50 transition-all shadow-sm"
                                                 >
-                                                    Limpiar filtros
+                                                    Limpiar todos los filtros
                                                 </button>
                                             </div>
                                         ) : (
-                                            paginatedEventos.map(evento => {
+                                            paginatedEventos.map((evento, idx) => {
                                                 const fecha = new Date(evento.fecha + 'T12:00:00');
                                                 const status = getEventStatus(evento.fecha);
                                                 const isNext = nextEvent?.id === evento.id;
@@ -529,56 +529,62 @@ export default function AdminPage() {
                                                 return (
                                                     <div
                                                         key={evento.id}
-                                                        className="group relative grid items-center bg-white rounded-elite-md border border-[rgba(30,58,138,0.06)] shadow-xs transition-all duration-200 hover:shadow-elite-card-hover hover:border-[rgba(30,58,138,0.12)] hover:-translate-y-0.5 hover:z-10"
-                                                        style={{ gridTemplateColumns: gridCols }}
+                                                        className="group relative grid items-center bg-white rounded-xl border border-slate-100 shadow-sm transition-all duration-300 hover:shadow-xl hover:shadow-blue-900/5 hover:border-cop-blue/20 hover:-translate-y-0.5 hover:z-10 animate-fade-in"
+                                                        style={{
+                                                            gridTemplateColumns: gridCols,
+                                                            animationDelay: `${idx * 0.03}s`
+                                                        }}
                                                     >
                                                         {/* Checkbox */}
-                                                        <div className="pl-3 py-4">
-                                                            <input type="checkbox" className="rounded-sm border-slate-300 text-cop-blue focus:ring-cop-blue/20" />
+                                                        <div className="px-4 py-5">
+                                                            <input type="checkbox" className="w-4 h-4 rounded border-slate-300 text-cop-blue focus:ring-blue-500/20 transition-all cursor-pointer" />
                                                         </div>
 
                                                         {/* Fecha */}
                                                         <div className="p-2">
-                                                            <span className="font-bold text-cop-blue text-[13px]">
-                                                                {fecha.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })}
-                                                            </span>
-                                                            {isNext && (
-                                                                <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-amber-600 mt-1 bg-amber-50 px-2 py-0.5 rounded-full">
-                                                                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                                                                    Próximo
+                                                            <div className="flex flex-col">
+                                                                <span className="font-bold text-slate-800 text-sm">
+                                                                    {fecha.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })}
                                                                 </span>
-                                                            )}
+                                                                {isNext && (
+                                                                    <div className="flex items-center gap-1.5 mt-1">
+                                                                        <div className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+                                                                        <span className="text-[9px] font-black uppercase tracking-wider text-amber-600">Próximo</span>
+                                                                    </div>
+                                                                )}
+                                                            </div>
                                                         </div>
 
                                                         {/* Título */}
                                                         <div className="p-2 overflow-hidden">
                                                             <Link
                                                                 href={`/admin/eventos/${evento.id}/editar`}
-                                                                className="font-bold text-cop-blue text-[15px] block truncate transition-colors hover:text-blue-700"
+                                                                className="font-bold text-slate-800 text-base block truncate transition-all group-hover:text-cop-blue"
                                                                 title={evento.titulo}
                                                             >
                                                                 {evento.titulo}
                                                             </Link>
+                                                            <p className="text-[10px] text-slate-400 mt-0.5 group-hover:text-slate-500 transition-colors uppercase tracking-widest font-semibold">ID: {evento.id.substring(0, 8)}</p>
                                                         </div>
 
                                                         {/* Estado */}
                                                         <div className="p-2 text-center">
                                                             {status === 'activo' ? (
-                                                                <span className="inline-flex items-center gap-1.5 text-[11px] font-bold px-2.5 py-1 rounded-full text-green-600 bg-green-50 border border-green-200">
-                                                                    <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                                                                    ACTIVO
+                                                                <span className="inline-flex items-center gap-2 text-[10px] font-black px-3 py-1.5 rounded-full text-emerald-600 bg-emerald-50/50 border border-emerald-100 uppercase tracking-wider shadow-sm">
+                                                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                                                                    Activo
                                                                 </span>
                                                             ) : (
-                                                                <span className="inline-flex items-center gap-1.5 text-[11px] font-bold px-2.5 py-1 rounded-full text-slate-500 bg-slate-50 border border-slate-200">
-                                                                    <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
-                                                                    Finalizado
+                                                                <span className="inline-flex items-center gap-2 text-[10px] font-black px-3 py-1.5 rounded-full text-slate-400 bg-slate-50 border border-slate-100 uppercase tracking-wider">
+                                                                    <span className="w-1.5 h-1.5 rounded-full bg-slate-300" />
+                                                                    Cerrado
                                                                 </span>
                                                             )}
                                                         </div>
 
                                                         {/* Modalidad */}
                                                         <div className="p-2 text-center">
-                                                            <span className="inline-flex items-center gap-1.5 text-[11px] font-bold px-2.5 py-1 rounded-full border bg-white uppercase tracking-wider"
+                                                            <span className="inline-flex items-center gap-2 text-[10px] font-black px-3 py-1.5 rounded-full border bg-white shadow-sm uppercase tracking-wider"
                                                                 style={{
                                                                     color: evento.modalidades?.color || '#1E3A8A',
                                                                     borderColor: `${(evento.modalidades?.color || '#1E3A8A')}30`
@@ -593,38 +599,38 @@ export default function AdminPage() {
 
                                                         {/* Tipo */}
                                                         <div className="p-2 text-center">
-                                                            <span className="inline-flex text-xs font-semibold px-2.5 py-0.5 rounded-md text-slate-500 bg-slate-50 border border-slate-200">
+                                                            <span className="inline-flex text-[10px] font-bold px-3 py-1.5 rounded-lg text-slate-500 bg-slate-50 border border-slate-100 uppercase tracking-widest">
                                                                 {evento.tipos_evento?.nombre || evento.tipo || '-'}
                                                             </span>
                                                         </div>
 
                                                         {/* Inscritos */}
                                                         <div className="p-2 text-center">
-                                                            <span className={cn(
-                                                                "inline-flex items-center justify-center w-8 h-8 rounded-full font-bold text-xs border transition-all",
+                                                            <div className={cn(
+                                                                "inline-flex flex-col items-center justify-center min-w-[40px] h-10 rounded-xl font-black text-sm border transition-all",
                                                                 (evento.inscripciones?.[0]?.count || 0) > 0
-                                                                    ? "text-cop-blue bg-blue-50 border-blue-200"
-                                                                    : "text-text-muted bg-slate-50 border-slate-200"
+                                                                    ? "text-cop-blue bg-blue-50/50 border-blue-100 shadow-sm group-hover:scale-110"
+                                                                    : "text-slate-300 bg-slate-50/50 border-slate-100"
                                                             )}>
                                                                 {evento.inscripciones?.[0]?.count || 0}
-                                                            </span>
+                                                            </div>
                                                         </div>
 
                                                         {/* Acciones */}
-                                                        <div className="flex justify-end gap-1.5 py-4 pr-2">
+                                                        <div className="flex justify-end gap-2 py-4 pr-6">
                                                             <Link
                                                                 href={`/admin/eventos/${evento.id}/editar`}
-                                                                title="Editar"
-                                                                className="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-[rgba(30,58,138,0.12)] text-text-muted transition-all duration-200 hover:text-cop-blue hover:border-cop-blue hover:shadow-elite-md hover:-translate-y-0.5"
+                                                                title="Editar evento"
+                                                                className="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-200 text-slate-400 transition-all duration-300 hover:text-cop-blue hover:border-cop-blue hover:shadow-lg hover:shadow-blue-900/10 hover:-translate-y-1 active:scale-95"
                                                             >
-                                                                <Edit size={15} />
+                                                                <Edit size={18} />
                                                             </Link>
                                                             <button
                                                                 onClick={() => handleDelete(evento.id)}
-                                                                title="Eliminar"
-                                                                className="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-[rgba(30,58,138,0.12)] text-text-muted transition-all duration-200 hover:text-fpt-red hover:border-fpt-red hover:shadow-btn-red hover:-translate-y-0.5"
+                                                                title="Eliminar evento"
+                                                                className="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-200 text-slate-400 transition-all duration-300 hover:text-fpt-red hover:border-fpt-red hover:shadow-lg hover:shadow-red-900/10 hover:-translate-y-1 active:scale-95"
                                                             >
-                                                                <Trash2 size={15} />
+                                                                <Trash2 size={18} />
                                                             </button>
                                                         </div>
                                                     </div>
@@ -638,7 +644,7 @@ export default function AdminPage() {
                     </div>
 
                     {/* Paginación */}
-                    <div className="px-6 py-4 border-t border-border-elite bg-white">
+                    <div className="px-8 py-6 border-t border-slate-100 bg-white/60 backdrop-blur-md">
                         <Pagination
                             currentPage={currentPage}
                             totalPages={totalPages}

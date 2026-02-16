@@ -26,41 +26,52 @@ export default function StatCard({
 }: StatCardProps) {
     return (
         <div className={cn(
-            "group",
-            "bg-surface",
-            "border border-border-elite",
-            "rounded-elite-lg", // 16px
+            "group relative overflow-hidden",
+            "bg-white/90 backdrop-blur-sm",
+            "border border-white/20",
+            "rounded-2xl",
             "p-6",
-            "shadow-elite-sm",
-            "transition-all duration-normal",
-            "hover:shadow-elite-md hover:-translate-y-0.5",
+            "shadow-lg shadow-slate-200/50",
+            "transition-all duration-300 ease-out",
+            "hover:shadow-xl hover:shadow-blue-900/5 hover:-translate-y-1",
             className
         )}>
-            <div className="flex items-center justify-between mb-4">
-                <span className="text-sm font-medium text-text-secondary uppercase tracking-wider">
+            {/* Top Gradient Accent */}
+            <div className={cn(
+                "absolute top-0 left-0 w-full h-1",
+                "bg-gradient-to-r from-transparent via-cop-blue/50 to-transparent",
+                "opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            )} />
+
+            {/* Background Glow */}
+            <div className="absolute -right-6 -top-6 w-24 h-24 bg-gradient-to-br from-blue-50 to-transparent rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-2xl" />
+
+            <div className="relative z-10 flex items-center justify-between mb-4">
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">
                     {label}
                 </span>
                 <div className={cn(
-                    "p-3 rounded-xl transition-transform duration-300 group-hover:scale-110",
+                    "p-2.5 rounded-xl transition-all duration-300 group-hover:scale-110",
+                    "ring-1 ring-inset ring-black/5",
                     iconBg
                 )}>
-                    <Icon size={20} className={iconColor} />
+                    <Icon size={18} className={iconColor} strokeWidth={2} />
                 </div>
             </div>
 
-            <p className="text-2xl font-bold text-text-elite leading-tight tracking-elite">
+            <p className="relative z-10 text-3xl font-bold text-slate-800 tracking-tight">
                 {value}
             </p>
 
             {(description || trend) && (
-                <div className="flex items-center gap-1 mt-2">
+                <div className="relative z-10 flex items-center gap-2 mt-3">
                     {trend && (
-                        <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-green-50 text-status-success">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-100">
                             {trend}
                         </span>
                     )}
                     {description && (
-                        <p className="text-xs text-text-muted font-medium">
+                        <p className="text-xs text-slate-400 font-medium truncate">
                             {description}
                         </p>
                     )}
