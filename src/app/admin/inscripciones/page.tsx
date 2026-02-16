@@ -1,17 +1,18 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import Header from '@/components/Header';
-import Breadcrumbs from '@/components/Breadcrumbs';
-import { useToast } from '@/components/Toast';
 import { createClient } from '@/lib/supabase';
 import { Inscripcion, Modalidad, Evento, TipoEvento } from '@/lib/types';
+import { useToast } from '@/components/Toast';
+import Header from '@/components/Header';
+import EliteCard from '@/components/ui/EliteCard';
+import EliteTable, { EliteHeader, EliteCell } from '@/components/ui/EliteTable';
+import EliteButton from '@/components/ui/EliteButton';
+import EliteModal from '@/components/ui/EliteModal';
 import {
     Plus,
     ArrowLeft,
-    Search,
     Edit2,
     Trash2,
     Phone,
@@ -19,11 +20,8 @@ import {
     CheckCircle2,
     Clock,
     AlertCircle,
-    X,
     Save,
-    Filter,
-    Loader2,
-    Users
+    Filter
 } from 'lucide-react';
 
 export default function InscripcionesPage() {
@@ -32,9 +30,10 @@ export default function InscripcionesPage() {
     const [eventos, setEventos] = useState<Evento[]>([]);
     const [tiposEvento, setTiposEvento] = useState<TipoEvento[]>([]);
     const [loading, setLoading] = useState(true);
-    const [showForm, setShowForm] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
     const [filterModalidad, setFilterModalidad] = useState<string>('');
+    const [saving, setSaving] = useState(false);
 
     // Form state
     const [nombre, setNombre] = useState('');
@@ -45,24 +44,14 @@ export default function InscripcionesPage() {
     const [eventoId, setEventoId] = useState('');
     const [notas, setNotas] = useState('');
     const [montoPagado, setMontoPagado] = useState('');
-    const [saving, setSaving] = useState(false);
 
-    const router = useRouter();
     const { showToast } = useToast();
 
     useEffect(() => {
-        checkAuthAndLoad();
+        loadData();
     }, []);
 
-    async function checkAuthAndLoad() {
-        const supabase = createClient();
-        const { data: { user } } = await supabase.auth.getUser();
-
-        if (!user) {
-            router.push('/admin/login');
-            return;
-        }
-
+    async function loadData() {
         await Promise.all([loadInscripciones(), loadModalidades(), loadEventos(), loadTiposEvento()]);
         setLoading(false);
     }
@@ -79,9 +68,7 @@ export default function InscripcionesPage() {
             `)
             .order('created_at', { ascending: false });
 
-        if (data) {
-            setInscripciones(data);
-        }
+        if (data) setInscripciones(data);
     }
 
     async function loadModalidades() {
@@ -89,19 +76,14 @@ export default function InscripcionesPage() {
         const { data } = await supabase.from('modalidades').select('*').order('nombre');
         if (data) {
             setModalidades(data);
-            if (data.length > 0 && !modalidadId) {
-                setModalidadId(data[0].id);
-                setMontoPagado('');
-            }
+            if (data.length > 0 && !modalidadId) setModalidadId(data[0].id);
         }
     }
 
     async function loadEventos() {
         const supabase = createClient();
         const { data } = await supabase.from('eventos').select('*').order('fecha');
-        if (data) {
-            setEventos(data);
-        }
+        if (data) setEventos(data);
     }
 
     async function loadTiposEvento() {
@@ -109,77 +91,54 @@ export default function InscripcionesPage() {
         const { data } = await supabase.from('tipos_evento').select('*').order('nombre');
         if (data) {
             setTiposEvento(data);
-            if (data.length > 0 && !tipoEventoId) {
-                setTipoEventoId(data[0].id);
-            }
+            if (data.length > 0 && !tipoEventoId) setTipoEventoId(data[0].id);
         }
     }
+
+    // Security: Sanitization
+    const sanitize = (text: string) => text.replace(/[<>]/g, '').trim();
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         setSaving(true);
-
         const supabase = createClient();
 
         const inscripcionData = {
-            nombre,
-            telefono,
-            email: email || null,
+            nombre: sanitize(nombre),
+            telefono: sanitize(telefono),
+            email: sanitize(email) || null,
             modalidad_id: modalidadId,
             tipo_evento_id: tipoEventoId || null,
             evento_id: eventoId || null,
-            notas: notas || null,
+            notas: sanitize(notas) || null,
             monto_pagado: montoPagado ? parseInt(montoPagado) : 0,
         };
 
         try {
             if (editingId) {
                 await supabase.from('inscripciones').update(inscripcionData).eq('id', editingId);
+                showToast('Inscripción actualizada correctamente', 'success');
             } else {
                 await supabase.from('inscripciones').insert(inscripcionData);
+                showToast('Inscripción creada correctamente', 'success');
             }
 
-            showToast(editingId ? 'Inscripción actualizada' : 'Inscripción creada', 'success');
-            resetForm();
+            closeModal();
             await loadInscripciones();
-        } catch {
+        } catch (error) {
+            console.error('Error saving inscripcion:', error);
             showToast('Error al guardar la inscripción', 'error');
         } finally {
             setSaving(false);
         }
     }
 
-    function resetForm() {
-        setNombre('');
-        setTelefono('');
-        setEmail('');
-        setModalidadId(modalidades[0]?.id || '');
-        setTipoEventoId(tiposEvento[0]?.id || '');
-        setEventoId('');
-        setNotas('');
-        setMontoPagado('');
-        setEditingId(null);
-        setShowForm(false);
-    }
-
-    function handleEdit(insc: Inscripcion & { tipo_evento_id?: string }) {
-        setEditingId(insc.id);
-        setNombre(insc.nombre);
-        setTelefono(insc.telefono);
-        setEmail(insc.email || '');
-        setModalidadId(insc.modalidad_id);
-        setTipoEventoId(insc.tipo_evento_id || tiposEvento[0]?.id || '');
-        setEventoId(insc.evento_id || '');
-        setNotas(insc.notas || '');
-        setMontoPagado(insc.monto_pagado?.toString() || '');
-        setShowForm(true);
-    }
-
-    async function handleDelete(id: string) {
-        if (!confirm('¿Eliminar esta inscripción?')) return;
+    async function handleDelete(insc: Inscripcion) {
+        if (!confirm(`¿Eliminar la inscripción de "${insc.nombre}"?`)) return;
         const supabase = createClient();
-        const { error } = await supabase.from('inscripciones').delete().eq('id', id);
+        const { error } = await supabase.from('inscripciones').delete().eq('id', insc.id);
         if (error) {
+            console.error('Error deleting inscripcion:', error);
             showToast('Error al eliminar la inscripción', 'error');
         } else {
             showToast('Inscripción eliminada', 'success');
@@ -187,232 +146,109 @@ export default function InscripcionesPage() {
         }
     }
 
+    async function toggleStatus(insc: Inscripcion) {
+        const supabase = createClient();
+        const currentStatus = insc.estado_pago || 'pendiente';
+        let newStatus = 'pendiente';
+        if (currentStatus === 'pendiente') newStatus = 'parcial';
+        else if (currentStatus === 'parcial') newStatus = 'pagado';
+        else if (currentStatus === 'pagado') newStatus = 'pendiente';
+
+        const { error } = await supabase
+            .from('inscripciones')
+            .update({ estado_pago: newStatus })
+            .eq('id', insc.id);
+
+        if (error) {
+            showToast('Error al actualizar estado', 'error');
+        } else {
+            showToast(`Estado cambiado a ${newStatus}`, 'success');
+            loadInscripciones();
+        }
+    }
+
+    const openModal = (insc?: Inscripcion) => {
+        if (insc) {
+            setEditingId(insc.id);
+            setNombre(insc.nombre);
+            setTelefono(insc.telefono);
+            setEmail(insc.email || '');
+            setModalidadId(insc.modalidad_id);
+            setTipoEventoId(insc.tipo_evento_id || tiposEvento[0]?.id || '');
+            setEventoId(insc.evento_id || '');
+            setNotas(insc.notas || '');
+            setMontoPagado(insc.monto_pagado?.toString() || '');
+        } else {
+            setEditingId(null);
+            setNombre('');
+            setTelefono('');
+            setEmail('');
+            setModalidadId(modalidades[0]?.id || '');
+            setTipoEventoId(tiposEvento[0]?.id || '');
+            setEventoId('');
+            setNotas('');
+            setMontoPagado('');
+        }
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setEditingId(null);
+    };
+
     const filteredInscripciones = filterModalidad
         ? inscripciones.filter(i => i.modalidad_id === filterModalidad)
         : inscripciones;
 
     const eventosDeModalidad = eventos.filter(e => e.modalidad_id === modalidadId);
 
-    // Styles
-    const labelStyle = "block text-sm font-medium text-text-elite mb-1.5";
-    const inputStyle = "block w-full rounded-elite-sm border-border-elite shadow-elite-xs focus:border-cop-blue focus:ring-1 focus:ring-cop-blue/20 sm:text-sm py-2.5 transition-all text-text-secondary bg-surface hover:border-border-hover";
-
     if (loading) {
         return (
-            <div className="min-h-screen bg-bg-elite flex flex-col">
-                <Header />
-                <div className="flex-grow flex items-center justify-center">
-                    <Loader2 size={48} className="text-cop-blue animate-spin" />
-                </div>
+            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-bg-elite flex flex-col font-sans text-text-elite">
+        <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-900">
             <Header />
-            <main className="flex-grow py-8 px-4 sm:px-6 lg:px-8 animate-page-enter">
-                <div className="max-w-7xl mx-auto space-y-6">
-                    <Breadcrumbs />
+            <main className="flex-grow py-8 px-4 sm:px-6 lg:px-8">
+                <div className="max-w-[1400px] mx-auto space-y-8">
 
+                    {/* Header */}
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
-                            <h1 className="text-2xl font-bold text-text-elite tracking-tight">Inscripciones</h1>
+                            <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Inscripciones</h1>
                             <Link
                                 href="/admin"
-                                className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-cop-blue transition-colors mt-1"
+                                className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-blue-600 font-medium mt-2 transition-colors"
                             >
                                 <ArrowLeft size={16} />
                                 Volver al panel
                             </Link>
                         </div>
-                        {!showForm && (
-                            <button
-                                onClick={() => setShowForm(true)}
-                                className="btn btn-primary shadow-btn-red hover:shadow-btn-red-hover active:scale-95"
-                            >
-                                <Plus size={16} />
-                                Nueva Inscripción
-                            </button>
-                        )}
+                        <EliteButton
+                            onClick={() => openModal()}
+                            icon={<Plus size={18} />}
+                        >
+                            Nueva Inscripción
+                        </EliteButton>
                     </div>
 
-                    {showForm && (
-                        <div className="bg-surface rounded-xl shadow-elite-sm border border-border-elite overflow-hidden animate-in fade-in duration-300">
-                            <div className="border-b border-border-elite px-6 py-4 flex items-center justify-between">
-                                <h3 className="text-lg font-semibold text-text-elite">
-                                    {editingId ? 'Editar Inscripción' : 'Nueva Inscripción'}
-                                </h3>
-                                <button
-                                    onClick={resetForm}
-                                    className="text-text-muted hover:text-text-elite transition-colors p-1 rounded-lg hover:bg-bg-elite"
-                                    aria-label="Cerrar formulario"
-                                >
-                                    <X size={20} />
-                                </button>
-                            </div>
-                            <div className="p-6">
-                                <form onSubmit={handleSubmit} className="space-y-6">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div>
-                                            <label htmlFor="nombre" className={labelStyle}>Nombre completo *</label>
-                                            <input
-                                                id="nombre"
-                                                type="text"
-                                                value={nombre}
-                                                onChange={(e) => setNombre(e.target.value)}
-                                                placeholder="Juan Pérez"
-                                                required
-                                                maxLength={100}
-                                                className={inputStyle}
-                                            />
-                                        </div>
-                                        <div>
-                                            <label htmlFor="telefono" className={labelStyle}>Teléfono *</label>
-                                            <input
-                                                id="telefono"
-                                                type="tel"
-                                                value={telefono}
-                                                onChange={(e) => setTelefono(e.target.value)}
-                                                placeholder="0981 123 456"
-                                                required
-                                                maxLength={20}
-                                                className={inputStyle}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div>
-                                            <label htmlFor="email" className={labelStyle}>Email (opcional)</label>
-                                            <input
-                                                id="email"
-                                                type="email"
-                                                value={email}
-                                                onChange={(e) => setEmail(e.target.value)}
-                                                placeholder="correo@ejemplo.com"
-                                                maxLength={100}
-                                                className={inputStyle}
-                                            />
-                                        </div>
-                                        <div>
-                                            <label htmlFor="modalidad" className={labelStyle}>Modalidad *</label>
-                                            <select
-                                                id="modalidad"
-                                                value={modalidadId}
-                                                onChange={(e) => {
-                                                    setModalidadId(e.target.value);
-                                                    setEventoId('');
-                                                }}
-                                                required
-                                                className={inputStyle}
-                                            >
-                                                {modalidades.map(m => (
-                                                    <option key={m.id} value={m.id}>{m.nombre}</option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div>
-                                            <label htmlFor="tipoEvento" className={labelStyle}>Tipo de Evento *</label>
-                                            <select
-                                                id="tipoEvento"
-                                                value={tipoEventoId}
-                                                onChange={(e) => setTipoEventoId(e.target.value)}
-                                                required
-                                                className={inputStyle}
-                                            >
-                                                {tiposEvento.map(t => (
-                                                    <option key={t.id} value={t.id}>{t.nombre}</option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label htmlFor="evento" className={labelStyle}>Evento específico (opcional)</label>
-                                            <select
-                                                id="evento"
-                                                value={eventoId}
-                                                onChange={(e) => setEventoId(e.target.value)}
-                                                className={inputStyle}
-                                            >
-                                                <option value="">-- Inscripción general --</option>
-                                                {eventosDeModalidad.map(e => (
-                                                    <option key={e.id} value={e.id}>
-                                                        {new Date(e.fecha + 'T12:00:00').toLocaleDateString('es-ES')} - {e.titulo}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <label htmlFor="notas" className={labelStyle}>Notas (opcional)</label>
-                                        <textarea
-                                            id="notas"
-                                            value={notas}
-                                            onChange={(e) => setNotas(e.target.value)}
-                                            placeholder="Observaciones adicionales..."
-                                            rows={2}
-                                            maxLength={500}
-                                            className={`${inputStyle} resize-y`}
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label htmlFor="monto" className={labelStyle}>Monto Abonado (Gs)</label>
-                                        <input
-                                            id="monto"
-                                            type="number"
-                                            value={montoPagado}
-                                            onChange={(e) => setMontoPagado(e.target.value)}
-                                            placeholder="0"
-                                            min="0"
-                                            step="5000"
-                                            className={inputStyle}
-                                        />
-                                    </div>
-
-                                    <div className="flex justify-end gap-3 pt-4 border-t border-border-elite">
-                                        <button
-                                            type="button"
-                                            onClick={resetForm}
-                                            className="btn btn-secondary shadow-elite-xs"
-                                        >
-                                            Cancelar
-                                        </button>
-                                        <button
-                                            type="submit"
-                                            disabled={saving}
-                                            className="btn btn-primary shadow-btn-red hover:shadow-btn-red-hover active:scale-95 disabled:opacity-50"
-                                        >
-                                            {saving ? 'Guardando...' : (
-                                                <>
-                                                    <Save size={16} />
-                                                    Guardar
-                                                </>
-                                            )}
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    )}
-
-                    <div className="bg-surface rounded-xl shadow-elite-sm border border-border-elite overflow-hidden">
-                        <div className="border-b border-border-elite px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-                            <h3 className="text-lg font-semibold text-text-elite">
-                                Participantes ({filteredInscripciones.length})
-                            </h3>
-                            <div className="relative">
+                    {/* Content */}
+                    <EliteCard
+                        title={`Participantes (${filteredInscripciones.length})`}
+                        action={
+                            <div className="relative min-w-[200px]">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <Filter size={16} className="text-text-muted" />
+                                    <Filter size={16} className="text-slate-400" />
                                 </div>
                                 <select
                                     value={filterModalidad}
                                     onChange={(e) => setFilterModalidad(e.target.value)}
-                                    className="block w-full pl-10 pr-10 py-2 text-sm border-border-elite rounded-elite-sm focus:ring-cop-blue focus:border-cop-blue bg-surface text-text-secondary"
+                                    className="block w-full pl-10 pr-8 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-slate-700"
                                 >
                                     <option value="">Todas las modalidades</option>
                                     {modalidades.map(m => (
@@ -420,141 +256,250 @@ export default function InscripcionesPage() {
                                     ))}
                                 </select>
                             </div>
-                        </div>
-
-                        {filteredInscripciones.length === 0 ? (
-                            <div className="p-12 text-center text-text-secondary">
-                                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-bg-elite mb-4">
-                                    <Users size={32} className="text-text-muted" />
-                                </div>
-                                <p className="text-lg font-medium text-text-elite mb-1">No hay inscripciones</p>
-                                <p>No se encontraron inscripciones con los filtros actuales.</p>
-                            </div>
-                        ) : (
-                            <div className="overflow-x-auto">
-                                <table className="min-w-full divide-y divide-border-elite">
-                                    <thead className="bg-bg-elite">
-                                        <tr>
-                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">Nombre</th>
-                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">Contacto</th>
-                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">Modalidad / Tipo</th>
-                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">Evento</th>
-                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">Estado</th>
-                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">Monto</th>
-                                            <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-text-secondary uppercase tracking-wider">Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="bg-surface divide-y divide-border-elite">
-                                        {filteredInscripciones.map((insc: Inscripcion & { tipos_evento?: TipoEvento }) => (
-                                            <tr key={insc.id} className="hover:bg-bg-elite transition-colors">
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    <div className="text-sm font-medium text-text-elite">{insc.nombre}</div>
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    <div className="text-sm text-text-secondary flex flex-col gap-1">
-                                                        <a
-                                                            href={`https://wa.me/595${insc.telefono.replace(/\D/g, '')}`}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className="flex items-center gap-1.5 hover:text-green-600 transition-colors"
-                                                        >
-                                                            <Phone size={14} />
-                                                            {insc.telefono}
-                                                        </a>
-                                                        {insc.email && (
-                                                            <span className="flex items-center gap-1.5">
-                                                                <Mail size={14} />
-                                                                {insc.email}
-                                                            </span>
-                                                        )}
-                                                    </div>
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    <div className="flex flex-col gap-1">
-                                                        <span
-                                                            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                                                            style={{
-                                                                backgroundColor: `${insc.modalidades?.color}15`,
-                                                                color: insc.modalidades?.color
-                                                            }}
-                                                        >
-                                                            {insc.modalidades?.nombre}
-                                                        </span>
-                                                        <span className="text-xs text-text-secondary bg-bg-elite px-2 py-0.5 rounded-full inline-block w-fit">
-                                                            {insc.tipos_evento?.nombre || '-'}
-                                                        </span>
-                                                    </div>
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
-                                                    {insc.eventos?.titulo || 'General'}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    <button
-                                                        onClick={async () => {
-                                                            const supabase = createClient();
-                                                            const currentStatus = insc.estado_pago || 'pendiente';
-                                                            let newStatus = 'pendiente';
-                                                            if (currentStatus === 'pendiente') newStatus = 'parcial';
-                                                            else if (currentStatus === 'parcial') newStatus = 'pagado';
-                                                            else if (currentStatus === 'pagado') newStatus = 'pendiente';
-
-                                                            await supabase
-                                                                .from('inscripciones')
-                                                                .update({ estado_pago: newStatus })
-                                                                .eq('id', insc.id);
-                                                            showToast(`Estado cambiado a ${newStatus}`, 'success');
-                                                            loadInscripciones();
-                                                        }}
-                                                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium cursor-pointer border hover:opacity-80 transition-opacity ${insc.estado_pago === 'pagado'
-                                                            ? 'bg-green-100 text-green-800 border-green-200'
-                                                            : insc.estado_pago === 'parcial'
-                                                                ? 'bg-orange-100 text-orange-800 border-orange-200'
-                                                                : 'bg-red-100 text-red-800 border-red-200'
-                                                            }`}
-                                                        title="Click para cambiar: Pendiente -> Parcial -> Pagado"
-                                                        aria-label={`Estado de pago: ${insc.estado_pago || 'pendiente'}. Click para cambiar.`}
-                                                    >
-                                                        {insc.estado_pago === 'pagado' ? (
-                                                            <><CheckCircle2 size={12} className="mr-1" /> PAGADO</>
-                                                        ) : insc.estado_pago === 'parcial' ? (
-                                                            <><AlertCircle size={12} className="mr-1" /> PARCIAL</>
-                                                        ) : (
-                                                            <><Clock size={12} className="mr-1" /> PENDIENTE</>
-                                                        )}
-                                                    </button>
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-text-elite">
-                                                    Gs. {(insc.monto_pagado || 0).toLocaleString('es-PY')}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                    <div className="flex items-center justify-end gap-2">
-                                                        <button
-                                                            onClick={() => handleEdit(insc)}
-                                                            className="p-2 text-text-muted hover:text-cop-blue hover:bg-blue-50 rounded-lg transition-colors"
-                                                            title="Editar"
-                                                            aria-label={`Editar inscripción de ${insc.nombre}`}
-                                                        >
-                                                            <Edit2 size={16} />
-                                                        </button>
-                                                        <button
-                                                            onClick={() => handleDelete(insc.id)}
-                                                            className="p-2 text-text-muted hover:text-fpt-red hover:bg-red-50 rounded-lg transition-colors"
-                                                            title="Eliminar"
-                                                            aria-label={`Eliminar inscripción de ${insc.nombre}`}
-                                                        >
-                                                            <Trash2 size={16} />
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        )}
-                    </div>
+                        }
+                    >
+                        <EliteTable
+                            data={filteredInscripciones}
+                            gridCols="2fr 1.5fr 1.5fr 1.5fr 120px 100px 100px"
+                            constrainMinWidth
+                            keyExtractor={(i) => i.id}
+                            header={
+                                <>
+                                    <EliteHeader>Nombre</EliteHeader>
+                                    <EliteHeader>Contacto</EliteHeader>
+                                    <EliteHeader>Modalidad / Tipo</EliteHeader>
+                                    <EliteHeader>Evento</EliteHeader>
+                                    <EliteHeader align="center">Estado</EliteHeader>
+                                    <EliteHeader align="right">Monto</EliteHeader>
+                                    <EliteHeader align="right">Acciones</EliteHeader>
+                                </>
+                            }
+                            renderRow={(insc) => (
+                                <>
+                                    <EliteCell>
+                                        <span className="font-bold text-slate-800 text-sm">{insc.nombre}</span>
+                                    </EliteCell>
+                                    <EliteCell>
+                                        <div className="flex flex-col gap-1 text-xs">
+                                            <a
+                                                href={`https://wa.me/595${insc.telefono.replace(/\D/g, '')}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="flex items-center gap-1 hover:text-green-600 transition-colors font-medium text-slate-600"
+                                            >
+                                                <Phone size={12} />
+                                                {insc.telefono}
+                                            </a>
+                                            {insc.email && (
+                                                <span className="flex items-center gap-1 text-slate-400">
+                                                    <Mail size={12} />
+                                                    <span className="truncate max-w-[150px]">{insc.email}</span>
+                                                </span>
+                                            )}
+                                        </div>
+                                    </EliteCell>
+                                    <EliteCell>
+                                        <div className="flex flex-col items-start gap-1">
+                                            <span
+                                                className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider"
+                                                style={{
+                                                    backgroundColor: `${insc.modalidades?.color}15`,
+                                                    color: insc.modalidades?.color || '#64748B'
+                                                }}
+                                            >
+                                                {insc.modalidades?.nombre}
+                                            </span>
+                                            <span className="text-xs text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
+                                                {insc.tipos_evento?.nombre || '-'}
+                                            </span>
+                                        </div>
+                                    </EliteCell>
+                                    <EliteCell>
+                                        <span className="text-sm text-slate-600 line-clamp-2">
+                                            {insc.eventos?.titulo || 'General'}
+                                        </span>
+                                    </EliteCell>
+                                    <EliteCell align="center">
+                                        <button
+                                            onClick={() => toggleStatus(insc)}
+                                            className={`inline-flex items-center justify-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide border transition-all hover:scale-105 active:scale-95 ${insc.estado_pago === 'pagado'
+                                                ? 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100'
+                                                : insc.estado_pago === 'parcial'
+                                                    ? 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100'
+                                                    : 'bg-red-50 text-red-700 border-red-200 hover:bg-red-100'
+                                                }`}
+                                            title="Clic para cambiar estado"
+                                        >
+                                            {insc.estado_pago === 'pagado' ? (
+                                                <><CheckCircle2 size={12} className="mr-1" /> Pagado</>
+                                            ) : insc.estado_pago === 'parcial' ? (
+                                                <><AlertCircle size={12} className="mr-1" /> Parcial</>
+                                            ) : (
+                                                <><Clock size={12} className="mr-1" /> Pendiente</>
+                                            )}
+                                        </button>
+                                    </EliteCell>
+                                    <EliteCell align="right">
+                                        <span className="font-mono text-xs font-semibold text-slate-700">
+                                            {(insc.monto_pagado || 0).toLocaleString('es-PY')} Gs
+                                        </span>
+                                    </EliteCell>
+                                    <EliteCell align="right">
+                                        <div className="flex justify-end gap-2">
+                                            <button
+                                                onClick={() => openModal(insc)}
+                                                className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                                                title="Editar"
+                                            >
+                                                <Edit2 size={16} />
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(insc)}
+                                                className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                                                title="Eliminar"
+                                            >
+                                                <Trash2 size={16} />
+                                            </button>
+                                        </div>
+                                    </EliteCell>
+                                </>
+                            )}
+                        />
+                    </EliteCard>
                 </div>
             </main>
+
+            {/* Modal */}
+            <EliteModal
+                isOpen={isModalOpen}
+                onClose={closeModal}
+                title={editingId ? 'Editar Inscripción' : 'Nueva Inscripción'}
+                width="max-w-2xl"
+            >
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label className="block text-sm font-semibold text-slate-700 mb-1">Nombre Completo</label>
+                            <input
+                                type="text"
+                                value={nombre}
+                                onChange={(e) => setNombre(e.target.value)}
+                                placeholder="Juan Pérez"
+                                required
+                                maxLength={100}
+                                className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-medium text-slate-800"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-semibold text-slate-700 mb-1">Teléfono</label>
+                            <input
+                                type="tel"
+                                value={telefono}
+                                onChange={(e) => setTelefono(e.target.value)}
+                                placeholder="0981 123 456"
+                                required
+                                maxLength={20}
+                                className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-medium text-slate-800"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label className="block text-sm font-semibold text-slate-700 mb-1">Email (Opcional)</label>
+                            <input
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="correo@ejemplo.com"
+                                maxLength={100}
+                                className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-semibold text-slate-700 mb-1">Modalidad</label>
+                            <select
+                                value={modalidadId}
+                                onChange={(e) => {
+                                    setModalidadId(e.target.value);
+                                    setEventoId('');
+                                }}
+                                required
+                                className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                            >
+                                {modalidades.map(m => (
+                                    <option key={m.id} value={m.id}>{m.nombre}</option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label className="block text-sm font-semibold text-slate-700 mb-1">Tipo de Evento</label>
+                            <select
+                                value={tipoEventoId}
+                                onChange={(e) => setTipoEventoId(e.target.value)}
+                                required
+                                className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                            >
+                                {tiposEvento.map(t => (
+                                    <option key={t.id} value={t.id}>{t.nombre}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-semibold text-slate-700 mb-1">Evento (Opcional)</label>
+                            <select
+                                value={eventoId}
+                                onChange={(e) => setEventoId(e.target.value)}
+                                className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                            >
+                                <option value="">-- Inscripción General --</option>
+                                {eventosDeModalidad.map(e => (
+                                    <option key={e.id} value={e.id}>
+                                        {new Date(e.fecha + 'T12:00:00').toLocaleDateString('es-ES')} - {e.titulo}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-semibold text-slate-700 mb-1">Notas</label>
+                        <textarea
+                            value={notas}
+                            onChange={(e) => setNotas(e.target.value)}
+                            placeholder="Observaciones adicionales..."
+                            rows={2}
+                            maxLength={500}
+                            className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm resize-none"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-semibold text-slate-700 mb-1">Monto Abonado (Gs)</label>
+                        <input
+                            type="number"
+                            value={montoPagado}
+                            onChange={(e) => setMontoPagado(e.target.value)}
+                            placeholder="0"
+                            min="0"
+                            step="5000"
+                            className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                        />
+                    </div>
+
+                    <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                        <EliteButton type="button" variant="secondary" onClick={closeModal}>
+                            Cancelar
+                        </EliteButton>
+                        <EliteButton type="submit" isLoading={saving} icon={<Save size={16} />}>
+                            Guardar
+                        </EliteButton>
+                    </div>
+                </form>
+            </EliteModal>
         </div>
     );
 }

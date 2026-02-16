@@ -59,6 +59,8 @@ export type Inscripcion = {
     modalidades?: Modalidad;
     estado_pago?: 'pendiente' | 'pagado' | 'parcial';
     monto_pagado?: number;
+    tipo_evento_id?: string | null;
+    tipos_evento?: TipoEvento;
 };
 
 export type TipoEvento = {
@@ -80,3 +82,13 @@ export const TIPOS_EVENTO_INICIALES = [
     { nombre: 'Tirada Social', color: '#059669' },
     { nombre: 'Otro', color: '#6B7280' },
 ];
+
+export type Club = {
+    id: string;
+    nombre: string;
+    siglas: string;
+    estado: 'afiliado' | 'pendiente' | 'inactivo';
+    color: string;
+    created_at?: string;
+};
+

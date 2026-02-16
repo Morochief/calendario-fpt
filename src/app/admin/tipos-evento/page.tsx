@@ -1,27 +1,23 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import Header from '@/components/Header';
 import { createClient } from '@/lib/supabase';
 import { TipoEvento } from '@/lib/types';
 import { useToast } from '@/components/Toast';
+import Header from '@/components/Header';
+import EliteCard from '@/components/ui/EliteCard';
+import EliteTable, { EliteHeader, EliteCell } from '@/components/ui/EliteTable';
+import EliteButton from '@/components/ui/EliteButton';
+import EliteModal from '@/components/ui/EliteModal';
 import {
-    Plus,
-    ArrowLeft,
-    Edit2,
-    Trash2,
-    X,
-    Save,
-    Tag,
-    List
+    ArrowLeft, Plus, Edit2, Trash2, Tag, Save
 } from 'lucide-react';
 
 export default function TiposEventoPage() {
     const [tipos, setTipos] = useState<TipoEvento[]>([]);
     const [loading, setLoading] = useState(true);
-    const [showForm, setShowForm] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
     const [saving, setSaving] = useState(false);
 
@@ -29,7 +25,6 @@ export default function TiposEventoPage() {
     const [nombre, setNombre] = useState('');
     const [color, setColor] = useState('#64748B');
 
-    const router = useRouter();
     const { showToast } = useToast();
 
     useEffect(() => {
@@ -43,11 +38,12 @@ export default function TiposEventoPage() {
             .select('*')
             .order('nombre');
 
-        if (data) {
-            setTipos(data);
-        }
+        if (data) setTipos(data);
         setLoading(false);
     }
+
+    // Security: Input Sanitization
+    const sanitize = (text: string) => text.replace(/[<>]/g, '').trim();
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
@@ -55,20 +51,22 @@ export default function TiposEventoPage() {
         const supabase = createClient();
 
         const tipoData = {
-            nombre: nombre.trim(),
+            nombre: sanitize(nombre),
             color
         };
 
         try {
             if (editingId) {
-                await supabase.from('tipos_evento').update(tipoData).eq('id', editingId);
+                const { error } = await supabase.from('tipos_evento').update(tipoData).eq('id', editingId);
+                if (error) throw error;
                 showToast('Tipo de evento actualizado correctamente', 'success');
             } else {
-                await supabase.from('tipos_evento').insert(tipoData);
+                const { error } = await supabase.from('tipos_evento').insert(tipoData);
+                if (error) throw error;
                 showToast('Tipo de evento creado correctamente', 'success');
             }
 
-            resetForm();
+            closeModal();
             await loadTipos();
         } catch (error) {
             console.error('Error saving tipo:', error);
@@ -78,25 +76,11 @@ export default function TiposEventoPage() {
         }
     }
 
-    function resetForm() {
-        setNombre('');
-        setColor('#64748B');
-        setEditingId(null);
-        setShowForm(false);
-    }
-
-    function handleEdit(tipo: TipoEvento) {
-        setEditingId(tipo.id);
-        setNombre(tipo.nombre);
-        setColor(tipo.color || '#64748B');
-        setShowForm(true);
-    }
-
-    async function handleDelete(id: string) {
-        if (!confirm('¿Estás seguro de eliminar este tipo de evento?')) return;
+    async function handleDelete(tipo: TipoEvento) {
+        if (!confirm(`¿Estás seguro de eliminar el tipo "${tipo.nombre}"?`)) return;
 
         const supabase = createClient();
-        const { error } = await supabase.from('tipos_evento').delete().eq('id', id);
+        const { error } = await supabase.from('tipos_evento').delete().eq('id', tipo.id);
 
         if (error) {
             console.error('Error deleting tipo:', error);
@@ -107,165 +91,156 @@ export default function TiposEventoPage() {
         }
     }
 
+    const openModal = (tipo?: TipoEvento) => {
+        if (tipo) {
+            setEditingId(tipo.id);
+            setNombre(tipo.nombre);
+            setColor(tipo.color || '#64748B');
+        } else {
+            setEditingId(null);
+            setNombre('');
+            setColor('#64748B');
+        }
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setEditingId(null);
+    };
+
     if (loading) {
         return (
-            <div className="min-h-screen bg-bg-elite flex flex-col">
-                <Header />
-                <div className="flex-grow flex items-center justify-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cop-blue"></div>
-                </div>
+            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-bg-elite flex flex-col">
+        <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-900">
             <Header />
-            <main className="flex-grow py-8 px-4 sm:px-6 lg:px-8 animate-page-enter">
-                <div className="max-w-4xl mx-auto space-y-6">
+            <main className="flex-grow py-8 px-4 sm:px-6 lg:px-8">
+                <div className="max-w-4xl mx-auto space-y-8">
 
+                    {/* Header */}
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
-                            <h1 className="text-2xl font-bold text-text-elite">Tipos de Evento</h1>
+                            <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Tipos de Evento</h1>
                             <Link
                                 href="/admin"
-                                className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-cop-blue transition-colors mt-1"
+                                className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-blue-600 font-medium mt-2 transition-colors"
                             >
                                 <ArrowLeft size={16} />
                                 Volver al panel
                             </Link>
                         </div>
-                        {!showForm && (
-                            <button
-                                onClick={() => setShowForm(true)}
-                                className="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-elite-sm shadow-elite-xs text-sm font-medium text-white bg-fpt-red hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-fpt-red transition-all active:scale-[0.97]"
-                            >
-                                <Plus size={16} className="mr-2" />
-                                Nuevo Tipo
-                            </button>
-                        )}
+                        <EliteButton
+                            onClick={() => openModal()}
+                            icon={<Plus size={18} />}
+                        >
+                            Nuevo Tipo
+                        </EliteButton>
                     </div>
 
-                    {showForm && (
-                        <div className="bg-surface rounded-elite-md shadow-elite-sm border border-border-elite overflow-hidden">
-                            <div className="border-b border-border-elite px-6 py-4 flex items-center justify-between">
-                                <h3 className="text-lg font-medium text-text-elite">
-                                    {editingId ? 'Editar Tipo' : 'Nuevo Tipo de Evento'}
-                                </h3>
-                                <button onClick={resetForm} className="text-text-muted hover:text-text-secondary transition-colors" aria-label="Cerrar formulario">
-                                    <X size={20} />
-                                </button>
-                            </div>
-                            <div className="p-6">
-                                <form onSubmit={handleSubmit} className="space-y-6">
-                                    <div>
-                                        <label htmlFor="nombre" className="block text-sm font-medium text-text-secondary mb-1">Nombre del tipo</label>
-                                        <input
-                                            id="nombre"
-                                            type="text"
-                                            value={nombre}
-                                            onChange={(e) => setNombre(e.target.value)}
-                                            placeholder="Ej: Competencia, Entrenamiento, Curso"
-                                            required
-                                            maxLength={100}
-                                            className="block w-full rounded-elite-sm border border-border-elite shadow-elite-xs focus:border-cop-blue focus:ring-1 focus:ring-cop-blue sm:text-sm transition-colors hover:border-border-hover px-3 py-2"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label htmlFor="color" className="block text-sm font-medium text-text-secondary mb-1">Color de etiqueta</label>
-                                        <div className="flex items-center gap-3">
-                                            <input
-                                                id="color"
-                                                type="color"
-                                                value={color}
-                                                onChange={(e) => setColor(e.target.value)}
-                                                className="h-10 w-20 rounded-elite-sm border border-border-elite p-1 cursor-pointer"
-                                            />
-                                            <span className="text-sm text-text-muted font-mono">{color}</span>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex justify-end gap-3 pt-4 border-t border-border-elite">
-                                        <button
-                                            type="button"
-                                            onClick={resetForm}
-                                            className="inline-flex items-center px-4 py-2 border border-border-elite rounded-elite-sm shadow-elite-xs text-sm font-medium text-text-secondary bg-surface hover:bg-blue-50/30 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cop-blue transition-all active:scale-[0.97]"
+                    {/* Content */}
+                    <EliteCard title="Catálogo de Tipos de Evento">
+                        <EliteTable
+                            data={tipos}
+                            gridCols="60px 1fr 100px"
+                            keyExtractor={(t) => t.id}
+                            header={
+                                <>
+                                    <EliteHeader align="center">Etiqueta</EliteHeader>
+                                    <EliteHeader>Nombre</EliteHeader>
+                                    <EliteHeader align="right">Acciones</EliteHeader>
+                                </>
+                            }
+                            renderRow={(tipo) => (
+                                <>
+                                    <EliteCell align="center">
+                                        <div
+                                            className="w-8 h-8 rounded-md shadow-sm mx-auto flex items-center justify-center text-white"
+                                            style={{ backgroundColor: tipo.color || '#64748B' }}
                                         >
-                                            Cancelar
-                                        </button>
-                                        <button
-                                            type="submit"
-                                            disabled={saving}
-                                            className="inline-flex items-center px-4 py-2 border border-transparent rounded-elite-sm shadow-elite-xs text-sm font-medium text-white bg-fpt-red hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-fpt-red transition-all disabled:opacity-50 active:scale-[0.97]"
-                                        >
-                                            {saving ? 'Guardando...' : (
-                                                <>
-                                                    <Save size={16} className="mr-2" />
-                                                    Guardar
-                                                </>
-                                            )}
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    )}
-
-                    <div className="bg-surface rounded-elite-md shadow-elite-sm border border-border-elite overflow-hidden">
-                        <div className="px-6 py-4 border-b border-border-elite">
-                            <h3 className="text-lg font-medium text-text-elite">Listado de Tipos</h3>
-                        </div>
-
-                        {tipos.length === 0 ? (
-                            <div className="p-12 text-center text-text-secondary">
-                                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 mb-4">
-                                    <List size={32} className="text-text-muted" />
-                                </div>
-                                <p className="text-lg font-medium text-text-elite mb-1">No hay tipos de evento</p>
-                                <p>Crea tipos para categorizar tus eventos.</p>
-                            </div>
-                        ) : (
-                            <div className="divide-y divide-border-elite">
-                                {tipos.map((tipo) => (
-                                    <div key={tipo.id} className="p-4 sm:p-6 hover:bg-blue-50/30 transition-all flex items-center justify-between gap-4">
-                                        <div className="flex items-center gap-4">
-                                            <div
-                                                className="w-10 h-10 rounded-elite-sm flex items-center justify-center shadow-elite-xs"
-                                                style={{ backgroundColor: tipo.color || '#64748B' }}
-                                            >
-                                                <Tag size={18} className="text-white" />
-                                            </div>
-                                            <div>
-                                                <h4 className="text-base font-medium text-text-elite">{tipo.nombre}</h4>
-                                            </div>
+                                            <Tag size={14} />
                                         </div>
-
-                                        <div className="flex items-center gap-2">
+                                    </EliteCell>
+                                    <EliteCell>
+                                        <span className="font-bold text-slate-800 text-sm">{tipo.nombre}</span>
+                                    </EliteCell>
+                                    <EliteCell align="right">
+                                        <div className="flex justify-end gap-2">
                                             <button
-                                                onClick={() => handleEdit(tipo)}
-                                                className="p-2 text-text-muted hover:text-cop-blue hover:bg-blue-50 rounded-elite-sm transition-all active:scale-95"
+                                                onClick={() => openModal(tipo)}
+                                                className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
                                                 title="Editar"
-                                                aria-label={`Editar tipo ${tipo.nombre}`}
                                             >
-                                                <Edit2 size={18} />
+                                                <Edit2 size={16} />
                                             </button>
                                             <button
-                                                onClick={() => handleDelete(tipo.id)}
-                                                className="p-2 text-text-muted hover:text-fpt-red hover:bg-red-50 rounded-elite-sm transition-all active:scale-95"
+                                                onClick={() => handleDelete(tipo)}
+                                                className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
                                                 title="Eliminar"
-                                                aria-label={`Eliminar tipo ${tipo.nombre}`}
                                             >
-                                                <Trash2 size={18} />
+                                                <Trash2 size={16} />
                                             </button>
                                         </div>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
+                                    </EliteCell>
+                                </>
+                            )}
+                        />
+                    </EliteCard>
                 </div>
             </main>
+
+            {/* Modal */}
+            <EliteModal
+                isOpen={isModalOpen}
+                onClose={closeModal}
+                title={editingId ? 'Editar Tipo' : 'Nuevo Tipo de Evento'}
+            >
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <div>
+                        <label htmlFor="nombre" className="block text-sm font-semibold text-slate-700 mb-1">Nombre</label>
+                        <input
+                            id="nombre"
+                            type="text"
+                            value={nombre}
+                            onChange={(e) => setNombre(e.target.value)}
+                            placeholder="Ej: Competencia, Entrenamiento"
+                            required
+                            maxLength={100}
+                            className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-medium text-slate-800"
+                        />
+                    </div>
+
+                    <div>
+                        <label htmlFor="color" className="block text-sm font-semibold text-slate-700 mb-1">Color de Etiqueta</label>
+                        <div className="flex items-center gap-3 p-3 border border-slate-200 rounded-xl bg-slate-50/50">
+                            <input
+                                id="color"
+                                type="color"
+                                value={color}
+                                onChange={(e) => setColor(e.target.value)}
+                                className="h-10 w-12 rounded cursor-pointer border-0 p-0 bg-transparent"
+                            />
+                            <div className="flex-1">
+                                <span className="text-sm font-mono text-slate-600">{color}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="flex justify-end gap-3 pt-4">
+                        <EliteButton type="button" variant="secondary" onClick={closeModal}>
+                            Cancelar
+                        </EliteButton>
+                        <EliteButton type="submit" isLoading={saving} icon={<Save size={16} />}>
+                            Guardar
+                        </EliteButton>
+                    </div>
+                </form>
+            </EliteModal>
         </div>
     );
 }

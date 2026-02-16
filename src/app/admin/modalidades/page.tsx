@@ -1,22 +1,22 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import Header from '@/components/Header';
 import { createClient } from '@/lib/supabase';
 import { useToast } from '@/components/Toast';
+import Header from '@/components/Header';
+import EliteCard from '@/components/ui/EliteCard';
+import EliteTable, { EliteHeader, EliteCell } from '@/components/ui/EliteTable';
+import EliteButton from '@/components/ui/EliteButton';
+import EliteModal from '@/components/ui/EliteModal';
 import {
     Plus,
     ArrowLeft,
     Edit2,
     Trash2,
-    X,
-    Save,
-    Palette,
     Phone,
     User,
-    LayoutGrid
+    Save
 } from 'lucide-react';
 
 interface Modalidad {
@@ -30,17 +30,18 @@ interface Modalidad {
 export default function ModalidadesPage() {
     const [modalidades, setModalidades] = useState<Modalidad[]>([]);
     const [loading, setLoading] = useState(true);
-    const [showForm, setShowForm] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
     const [saving, setSaving] = useState(false);
 
     // Form state
-    const [nombre, setNombre] = useState('');
-    const [color, setColor] = useState('#3B82F6');
-    const [contactoNombre, setContactoNombre] = useState('');
-    const [contactoTelefono, setContactoTelefono] = useState('');
+    const [formData, setFormData] = useState({
+        nombre: '',
+        color: '#3B82F6',
+        contactoNombre: '',
+        contactoTelefono: ''
+    });
 
-    const router = useRouter();
     const { showToast } = useToast();
 
     useEffect(() => {
@@ -54,11 +55,12 @@ export default function ModalidadesPage() {
             .select('*')
             .order('nombre');
 
-        if (data) {
-            setModalidades(data);
-        }
+        if (data) setModalidades(data);
         setLoading(false);
     }
+
+    // Security: Input Sanitization
+    const sanitize = (text: string) => text.replace(/[<>]/g, '').trim();
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
@@ -66,22 +68,24 @@ export default function ModalidadesPage() {
         const supabase = createClient();
 
         const modalidadData = {
-            nombre: nombre.trim(),
-            color,
-            contacto_nombre: contactoNombre.trim() || null,
-            contacto_telefono: contactoTelefono.trim() || null
+            nombre: sanitize(formData.nombre),
+            color: formData.color,
+            contacto_nombre: sanitize(formData.contactoNombre) || null,
+            contacto_telefono: sanitize(formData.contactoTelefono) || null
         };
 
         try {
             if (editingId) {
-                await supabase.from('modalidades').update(modalidadData).eq('id', editingId);
+                const { error } = await supabase.from('modalidades').update(modalidadData).eq('id', editingId);
+                if (error) throw error;
                 showToast('Modalidad actualizada correctamente', 'success');
             } else {
-                await supabase.from('modalidades').insert(modalidadData);
+                const { error } = await supabase.from('modalidades').insert(modalidadData);
+                if (error) throw error;
                 showToast('Modalidad creada correctamente', 'success');
             }
 
-            resetForm();
+            closeModal();
             await loadModalidades();
         } catch (error) {
             console.error('Error saving modalidad:', error);
@@ -91,29 +95,11 @@ export default function ModalidadesPage() {
         }
     }
 
-    function resetForm() {
-        setNombre('');
-        setColor('#3B82F6');
-        setContactoNombre('');
-        setContactoTelefono('');
-        setEditingId(null);
-        setShowForm(false);
-    }
-
-    function handleEdit(modalidad: Modalidad) {
-        setEditingId(modalidad.id);
-        setNombre(modalidad.nombre);
-        setColor(modalidad.color);
-        setContactoNombre(modalidad.contacto_nombre || '');
-        setContactoTelefono(modalidad.contacto_telefono || '');
-        setShowForm(true);
-    }
-
-    async function handleDelete(id: string) {
-        if (!confirm('¿Estás seguro de eliminar esta modalidad? Se eliminarán también los eventos asociados.')) return;
+    async function handleDelete(modalidad: Modalidad) {
+        if (!confirm(`¿Estás seguro de eliminar "${modalidad.nombre}"? Se eliminarán los eventos asociados.`)) return;
 
         const supabase = createClient();
-        const { error } = await supabase.from('modalidades').delete().eq('id', id);
+        const { error } = await supabase.from('modalidades').delete().eq('id', modalidad.id);
 
         if (error) {
             console.error('Error deleting modalidad:', error);
@@ -124,220 +110,206 @@ export default function ModalidadesPage() {
         }
     }
 
+    const openModal = (modalidad?: Modalidad) => {
+        if (modalidad) {
+            setEditingId(modalidad.id);
+            setFormData({
+                nombre: modalidad.nombre,
+                color: modalidad.color,
+                contactoNombre: modalidad.contacto_nombre || '',
+                contactoTelefono: modalidad.contacto_telefono || ''
+            });
+        } else {
+            setEditingId(null);
+            setFormData({
+                nombre: '',
+                color: '#3B82F6',
+                contactoNombre: '',
+                contactoTelefono: ''
+            });
+        }
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setEditingId(null);
+    };
+
     if (loading) {
         return (
-            <div className="min-h-screen bg-bg-elite flex flex-col">
-                <Header />
-                <div className="flex-grow flex items-center justify-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cop-blue"></div>
-                </div>
+            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-bg-elite flex flex-col">
+        <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-900">
             <Header />
-            <main className="flex-grow py-8 px-4 sm:px-6 lg:px-8 animate-page-enter">
-                <div className="max-w-4xl mx-auto space-y-6">
+            <main className="flex-grow py-8 px-4 sm:px-6 lg:px-8">
+                <div className="max-w-4xl mx-auto space-y-8">
 
+                    {/* Header */}
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
-                            <h1 className="text-2xl font-bold text-text-elite">Modalidades</h1>
+                            <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Modalidades</h1>
                             <Link
                                 href="/admin"
-                                className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-cop-blue transition-colors mt-1"
+                                className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-blue-600 font-medium mt-2 transition-colors"
                             >
                                 <ArrowLeft size={16} />
                                 Volver al panel
                             </Link>
                         </div>
-                        {!showForm && (
-                            <button
-                                onClick={() => setShowForm(true)}
-                                className="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-elite-sm shadow-elite-xs text-sm font-medium text-white bg-fpt-red hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-fpt-red transition-all active:scale-[0.97]"
-                            >
-                                <Plus size={16} className="mr-2" />
-                                Nueva Modalidad
-                            </button>
-                        )}
+                        <EliteButton
+                            onClick={() => openModal()}
+                            icon={<Plus size={18} />}
+                        >
+                            Nueva Modalidad
+                        </EliteButton>
                     </div>
 
-                    {showForm && (
-                        <div className="bg-surface rounded-elite-md shadow-elite-sm border border-border-elite overflow-hidden">
-                            <div className="border-b border-border-elite px-6 py-4 flex items-center justify-between">
-                                <h3 className="text-lg font-medium text-text-elite">
-                                    {editingId ? 'Editar Modalidad' : 'Nueva Modalidad'}
-                                </h3>
-                                <button onClick={resetForm} className="text-text-muted hover:text-text-secondary transition-colors" aria-label="Cerrar formulario">
-                                    <X size={20} />
-                                </button>
-                            </div>
-                            <div className="p-6">
-                                <form onSubmit={handleSubmit} className="space-y-6">
-                                    <div>
-                                        <label htmlFor="nombre" className="block text-sm font-medium text-text-secondary mb-1">Nombre de la modalidad</label>
-                                        <input
-                                            id="nombre"
-                                            type="text"
-                                            value={nombre}
-                                            onChange={(e) => setNombre(e.target.value)}
-                                            placeholder="Ej: Tiro Práctico (IPSC)"
-                                            required
-                                            maxLength={100}
-                                            className="block w-full rounded-elite-sm border border-border-elite shadow-elite-xs focus:border-cop-blue focus:ring-1 focus:ring-cop-blue sm:text-sm transition-colors hover:border-border-hover px-3 py-2"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label htmlFor="color" className="block text-sm font-medium text-text-secondary mb-1">Color distintivo</label>
-                                        <div className="flex items-center gap-3">
-                                            <input
-                                                id="color"
-                                                type="color"
-                                                value={color}
-                                                onChange={(e) => setColor(e.target.value)}
-                                                className="h-10 w-20 rounded-elite-sm border border-border-elite p-1 cursor-pointer"
-                                            />
-                                            <span className="text-sm text-text-muted font-mono">{color}</span>
-                                        </div>
-                                    </div>
-
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div>
-                                            <label htmlFor="contactoNombre" className="block text-sm font-medium text-text-secondary mb-1">Nombre de contacto (opcional)</label>
-                                            <div className="relative">
-                                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                    <User size={16} className="text-text-muted" />
-                                                </div>
-                                                <input
-                                                    id="contactoNombre"
-                                                    type="text"
-                                                    value={contactoNombre}
-                                                    onChange={(e) => setContactoNombre(e.target.value)}
-                                                    maxLength={100}
-                                                    className="block w-full pl-10 rounded-elite-sm border border-border-elite focus:border-cop-blue focus:ring-1 focus:ring-cop-blue sm:text-sm transition-colors hover:border-border-hover px-3 py-2"
-                                                    placeholder="Persona a cargo"
-                                                />
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <label htmlFor="contactoTelefono" className="block text-sm font-medium text-text-secondary mb-1">Teléfono de contacto (opcional)</label>
-                                            <div className="relative">
-                                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                    <Phone size={16} className="text-text-muted" />
-                                                </div>
-                                                <input
-                                                    id="contactoTelefono"
-                                                    type="tel"
-                                                    value={contactoTelefono}
-                                                    onChange={(e) => setContactoTelefono(e.target.value)}
-                                                    maxLength={20}
-                                                    className="block w-full pl-10 rounded-elite-sm border border-border-elite focus:border-cop-blue focus:ring-1 focus:ring-cop-blue sm:text-sm transition-colors hover:border-border-hover px-3 py-2"
-                                                    placeholder="09xx xxx xxx"
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex justify-end gap-3 pt-4 border-t border-border-elite">
-                                        <button
-                                            type="button"
-                                            onClick={resetForm}
-                                            className="inline-flex items-center px-4 py-2 border border-border-elite rounded-elite-sm shadow-elite-xs text-sm font-medium text-text-secondary bg-surface hover:bg-blue-50/30 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cop-blue transition-all active:scale-[0.97]"
+                    {/* Content */}
+                    <EliteCard title="Listado de Modalidades">
+                        <EliteTable
+                            data={modalidades}
+                            gridCols="60px 1fr 100px"
+                            keyExtractor={(m) => m.id}
+                            header={
+                                <>
+                                    <EliteHeader align="center">Inicial</EliteHeader>
+                                    <EliteHeader>Modalidad / Contacto</EliteHeader>
+                                    <EliteHeader align="right">Acciones</EliteHeader>
+                                </>
+                            }
+                            renderRow={(modalidad) => (
+                                <>
+                                    <EliteCell align="center">
+                                        <div
+                                            className="w-10 h-10 rounded-lg flex items-center justify-center shadow-sm mx-auto text-white font-bold text-lg uppercase"
+                                            style={{ backgroundColor: modalidad.color }}
                                         >
-                                            Cancelar
-                                        </button>
-                                        <button
-                                            type="submit"
-                                            disabled={saving}
-                                            className="inline-flex items-center px-4 py-2 border border-transparent rounded-elite-sm shadow-elite-xs text-sm font-medium text-white bg-fpt-red hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-fpt-red transition-all disabled:opacity-50 active:scale-[0.97]"
-                                        >
-                                            {saving ? 'Guardando...' : (
-                                                <>
-                                                    <Save size={16} className="mr-2" />
-                                                    Guardar
-                                                </>
+                                            {modalidad.nombre.substring(0, 1)}
+                                        </div>
+                                    </EliteCell>
+                                    <EliteCell>
+                                        <div className="flex flex-col">
+                                            <span className="font-bold text-slate-800 text-base">{modalidad.nombre}</span>
+                                            {(modalidad.contacto_nombre || modalidad.contacto_telefono) && (
+                                                <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500">
+                                                    {modalidad.contacto_nombre && (
+                                                        <span className="flex items-center gap-1">
+                                                            <User size={12} />
+                                                            {modalidad.contacto_nombre}
+                                                        </span>
+                                                    )}
+                                                    {modalidad.contacto_telefono && (
+                                                        <span className="flex items-center gap-1">
+                                                            <Phone size={12} />
+                                                            {modalidad.contacto_telefono}
+                                                        </span>
+                                                    )}
+                                                </div>
                                             )}
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    )}
-
-                    <div className="bg-surface rounded-elite-md shadow-elite-sm border border-border-elite overflow-hidden">
-                        <div className="px-6 py-4 border-b border-border-elite">
-                            <h3 className="text-lg font-medium text-text-elite">Listado de Modalidades</h3>
-                        </div>
-
-                        {modalidades.length === 0 ? (
-                            <div className="p-12 text-center text-text-secondary">
-                                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 mb-4">
-                                    <LayoutGrid size={32} className="text-text-muted" />
-                                </div>
-                                <p className="text-lg font-medium text-text-elite mb-1">No hay modalidades</p>
-                                <p>Crea la primera modalidad para comenzar a organizar eventos.</p>
-                            </div>
-                        ) : (
-                            <div className="divide-y divide-border-elite">
-                                {modalidades.map((modalidad) => (
-                                    <div key={modalidad.id} className="p-4 sm:p-6 hover:bg-blue-50/30 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                                        <div className="flex items-start gap-4">
-                                            <div
-                                                className="w-12 h-12 rounded-elite-sm flex items-center justify-center shadow-elite-xs flex-shrink-0"
-                                                style={{ backgroundColor: modalidad.color }}
-                                            >
-                                                <span className="text-white font-bold text-xl uppercase">
-                                                    {modalidad.nombre.substring(0, 1)}
-                                                </span>
-                                            </div>
-                                            <div>
-                                                <h4 className="text-base font-medium text-text-elite">{modalidad.nombre}</h4>
-                                                {(modalidad.contacto_nombre || modalidad.contacto_telefono) && (
-                                                    <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-sm text-text-secondary">
-                                                        {modalidad.contacto_nombre && (
-                                                            <span className="flex items-center gap-1">
-                                                                <User size={14} />
-                                                                {modalidad.contacto_nombre}
-                                                            </span>
-                                                        )}
-                                                        {modalidad.contacto_telefono && (
-                                                            <span className="flex items-center gap-1">
-                                                                <Phone size={14} />
-                                                                {modalidad.contacto_telefono}
-                                                            </span>
-                                                        )}
-                                                    </div>
-                                                )}
-                                            </div>
                                         </div>
-
-                                        <div className="flex items-center gap-2 sm:self-center self-end">
+                                    </EliteCell>
+                                    <EliteCell align="right">
+                                        <div className="flex justify-end gap-2">
                                             <button
-                                                onClick={() => handleEdit(modalidad)}
-                                                className="p-2 text-text-muted hover:text-cop-blue hover:bg-blue-50 rounded-elite-sm transition-all active:scale-95"
+                                                onClick={() => openModal(modalidad)}
+                                                className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
                                                 title="Editar"
-                                                aria-label={`Editar modalidad ${modalidad.nombre}`}
                                             >
-                                                <Edit2 size={18} />
+                                                <Edit2 size={16} />
                                             </button>
                                             <button
-                                                onClick={() => handleDelete(modalidad.id)}
-                                                className="p-2 text-text-muted hover:text-fpt-red hover:bg-red-50 rounded-elite-sm transition-all active:scale-95"
+                                                onClick={() => handleDelete(modalidad)}
+                                                className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
                                                 title="Eliminar"
-                                                aria-label={`Eliminar modalidad ${modalidad.nombre}`}
                                             >
-                                                <Trash2 size={18} />
+                                                <Trash2 size={16} />
                                             </button>
                                         </div>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
+                                    </EliteCell>
+                                </>
+                            )}
+                        />
+                    </EliteCard>
                 </div>
             </main>
+
+            {/* Modal */}
+            <EliteModal
+                isOpen={isModalOpen}
+                onClose={closeModal}
+                title={editingId ? 'Editar Modalidad' : 'Nueva Modalidad'}
+                width="max-w-lg"
+            >
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <div>
+                        <label className="block text-sm font-semibold text-slate-700 mb-1">Nombre de la Modalidad</label>
+                        <input
+                            type="text"
+                            value={formData.nombre}
+                            onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
+                            placeholder="Ej: Tiro Práctico (IPSC)"
+                            required
+                            maxLength={100}
+                            className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-medium text-slate-800"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-semibold text-slate-700 mb-1">Color Distintivo</label>
+                        <div className="flex items-center gap-3 p-3 border border-slate-200 rounded-xl bg-slate-50/50">
+                            <input
+                                type="color"
+                                value={formData.color}
+                                onChange={(e) => setFormData({ ...formData, color: e.target.value })}
+                                className="h-10 w-12 rounded cursor-pointer border-0 p-0 bg-transparent"
+                            />
+                            <div className="flex-1">
+                                <span className="text-sm font-mono text-slate-600">{formData.color}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm font-semibold text-slate-700 mb-1">Contacto (Nombre)</label>
+                            <input
+                                type="text"
+                                value={formData.contactoNombre}
+                                onChange={(e) => setFormData({ ...formData, contactoNombre: e.target.value })}
+                                placeholder="Persona responsable"
+                                maxLength={100}
+                                className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-semibold text-slate-700 mb-1">Contacto (Teléfono)</label>
+                            <input
+                                type="tel"
+                                value={formData.contactoTelefono}
+                                onChange={(e) => setFormData({ ...formData, contactoTelefono: e.target.value })}
+                                placeholder="09xx..."
+                                maxLength={20}
+                                className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                        <EliteButton type="button" variant="secondary" onClick={closeModal}>
+                            Cancelar
+                        </EliteButton>
+                        <EliteButton type="submit" isLoading={saving} icon={<Save size={16} />}>
+                            Guardar
+                        </EliteButton>
+                    </div>
+                </form>
+            </EliteModal>
         </div>
     );
 }

@@ -1,28 +1,28 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import Header from '@/components/Header';
-import Breadcrumbs from '@/components/Breadcrumbs';
-import { useToast } from '@/components/Toast';
 import { createClient } from '@/lib/supabase';
+import { Categoria } from '@/lib/types';
+import { useToast } from '@/components/Toast';
+import Header from '@/components/Header';
+import EliteCard from '@/components/ui/EliteCard';
+import EliteTable, { EliteHeader, EliteCell } from '@/components/ui/EliteTable';
+import EliteButton from '@/components/ui/EliteButton';
+import EliteModal from '@/components/ui/EliteModal';
 import {
     Plus,
     ArrowLeft,
     Edit2,
     Trash2,
-    X,
-    Save,
     Tag,
-    Loader2
+    Save
 } from 'lucide-react';
-import { Categoria } from '@/lib/types';
 
 export default function CategoriasPage() {
     const [categorias, setCategorias] = useState<Categoria[]>([]);
     const [loading, setLoading] = useState(true);
-    const [showForm, setShowForm] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
     const [saving, setSaving] = useState(false);
 
@@ -30,24 +30,11 @@ export default function CategoriasPage() {
     const [nombre, setNombre] = useState('');
     const [descripcion, setDescripcion] = useState('');
 
-    const router = useRouter();
     const { showToast } = useToast();
 
     useEffect(() => {
-        checkAuthAndLoad();
+        loadCategorias();
     }, []);
-
-    async function checkAuthAndLoad() {
-        const supabase = createClient();
-        const { data: { user } } = await supabase.auth.getUser();
-
-        if (!user) {
-            router.push('/admin/login');
-            return;
-        }
-
-        await loadCategorias();
-    }
 
     async function loadCategorias() {
         const supabase = createClient();
@@ -56,11 +43,12 @@ export default function CategoriasPage() {
             .select('*')
             .order('nombre');
 
-        if (data) {
-            setCategorias(data);
-        }
+        if (data) setCategorias(data);
         setLoading(false);
     }
+
+    // Security: Input Sanitization
+    const sanitize = (text: string) => text.replace(/[<>]/g, '').trim();
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
@@ -68,222 +56,194 @@ export default function CategoriasPage() {
         const supabase = createClient();
 
         const categoriaData = {
-            nombre,
-            descripcion: descripcion || null,
+            nombre: sanitize(nombre),
+            descripcion: sanitize(descripcion) || null,
         };
 
         try {
             if (editingId) {
-                await supabase.from('categorias').update(categoriaData).eq('id', editingId);
-                showToast('Categoría actualizada', 'success');
+                const { error } = await supabase.from('categorias').update(categoriaData).eq('id', editingId);
+                if (error) throw error;
+                showToast('Categoría actualizada correctamente', 'success');
             } else {
-                await supabase.from('categorias').insert(categoriaData);
-                showToast('Categoría creada', 'success');
+                const { error } = await supabase.from('categorias').insert(categoriaData);
+                if (error) throw error;
+                showToast('Categoría creada correctamente', 'success');
             }
 
-            resetForm();
+            closeModal();
             await loadCategorias();
-        } catch {
+        } catch (error) {
+            console.error('Error saving categoria:', error);
             showToast('Error al guardar la categoría', 'error');
         } finally {
             setSaving(false);
         }
     }
 
-    function resetForm() {
-        setNombre('');
-        setDescripcion('');
-        setEditingId(null);
-        setShowForm(false);
-    }
-
-    function handleEdit(categoria: Categoria) {
-        setEditingId(categoria.id);
-        setNombre(categoria.nombre);
-        setDescripcion(categoria.descripcion || '');
-        setShowForm(true);
-    }
-
-    async function handleDelete(id: string) {
-        if (!confirm('¿Estás seguro de eliminar esta categoría?')) return;
+    async function handleDelete(cat: Categoria) {
+        if (!confirm(`¿Estás seguro de eliminar la categoría "${cat.nombre}"?`)) return;
 
         const supabase = createClient();
-        const { error } = await supabase.from('categorias').delete().eq('id', id);
+        const { error } = await supabase.from('categorias').delete().eq('id', cat.id);
 
         if (error) {
-            showToast('Error al eliminar la categoría', 'error');
+            console.error('Error deleting categoria:', error);
+            showToast('Error al eliminar. Puede que esté en uso.', 'error');
         } else {
             showToast('Categoría eliminada', 'success');
             await loadCategorias();
         }
     }
 
-    const labelStyle = "block text-sm font-medium text-text-elite mb-1.5";
-    const inputStyle = "block w-full rounded-elite-sm border-border-elite shadow-elite-xs focus:border-cop-blue focus:ring-1 focus:ring-cop-blue/20 sm:text-sm py-2.5 transition-all text-text-secondary bg-surface hover:border-border-hover";
+    const openModal = (cat?: Categoria) => {
+        if (cat) {
+            setEditingId(cat.id);
+            setNombre(cat.nombre);
+            setDescripcion(cat.descripcion || '');
+        } else {
+            setEditingId(null);
+            setNombre('');
+            setDescripcion('');
+        }
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setEditingId(null);
+    };
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-bg-elite flex flex-col">
-                <Header />
-                <div className="flex-grow flex items-center justify-center">
-                    <Loader2 size={48} className="text-cop-blue animate-spin" />
-                </div>
+            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-bg-elite flex flex-col font-sans text-text-elite">
+        <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-900">
             <Header />
-            <main className="flex-grow py-8 px-4 sm:px-6 lg:px-8 animate-page-enter">
-                <div className="max-w-4xl mx-auto space-y-6">
-                    <Breadcrumbs />
+            <main className="flex-grow py-8 px-4 sm:px-6 lg:px-8">
+                <div className="max-w-4xl mx-auto space-y-8">
 
+                    {/* Header */}
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
-                            <h1 className="text-2xl font-bold text-text-elite tracking-tight">Categorías</h1>
+                            <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Categorías</h1>
                             <Link
                                 href="/admin"
-                                className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-cop-blue transition-colors mt-1"
+                                className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-blue-600 font-medium mt-2 transition-colors"
                             >
                                 <ArrowLeft size={16} />
                                 Volver al panel
                             </Link>
                         </div>
-                        {!showForm && (
-                            <button
-                                onClick={() => setShowForm(true)}
-                                className="btn btn-primary shadow-btn-red hover:shadow-btn-red-hover active:scale-95"
-                            >
-                                <Plus size={16} />
-                                Nueva Categoría
-                            </button>
-                        )}
+                        <EliteButton
+                            onClick={() => openModal()}
+                            icon={<Plus size={18} />}
+                        >
+                            Nueva Categoría
+                        </EliteButton>
                     </div>
 
-                    {showForm && (
-                        <div className="bg-surface rounded-xl shadow-elite-sm border border-border-elite overflow-hidden animate-in fade-in duration-300">
-                            <div className="border-b border-border-elite px-6 py-4 flex items-center justify-between">
-                                <h3 className="text-lg font-semibold text-text-elite">
-                                    {editingId ? 'Editar Categoría' : 'Nueva Categoría'}
-                                </h3>
-                                <button
-                                    onClick={resetForm}
-                                    className="text-text-muted hover:text-text-elite transition-colors p-1 rounded-lg hover:bg-bg-elite"
-                                    aria-label="Cerrar formulario"
-                                >
-                                    <X size={20} />
-                                </button>
-                            </div>
-                            <div className="p-6">
-                                <form onSubmit={handleSubmit} className="space-y-6">
-                                    <div>
-                                        <label htmlFor="nombre" className={labelStyle}>Nombre de la categoría</label>
-                                        <input
-                                            id="nombre"
-                                            type="text"
-                                            value={nombre}
-                                            onChange={(e) => setNombre(e.target.value)}
-                                            placeholder="Ej: Senior"
-                                            required
-                                            maxLength={50}
-                                            className={inputStyle}
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label htmlFor="descripcion" className={labelStyle}>Descripción (opcional)</label>
-                                        <textarea
-                                            id="descripcion"
-                                            value={descripcion}
-                                            onChange={(e) => setDescripcion(e.target.value)}
-                                            rows={3}
-                                            maxLength={300}
-                                            className={`${inputStyle} resize-y`}
-                                            placeholder="Detalles sobre esta categoría..."
-                                        />
-                                    </div>
-
-                                    <div className="flex justify-end gap-3 pt-4 border-t border-border-elite">
-                                        <button
-                                            type="button"
-                                            onClick={resetForm}
-                                            className="btn btn-secondary shadow-elite-xs"
-                                        >
-                                            Cancelar
-                                        </button>
-                                        <button
-                                            type="submit"
-                                            disabled={saving}
-                                            className="btn btn-primary shadow-btn-red hover:shadow-btn-red-hover active:scale-95 disabled:opacity-50"
-                                        >
-                                            {saving ? 'Guardando...' : (
-                                                <>
-                                                    <Save size={16} />
-                                                    Guardar
-                                                </>
-                                            )}
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    )}
-
-                    <div className="bg-surface rounded-xl shadow-elite-sm border border-border-elite overflow-hidden">
-                        <div className="px-6 py-4 border-b border-border-elite">
-                            <h3 className="text-lg font-semibold text-text-elite">Listado de Categorías</h3>
-                        </div>
-
-                        {categorias.length === 0 ? (
-                            <div className="p-12 text-center text-text-secondary">
-                                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-bg-elite mb-4">
-                                    <Tag size={32} className="text-text-muted" />
-                                </div>
-                                <p className="text-lg font-medium text-text-elite mb-1">No hay categorías</p>
-                                <p>Crea la primera categoría para organizar a los participantes.</p>
-                            </div>
-                        ) : (
-                            <div className="divide-y divide-border-elite">
-                                {categorias.map((categoria) => (
-                                    <div key={categoria.id} className="p-4 sm:p-6 hover:bg-bg-elite transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                                        <div className="flex items-start gap-4">
-                                            <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0">
-                                                <Tag size={20} className="text-cop-blue" />
-                                            </div>
-                                            <div>
-                                                <h4 className="text-base font-medium text-text-elite">{categoria.nombre}</h4>
-                                                {categoria.descripcion && (
-                                                    <p className="mt-1 text-sm text-text-secondary">{categoria.descripcion}</p>
-                                                )}
-                                            </div>
+                    {/* Content */}
+                    <EliteCard title="Listado de Categorías">
+                        <EliteTable
+                            data={categorias}
+                            gridCols="60px 1fr 2fr 100px"
+                            keyExtractor={(c) => c.id}
+                            header={
+                                <>
+                                    <EliteHeader align="center">Icono</EliteHeader>
+                                    <EliteHeader>Nombre</EliteHeader>
+                                    <EliteHeader>Descripción</EliteHeader>
+                                    <EliteHeader align="right">Acciones</EliteHeader>
+                                </>
+                            }
+                            renderRow={(cat) => (
+                                <>
+                                    <EliteCell align="center">
+                                        <div className="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shadow-sm mx-auto">
+                                            <Tag size={20} />
                                         </div>
-
-                                        <div className="flex items-center gap-2 sm:self-center self-end">
+                                    </EliteCell>
+                                    <EliteCell>
+                                        <span className="font-bold text-slate-800 text-sm">{cat.nombre}</span>
+                                    </EliteCell>
+                                    <EliteCell>
+                                        <span className="text-sm text-slate-500 truncate block">
+                                            {cat.descripcion || '-'}
+                                        </span>
+                                    </EliteCell>
+                                    <EliteCell align="right">
+                                        <div className="flex justify-end gap-2">
                                             <button
-                                                onClick={() => handleEdit(categoria)}
-                                                className="p-2 text-text-muted hover:text-cop-blue hover:bg-blue-50 rounded-lg transition-colors"
+                                                onClick={() => openModal(cat)}
+                                                className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
                                                 title="Editar"
-                                                aria-label={`Editar categoría ${categoria.nombre}`}
                                             >
-                                                <Edit2 size={18} />
+                                                <Edit2 size={16} />
                                             </button>
                                             <button
-                                                onClick={() => handleDelete(categoria.id)}
-                                                className="p-2 text-text-muted hover:text-fpt-red hover:bg-red-50 rounded-lg transition-colors"
+                                                onClick={() => handleDelete(cat)}
+                                                className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
                                                 title="Eliminar"
-                                                aria-label={`Eliminar categoría ${categoria.nombre}`}
                                             >
-                                                <Trash2 size={18} />
+                                                <Trash2 size={16} />
                                             </button>
                                         </div>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
+                                    </EliteCell>
+                                </>
+                            )}
+                        />
+                    </EliteCard>
                 </div>
             </main>
+
+            {/* Modal */}
+            <EliteModal
+                isOpen={isModalOpen}
+                onClose={closeModal}
+                title={editingId ? 'Editar Categoría' : 'Nueva Categoría'}
+            >
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <div>
+                        <label className="block text-sm font-semibold text-slate-700 mb-1">Nombre</label>
+                        <input
+                            type="text"
+                            value={nombre}
+                            onChange={(e) => setNombre(e.target.value)}
+                            placeholder="Ej: Senior, Super Senior"
+                            required
+                            maxLength={50}
+                            className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-medium text-slate-800"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-semibold text-slate-700 mb-1">Descripción</label>
+                        <textarea
+                            value={descripcion}
+                            onChange={(e) => setDescripcion(e.target.value)}
+                            rows={3}
+                            maxLength={300}
+                            className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-sm resize-none"
+                            placeholder="Detalles opcionales..."
+                        />
+                    </div>
+
+                    <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                        <EliteButton type="button" variant="secondary" onClick={closeModal}>
+                            Cancelar
+                        </EliteButton>
+                        <EliteButton type="submit" isLoading={saving} icon={<Save size={16} />}>
+                            Guardar
+                        </EliteButton>
+                    </div>
+                </form>
+            </EliteModal>
         </div>
     );
 }

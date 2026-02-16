@@ -1,13 +1,23 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import Header from '@/components/Header';
-import Breadcrumbs from '@/components/Breadcrumbs';
 import { createClient } from '@/lib/supabase';
 import { useToast } from '@/components/Toast';
-import { Plus, Save, Trash2, FileText, ArrowLeft, Upload, X, BookOpen, Loader2 } from 'lucide-react';
+import Header from '@/components/Header';
+import EliteCard from '@/components/ui/EliteCard';
+import EliteTable, { EliteHeader, EliteCell } from '@/components/ui/EliteTable';
+import EliteButton from '@/components/ui/EliteButton';
+import EliteModal from '@/components/ui/EliteModal';
+import {
+    Plus,
+    Trash2,
+    FileText,
+    ArrowLeft,
+    Upload,
+    Save,
+    Loader2
+} from 'lucide-react';
 
 const ALLOWED_MIME_TYPES = ['application/pdf'];
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
@@ -23,41 +33,27 @@ export default function AdminReglamentosPage() {
     const [reglamentos, setReglamentos] = useState<Reglamento[]>([]);
     const [loading, setLoading] = useState(true);
     const [uploading, setUploading] = useState(false);
-    const [showForm, setShowForm] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     // Form state
     const [titulo, setTitulo] = useState('');
     const [file, setFile] = useState<File | null>(null);
 
-    const router = useRouter();
     const { showToast } = useToast();
 
     useEffect(() => {
-        checkAuthAndLoad();
+        loadReglamentos();
     }, []);
 
-    async function checkAuthAndLoad() {
-        const supabase = createClient();
-        const { data: { user } } = await supabase.auth.getUser();
-
-        if (!user) {
-            router.push('/admin/login');
-            return;
-        }
-
-        loadReglamentos();
-    }
-
     async function loadReglamentos() {
+        setLoading(true);
         const supabase = createClient();
         const { data } = await supabase
             .from('reglamentos')
             .select('*')
             .order('created_at', { ascending: false });
 
-        if (data) {
-            setReglamentos(data);
-        }
+        if (data) setReglamentos(data);
         setLoading(false);
     }
 
@@ -67,13 +63,11 @@ export default function AdminReglamentosPage() {
             return;
         }
 
-        // Validate MIME type
         if (!ALLOWED_MIME_TYPES.includes(selectedFile.type)) {
             showToast('Solo se permiten archivos PDF', 'error');
             return;
         }
 
-        // Validate file size
         if (selectedFile.size > MAX_FILE_SIZE) {
             showToast('El archivo supera el tamaño máximo de 10MB', 'error');
             return;
@@ -90,7 +84,6 @@ export default function AdminReglamentosPage() {
         const supabase = createClient();
 
         try {
-            // 1. Upload file to Storage
             const fileExt = file.name.split('.').pop();
             const fileName = `${Date.now()}.${fileExt}`;
             const filePath = `${fileName}`;
@@ -101,12 +94,10 @@ export default function AdminReglamentosPage() {
 
             if (uploadError) throw uploadError;
 
-            // 2. Get Public URL
             const { data: { publicUrl } } = supabase.storage
                 .from('reglamentos')
                 .getPublicUrl(filePath);
 
-            // 3. Insert into Database
             const { error: dbError } = await supabase
                 .from('reglamentos')
                 .insert({
@@ -116,39 +107,28 @@ export default function AdminReglamentosPage() {
 
             if (dbError) throw dbError;
 
-            // Success
             showToast('Reglamento subido correctamente', 'success');
-            resetForm();
+            closeModal();
             loadReglamentos();
         } catch (error) {
             console.error('Error uploading:', error);
-            showToast('Error al subir el reglamento. Verifica que el bucket "reglamentos" exista y tenga políticas públicas.', 'error');
+            showToast('Error al subir el reglamento. Verifica permisos.', 'error');
         } finally {
             setUploading(false);
         }
     }
 
-    function resetForm() {
-        setTitulo('');
-        setFile(null);
-        setShowForm(false);
-    }
-
-    async function handleDelete(id: string, url: string) {
-        if (!confirm('¿Eliminar este reglamento?')) return;
+    async function handleDelete(reg: Reglamento) {
+        if (!confirm(`¿Eliminar el reglamento "${reg.titulo}"?`)) return;
 
         const supabase = createClient();
-
-        // Extract filename from URL to delete from storage
-        const fileName = url.split('/').pop();
+        const fileName = reg.url.split('/').pop();
 
         if (fileName) {
-            await supabase.storage
-                .from('reglamentos')
-                .remove([fileName]);
+            await supabase.storage.from('reglamentos').remove([fileName]);
         }
 
-        const { error } = await supabase.from('reglamentos').delete().eq('id', id);
+        const { error } = await supabase.from('reglamentos').delete().eq('id', reg.id);
         if (error) {
             showToast('Error al eliminar el reglamento', 'error');
         } else {
@@ -157,207 +137,171 @@ export default function AdminReglamentosPage() {
         }
     }
 
+    const openModal = () => {
+        setTitulo('');
+        setFile(null);
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setTitulo('');
+        setFile(null);
+    };
+
     if (loading) {
         return (
-            <div className="min-h-screen bg-bg-elite flex flex-col">
-                <Header />
-                <div className="flex-grow flex items-center justify-center">
-                    <Loader2 size={48} className="text-cop-blue animate-spin" />
-                </div>
+            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+                <Loader2 size={48} className="text-blue-600 animate-spin" />
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-bg-elite flex flex-col">
+        <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-900">
             <Header />
-            <main className="flex-grow py-8 px-4 sm:px-6 lg:px-8 animate-page-enter">
-                <div className="max-w-5xl mx-auto space-y-6">
-                    <Breadcrumbs />
+            <main className="flex-grow py-8 px-4 sm:px-6 lg:px-8">
+                <div className="max-w-5xl mx-auto space-y-8">
 
-                    {/* Header Section */}
+                    {/* Header */}
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
-                            <h1 className="text-2xl font-bold text-text-elite">Gestión de Reglamentos</h1>
+                            <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Gestión de Reglamentos</h1>
                             <Link
                                 href="/admin"
-                                className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-cop-blue transition-colors mt-1"
+                                className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-blue-600 font-medium mt-2 transition-colors"
                             >
                                 <ArrowLeft size={16} />
                                 Volver al panel
                             </Link>
                         </div>
-                        {!showForm && (
-                            <button
-                                onClick={() => setShowForm(true)}
-                                className="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-elite-sm shadow-elite-xs text-sm font-medium text-white bg-fpt-red hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-fpt-red transition-all active:scale-[0.97]"
-                            >
-                                <Plus size={18} className="mr-2" />
-                                Nuevo Reglamento
-                            </button>
-                        )}
+                        <EliteButton
+                            onClick={openModal}
+                            icon={<Plus size={18} />}
+                        >
+                            Nuevo Reglamento
+                        </EliteButton>
                     </div>
 
-                    {/* Upload Form */}
-                    {showForm && (
-                        <div className="bg-surface rounded-elite-md shadow-elite-sm border border-border-elite overflow-hidden">
-                            <div className="border-b border-border-elite px-6 py-4 flex items-center justify-between">
-                                <h3 className="text-lg font-medium text-text-elite">
-                                    Nuevo Reglamento
-                                </h3>
-                                <button onClick={resetForm} className="text-text-muted hover:text-text-secondary transition-colors" aria-label="Cerrar formulario">
-                                    <X size={20} />
-                                </button>
-                            </div>
-
-                            <form onSubmit={handleSubmit} className="p-6 space-y-6">
-                                <div>
-                                    <label htmlFor="titulo" className="block text-sm font-medium text-text-secondary mb-1">
-                                        Título del Reglamento *
-                                    </label>
-                                    <input
-                                        id="titulo"
-                                        type="text"
-                                        value={titulo}
-                                        onChange={(e) => setTitulo(e.target.value)}
-                                        placeholder="Ej: Reglamento Técnico IPSC 2024"
-                                        required
-                                        maxLength={200}
-                                        className="block w-full rounded-elite-sm border border-border-elite shadow-elite-xs focus:border-cop-blue focus:ring-1 focus:ring-cop-blue sm:text-sm transition-colors hover:border-border-hover px-3 py-2"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-text-secondary mb-1">
-                                        Archivo PDF *
-                                    </label>
-                                    <div className="relative border-2 border-dashed border-border-elite rounded-elite-md p-8 text-center bg-bg-elite hover:bg-blue-50/30 transition-colors">
-                                        <Upload size={40} className="mx-auto text-text-muted mb-3" />
-                                        <p className="text-sm text-text-secondary mb-1">
-                                            <span className="font-medium text-cop-blue">Sube un archivo</span> o arrástralo aquí
-                                        </p>
-                                        <p className="text-xs text-text-muted">PDF hasta 10MB</p>
-
-                                        {file && (
-                                            <div className="mt-3 inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-cop-blue rounded-full text-sm font-medium">
-                                                <FileText size={14} />
-                                                {file.name}
-                                            </div>
-                                        )}
-
-                                        <input
-                                            type="file"
-                                            accept=".pdf,application/pdf"
-                                            onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
-                                            required={!file}
-                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                            aria-label="Seleccionar archivo PDF"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="flex justify-end gap-3 pt-4 border-t border-border-elite">
-                                    <button
-                                        type="button"
-                                        onClick={resetForm}
-                                        className="px-4 py-2 border border-border-elite rounded-elite-sm shadow-elite-xs text-sm font-medium text-text-secondary bg-surface hover:bg-blue-50/30 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cop-blue transition-all active:scale-[0.97]"
-                                    >
-                                        Cancelar
-                                    </button>
-                                    <button
-                                        type="submit"
-                                        disabled={uploading}
-                                        className="inline-flex items-center px-4 py-2 border border-transparent rounded-elite-sm shadow-elite-xs text-sm font-medium text-white bg-fpt-red hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-fpt-red transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.97]"
-                                    >
-                                        {uploading ? (
-                                            <>
-                                                <Loader2 size={16} className="mr-2 animate-spin" />
-                                                Subiendo...
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Save size={16} className="mr-2" />
-                                                Guardar
-                                            </>
-                                        )}
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    )}
-
-                    {/* Documents List */}
-                    <div className="bg-surface rounded-elite-md shadow-elite-sm border border-border-elite overflow-hidden">
-                        <div className="px-6 py-4 border-b border-border-elite bg-bg-elite/50 flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                                <BookOpen size={20} className="text-text-muted" />
-                                <h3 className="text-lg font-medium text-text-elite">
-                                    Documentos Publicados
-                                </h3>
-                            </div>
-                            <span className="bg-blue-50 text-cop-blue text-xs font-semibold px-2.5 py-0.5 rounded-full">
-                                {reglamentos.length} archivos
-                            </span>
-                        </div>
-
-                        {reglamentos.length === 0 ? (
-                            <div className="p-12 text-center text-text-secondary">
-                                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 mb-4">
-                                    <FileText size={32} className="text-text-muted" />
-                                </div>
-                                <p className="text-lg font-medium text-text-elite mb-1">No hay reglamentos cargados</p>
-                                <p>Sube el primer reglamento utilizando el botón &quot;Nuevo Reglamento&quot;.</p>
-                            </div>
-                        ) : (
-                            <div className="overflow-x-auto">
-                                <table className="min-w-full divide-y divide-border-elite">
-                                    <thead className="bg-bg-elite/50">
-                                        <tr>
-                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">Fecha</th>
-                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">Título</th>
-                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">Archivo</th>
-                                            <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-text-muted uppercase tracking-wider">Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="bg-surface divide-y divide-border-elite">
-                                        {reglamentos.map((reg) => (
-                                            <tr key={reg.id} className="hover:bg-blue-50/30 transition-colors group">
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
-                                                    {new Date(reg.created_at).toLocaleDateString('es-ES')}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-text-elite">
-                                                    {reg.titulo}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                                    <a
-                                                        href={reg.url}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="inline-flex items-center gap-1.5 text-cop-blue hover:text-cop-blue/80 font-medium transition-colors"
-                                                    >
-                                                        <FileText size={16} />
-                                                        Ver PDF
-                                                    </a>
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                    <button
-                                                        onClick={() => handleDelete(reg.id, reg.url)}
-                                                        className="text-text-muted hover:text-fpt-red transition-all p-1 rounded-elite-sm hover:bg-red-50 active:scale-95"
-                                                        title="Eliminar"
-                                                        aria-label={`Eliminar reglamento ${reg.titulo}`}
-                                                    >
-                                                        <Trash2 size={18} />
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        )}
-                    </div>
+                    {/* Content */}
+                    <EliteCard title={`Documentos Publicados (${reglamentos.length})`}>
+                        <EliteTable
+                            data={reglamentos}
+                            gridCols="120px 2fr 120px 100px"
+                            constrainMinWidth
+                            keyExtractor={(reg) => reg.id}
+                            header={
+                                <>
+                                    <EliteHeader>Fecha</EliteHeader>
+                                    <EliteHeader>Título</EliteHeader>
+                                    <EliteHeader align="center">Archivo</EliteHeader>
+                                    <EliteHeader align="right">Acciones</EliteHeader>
+                                </>
+                            }
+                            renderRow={(reg) => (
+                                <>
+                                    <EliteCell>
+                                        <span className="text-sm text-slate-500 font-medium">
+                                            {new Date(reg.created_at).toLocaleDateString('es-ES')}
+                                        </span>
+                                    </EliteCell>
+                                    <EliteCell>
+                                        <span className="font-bold text-slate-800 text-sm">{reg.titulo}</span>
+                                    </EliteCell>
+                                    <EliteCell align="center">
+                                        <a
+                                            href={reg.url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors text-xs font-bold uppercase tracking-wide"
+                                        >
+                                            <FileText size={14} />
+                                            Ver PDF
+                                        </a>
+                                    </EliteCell>
+                                    <EliteCell align="right">
+                                        <div className="flex justify-end">
+                                            <button
+                                                onClick={() => handleDelete(reg)}
+                                                className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                                                title="Eliminar"
+                                            >
+                                                <Trash2 size={16} />
+                                            </button>
+                                        </div>
+                                    </EliteCell>
+                                </>
+                            )}
+                        />
+                    </EliteCard>
                 </div>
             </main>
+
+            {/* Modal */}
+            <EliteModal
+                isOpen={isModalOpen}
+                onClose={closeModal}
+                title="Nuevo Reglamento"
+            >
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <div>
+                        <label className="block text-sm font-semibold text-slate-700 mb-1">
+                            Título del Reglamento *
+                        </label>
+                        <input
+                            type="text"
+                            value={titulo}
+                            onChange={(e) => setTitulo(e.target.value)}
+                            placeholder="Ej: Reglamento Técnico IPSC 2024"
+                            required
+                            maxLength={200}
+                            className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-medium text-slate-800"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-semibold text-slate-700 mb-1">
+                            Archivo PDF *
+                        </label>
+                        <div className="relative border-2 border-dashed border-slate-300 rounded-xl p-8 text-center bg-slate-50 hover:bg-blue-50 hover:border-blue-300 transition-colors group cursor-pointer">
+                            <Upload size={40} className="mx-auto text-slate-400 group-hover:text-blue-500 mb-3 transition-colors" />
+                            <p className="text-sm text-slate-600 mb-1">
+                                <span className="font-bold text-blue-600">Clic para subir</span> o arrastra aquí
+                            </p>
+                            <p className="text-xs text-slate-400">PDF hasta 10MB</p>
+
+                            {file && (
+                                <div className="mt-4 inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-blue-100 text-blue-700 rounded-lg text-sm font-medium shadow-sm">
+                                    <FileText size={16} />
+                                    {file.name}
+                                </div>
+                            )}
+
+                            <input
+                                type="file"
+                                accept=".pdf,application/pdf"
+                                onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
+                                required={!file}
+                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                        <EliteButton type="button" variant="secondary" onClick={closeModal}>
+                            Cancelar
+                        </EliteButton>
+                        <EliteButton
+                            type="submit"
+                            isLoading={uploading}
+                            icon={<Save size={16} />}
+                            disabled={!file || !titulo.trim()}
+                        >
+                            Guardar
+                        </EliteButton>
+                    </div>
+                </form>
+            </EliteModal>
         </div>
     );
 }

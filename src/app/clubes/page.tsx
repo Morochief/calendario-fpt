@@ -1,18 +1,32 @@
-import React from 'react';
+'use client';
+
+import React, { useEffect, useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ClubCard from '@/components/ClubCard';
 import { Building2 } from 'lucide-react';
-
-const CLUBS = [
-    { id: 1, abbreviation: 'CNSB', name: 'Club Náutico San Bernardino', color: '#1E3A8A' },
-    { id: 2, abbreviation: 'CTG', name: 'CTG (Pendiente de Confirmación)', color: '#6366F1' },
-    { id: 3, abbreviation: 'CPTP', name: 'Club Paraguayo de Tiro Práctico', color: '#D91E18' },
-    { id: 4, abbreviation: 'CTCOF', name: 'CTCOF (Pendiente de Confirmación)', color: '#EA580C' },
-    { id: 5, abbreviation: 'CC', name: 'CC (Pendiente de Confirmación)', color: '#0891B2' },
-];
+import { createClient } from '@/lib/supabase';
+import { Club } from '@/lib/types';
 
 export default function ClubesPage() {
+    const [clubes, setClubes] = useState<Club[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function loadClubes() {
+            const supabase = createClient();
+            const { data } = await supabase
+                .from('clubes')
+                .select('*')
+                .in('estado', ['afiliado', 'pendiente'])
+                .order('nombre');
+
+            if (data) setClubes(data);
+            setLoading(false);
+        }
+        loadClubes();
+    }, []);
+
     return (
         <div className="min-h-screen bg-bg-elite flex flex-col">
             <Header />
@@ -60,28 +74,41 @@ export default function ClubesPage() {
 
                 {/* Grid Section */}
                 <div style={{ maxWidth: '1120px', margin: '-2rem auto 4rem', padding: '0 1.25rem', position: 'relative', zIndex: 10 }}>
-                    <div style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-                        gap: '1.25rem',
-                    }}>
-                        {CLUBS.map((club, index) => (
-                            <div
-                                key={club.id}
-                                className="animate-stagger-in"
-                                style={{ animationDelay: `${index * 80}ms` }}
-                            >
-                                <ClubCard
-                                    abbreviation={club.abbreviation}
-                                    name={club.name}
-                                    color={club.color}
-                                />
-                            </div>
-                        ))}
-                    </div>
+                    {loading ? (
+                        <div className="flex justify-center py-12">
+                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+                        </div>
+                    ) : (
+                        <div style={{
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+                            gap: '1.25rem',
+                        }}>
+                            {clubes.length === 0 ? (
+                                <div className="col-span-full text-center py-12 bg-white/80 backdrop-blur rounded-2xl border border-white shadow-sm">
+                                    <p className="text-slate-500 font-medium">No se encontraron clubes registrados.</p>
+                                </div>
+                            ) : (
+                                clubes.map((club, index) => (
+                                    <div
+                                        key={club.id}
+                                        className="animate-stagger-in"
+                                        style={{ animationDelay: `${index * 80}ms` }}
+                                    >
+                                        <ClubCard
+                                            abbreviation={club.siglas}
+                                            name={club.estado === 'pendiente' ? `${club.nombre} (Pendiente)` : club.nombre}
+                                            color={club.color || '#1E3A8A'}
+                                        />
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    )}
                 </div>
             </main>
             <Footer />
         </div>
     );
 }
+
