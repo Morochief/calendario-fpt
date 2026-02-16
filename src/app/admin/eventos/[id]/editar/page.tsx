@@ -70,7 +70,7 @@ export default function EditarEventoPage() {
         <div className="min-h-screen bg-bg-elite flex flex-col font-sans text-text-elite">
             <Header />
             <main className="flex-grow py-12 px-4 sm:px-6 lg:px-8 animate-page-enter">
-                <div className="max-w-4xl mx-auto space-y-8">
+                <div className="max-w-main mx-auto space-y-8">
                     <Breadcrumbs />
 
                     <div className="flex items-center justify-between">
