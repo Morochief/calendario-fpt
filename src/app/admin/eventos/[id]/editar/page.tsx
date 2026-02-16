@@ -88,9 +88,7 @@ export default function EditarEventoPage() {
                         </Link>
                     </div>
 
-                    <div className="bg-surface rounded-xl shadow-elite-sm border border-border-elite p-8">
-                        <EventForm initialData={evento} isEditing={true} />
-                    </div>
+                    <EventForm initialData={evento} isEditing={true} />
                 </div>
             </main>
         </div>

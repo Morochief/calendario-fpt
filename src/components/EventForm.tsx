@@ -198,26 +198,29 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
         }
     }
 
-    // Styles for Elite Palette
-    const labelStyle = "block text-sm font-medium text-text-elite mb-1.5";
-    const inputStyle = `block w-full rounded-elite-sm border-border-elite shadow-elite-xs focus:border-cop-blue focus:ring-1 focus:ring-cop-blue/20 sm:text-sm py-2.5 transition-all text-text-secondary bg-surface hover:border-border-hover`;
-    const errorInputStyle = "border-status-error focus:border-status-error focus:ring-status-error bg-status-error-bg";
-    const sectionHeaderStyle = "text-lg font-bold text-text-elite flex items-center gap-2 mb-6 pb-2 border-b border-border-elite";
+    // Premium input styles
+    const inputStyle = `block w-full rounded-xl border border-[rgba(30,58,138,0.15)] bg-white px-4 py-3 text-sm text-[#1E3A8A] placeholder:text-[#94A3B8] shadow-[0_2px_8px_rgba(30,58,138,0.06)] transition-all duration-200 hover:border-[rgba(30,58,138,0.25)] hover:shadow-[0_4px_12px_rgba(30,58,138,0.10)] focus:border-[#1E3A8A] focus:ring-2 focus:ring-[rgba(30,58,138,0.15)] focus:shadow-[0_4px_16px_rgba(30,58,138,0.12)] outline-none`;
+    const errorInputStyle = "!border-[#D91E18] !ring-[rgba(217,30,24,0.1)] focus:!border-[#D91E18] focus:!ring-[rgba(217,30,24,0.15)]";
 
     return (
         <form onSubmit={handleSubmit} noValidate className="space-y-8 animate-in fade-in duration-500">
 
             {/* --- General Information --- */}
-            <div className="bg-surface p-6 rounded-xl border border-border-elite shadow-elite-sm">
-                <h3 className={sectionHeaderStyle}>
-                    <AlignLeft size={20} className="text-fpt-red" />
-                    Información General
-                </h3>
+            <div className="rounded-2xl overflow-hidden shadow-elite-md hover:shadow-elite-lg transition-shadow duration-300 border border-[rgba(30,58,138,0.12)]">
+                {/* Gradient Header */}
+                <div className="bg-gradient-to-r from-[#1E3A8A] via-[#2548a0] to-[#1E3A8A] px-6 py-4 flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                        <AlignLeft size={18} className="text-white" />
+                    </div>
+                    <h3 className="text-white font-semibold text-base tracking-tight">
+                        Información General
+                    </h3>
+                </div>
 
-                <div className="grid grid-cols-1 gap-6">
+                <div className="bg-white p-6 space-y-5">
                     <div>
-                        <label htmlFor="titulo" className={labelStyle}>
-                            Título del evento <span className="text-fpt-red">*</span>
+                        <label htmlFor="titulo" className="block text-sm font-semibold text-[#1E3A8A] mb-2">
+                            Título del evento <span className="text-[#D91E18]">*</span>
                         </label>
                         <input
                             id="titulo"
@@ -229,18 +232,18 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                             required
                             className={`${inputStyle} ${errors.titulo ? errorInputStyle : ''}`}
                         />
-                        {errors.titulo && <p className="mt-1 text-sm text-status-error font-medium">{errors.titulo}</p>}
+                        {errors.titulo && <p className="mt-1.5 text-sm text-[#D91E18] font-medium">{errors.titulo}</p>}
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                         {modalidades.length === 0 ? (
                             <div className="col-span-2">
                                 <SelectEmptyState entityName="modalidades" createHref="/admin/modalidades" />
                             </div>
                         ) : (
                             <div>
-                                <label htmlFor="modalidad" className={labelStyle}>
-                                    Modalidad <span className="text-fpt-red">*</span>
+                                <label htmlFor="modalidad" className="block text-sm font-semibold text-[#1E3A8A] mb-2">
+                                    Modalidad <span className="text-[#D91E18]">*</span>
                                 </label>
                                 <select
                                     id="modalidad"
@@ -248,7 +251,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                                     value={modalidadId}
                                     onChange={(e) => setModalidadId(e.target.value)}
                                     required
-                                    className={`${inputStyle} ${errors.modalidad_id ? errorInputStyle : ''}`}
+                                    className={`${inputStyle} cursor-pointer ${errors.modalidad_id ? errorInputStyle : ''}`}
                                 >
                                     {modalidades.map(mod => (
                                         <option key={mod.id} value={mod.id}>{mod.nombre}</option>
@@ -258,8 +261,8 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                         )}
 
                         <div>
-                            <label htmlFor="tipo" className={labelStyle}>
-                                Tipo de evento <span className="text-fpt-red">*</span>
+                            <label htmlFor="tipo" className="block text-sm font-semibold text-[#1E3A8A] mb-2">
+                                Tipo de evento <span className="text-[#D91E18]">*</span>
                             </label>
                             <select
                                 id="tipo"
@@ -267,7 +270,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                                 value={tipoEventoId}
                                 onChange={(e) => setTipoEventoId(e.target.value)}
                                 required
-                                className={`${inputStyle} ${errors.tipo_evento_id ? errorInputStyle : ''}`}
+                                className={`${inputStyle} cursor-pointer ${errors.tipo_evento_id ? errorInputStyle : ''}`}
                             >
                                 {tiposEvento.map(t => (
                                     <option key={t.id} value={t.id}>{t.nombre}</option>
@@ -279,47 +282,51 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
             </div>
 
             {/* --- Date & Location --- */}
-            <div className="bg-surface p-6 rounded-xl border border-border-elite shadow-elite-sm">
-                <h3 className={sectionHeaderStyle}>
-                    <Calendar size={20} className="text-fpt-red" />
-                    Fecha y Ubicación
-                </h3>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <div>
-                        <label htmlFor="fecha" className={labelStyle}>
-                            Fecha <span className="text-fpt-red">*</span>
-                        </label>
-                        <input
-                            id="fecha"
-                            name="fecha"
-                            type="date"
-                            value={fecha}
-                            onChange={(e) => setFecha(e.target.value)}
-                            required
-                            className={`${inputStyle} ${errors.fecha ? errorInputStyle : ''}`}
-                        />
-                        {errors.fecha && <p className="mt-1 text-sm text-status-error font-medium">{errors.fecha}</p>}
+            <div className="rounded-2xl overflow-hidden shadow-elite-md hover:shadow-elite-lg transition-shadow duration-300 border border-[rgba(30,58,138,0.12)]">
+                <div className="bg-gradient-to-r from-[#1E3A8A] via-[#2548a0] to-[#1E3A8A] px-6 py-4 flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                        <Calendar size={18} className="text-white" />
                     </div>
-
-                    <div>
-                        <label htmlFor="hora" className={labelStyle}>Hora</label>
-                        <input
-                            id="hora"
-                            name="hora"
-                            type="time"
-                            value={hora}
-                            onChange={(e) => setHora(e.target.value)}
-                            className={inputStyle}
-                        />
-                    </div>
+                    <h3 className="text-white font-semibold text-base tracking-tight">
+                        Fecha y Ubicación
+                    </h3>
                 </div>
 
-                <div className="space-y-6">
+                <div className="bg-white p-6 space-y-5">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div>
+                            <label htmlFor="fecha" className="block text-sm font-semibold text-[#1E3A8A] mb-2">
+                                Fecha <span className="text-[#D91E18]">*</span>
+                            </label>
+                            <input
+                                id="fecha"
+                                name="fecha"
+                                type="date"
+                                value={fecha}
+                                onChange={(e) => setFecha(e.target.value)}
+                                required
+                                className={`${inputStyle} ${errors.fecha ? errorInputStyle : ''}`}
+                            />
+                            {errors.fecha && <p className="mt-1.5 text-sm text-[#D91E18] font-medium">{errors.fecha}</p>}
+                        </div>
+
+                        <div>
+                            <label htmlFor="hora" className="block text-sm font-semibold text-[#1E3A8A] mb-2">Hora</label>
+                            <input
+                                id="hora"
+                                name="hora"
+                                type="time"
+                                value={hora}
+                                onChange={(e) => setHora(e.target.value)}
+                                className={inputStyle}
+                            />
+                        </div>
+                    </div>
+
                     <div>
-                        <label htmlFor="ubicacion" className={labelStyle}>Ubicación / Polígono</label>
-                        <div className="relative">
-                            <MapPin size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
+                        <label htmlFor="ubicacion" className="block text-sm font-semibold text-[#1E3A8A] mb-2">Ubicación / Polígono</label>
+                        <div className="relative group">
+                            <MapPin size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#94A3B8] group-focus-within:text-[#1E3A8A] transition-colors" />
                             <input
                                 id="ubicacion"
                                 name="ubicacion"
@@ -327,15 +334,15 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                                 value={ubicacion}
                                 onChange={(e) => setUbicacion(e.target.value)}
                                 placeholder="Ej: COP - Polígono de 10m"
-                                className={`${inputStyle} pl-10`}
+                                className={`${inputStyle} pl-11`}
                             />
                         </div>
                     </div>
 
                     <div>
-                        <label htmlFor="ubicacion_url" className={labelStyle}>Link Google Maps</label>
-                        <div className="relative">
-                            <LinkIcon size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
+                        <label htmlFor="ubicacion_url" className="block text-sm font-semibold text-[#1E3A8A] mb-2">Link Google Maps</label>
+                        <div className="relative group">
+                            <LinkIcon size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#94A3B8] group-focus-within:text-[#1E3A8A] transition-colors" />
                             <input
                                 id="ubicacion_url"
                                 name="ubicacion_url"
@@ -343,7 +350,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                                 value={ubicacionUrl}
                                 onChange={(e) => setUbicacionUrl(e.target.value)}
                                 placeholder="https://maps.app.goo.gl/..."
-                                className={`${inputStyle} pl-10`}
+                                className={`${inputStyle} pl-11`}
                             />
                         </div>
                     </div>
@@ -351,18 +358,22 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
             </div>
 
             {/* --- Multimedia & Description --- */}
-            <div className="bg-surface p-6 rounded-xl border border-border-elite shadow-elite-sm">
-                <h3 className={sectionHeaderStyle}>
-                    <ImageIcon size={20} className="text-fpt-red" />
-                    Multimedia
-                </h3>
+            <div className="rounded-2xl overflow-hidden shadow-elite-md hover:shadow-elite-lg transition-shadow duration-300 border border-[rgba(30,58,138,0.12)]">
+                <div className="bg-gradient-to-r from-[#D91E18] via-[#e63e39] to-[#D91E18] px-6 py-4 flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                        <ImageIcon size={18} className="text-white" />
+                    </div>
+                    <h3 className="text-white font-semibold text-base tracking-tight">
+                        Multimedia
+                    </h3>
+                </div>
 
-                <div className="space-y-6">
+                <div className="bg-white p-6 space-y-5">
                     <div>
-                        <span className={labelStyle}>Imagen del Evento</span>
-                        <div className="flex flex-col md:flex-row gap-4 items-start">
+                        <span className="block text-sm font-semibold text-[#1E3A8A] mb-3">Imagen del Evento</span>
+                        <div className="flex flex-col md:flex-row gap-5 items-start">
                             {/* Preview Area */}
-                            <div className="w-full md:w-1/3 aspect-video bg-bg-elite rounded-lg border-2 border-dashed border-border-elite flex items-center justify-center overflow-hidden relative group hover:border-cop-blue transition-colors">
+                            <div className="w-full md:w-1/3 aspect-video bg-gradient-to-br from-[#F9FBFF] to-[#EEF2FF] rounded-xl border-2 border-dashed border-[rgba(30,58,138,0.2)] flex items-center justify-center overflow-hidden relative group hover:border-[#1E3A8A] hover:shadow-[0_4px_16px_rgba(30,58,138,0.12)] transition-all duration-300">
                                 {imagenUrl ? (
                                     <>
                                         <div
@@ -375,7 +386,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                                         <button
                                             type="button"
                                             onClick={() => setImagenUrl('')}
-                                            className="absolute top-2 right-2 bg-white/90 p-1.5 rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity hover:text-status-error focus:opacity-100"
+                                            className="absolute top-2 right-2 bg-white/95 p-1.5 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-all hover:text-[#D91E18] hover:scale-110 focus:opacity-100"
                                             aria-label="Eliminar imagen"
                                         >
                                             <X size={16} />
@@ -383,8 +394,8 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                                     </>
                                 ) : (
                                     <div className="text-center p-4">
-                                        <ImageIcon size={32} className="mx-auto text-text-muted mb-2" />
-                                        <p className="text-xs text-text-muted">Sin imagen</p>
+                                        <ImageIcon size={32} className="mx-auto text-[#94A3B8] mb-2" />
+                                        <p className="text-xs text-[#94A3B8] font-medium">Sin imagen</p>
                                     </div>
                                 )}
                             </div>
@@ -392,14 +403,14 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                             {/* Upload Actions */}
                             <div className="flex-1 space-y-4 w-full">
                                 <div>
-                                    <p className="text-sm text-text-muted mb-3">Sube una imagen (JPG, PNG) o pega una URL directa.</p>
+                                    <p className="text-sm text-[#475569] mb-3">Sube una imagen (JPG, PNG) o pega una URL directa.</p>
 
                                     <div className="flex gap-2 mb-4">
                                         <button
                                             type="button"
                                             onClick={() => fileInputRef.current?.click()}
                                             disabled={uploading}
-                                            className="flex items-center gap-2 px-4 py-2 bg-bg-elite hover:bg-cop-blue/5 text-cop-blue border border-border-elite rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+                                            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-b from-[#F9FBFF] to-[#EEF2FF] hover:from-[#EEF2FF] hover:to-[#E0E7FF] text-[#1E3A8A] border border-[rgba(30,58,138,0.2)] rounded-xl text-sm font-semibold transition-all duration-200 disabled:opacity-50 shadow-sm hover:shadow-md active:scale-95"
                                         >
                                             {uploading ? <Loader2 size={16} className="animate-spin" /> : <UploadCloud size={16} />}
                                             Subir Archivo
@@ -417,17 +428,17 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
 
                                     {/* Position Control */}
                                     {imagenUrl && (
-                                        <div className="bg-bg-elite p-3 rounded-lg border border-border-elite">
-                                            <span className="text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2 block">Ajustar Enfoque</span>
+                                        <div className="bg-gradient-to-b from-[#F9FBFF] to-[#F1F5FF] p-4 rounded-xl border border-[rgba(30,58,138,0.12)]">
+                                            <span className="text-xs font-bold text-[#475569] uppercase tracking-wider mb-3 block">Ajustar Enfoque</span>
                                             <div className="flex flex-wrap gap-2">
                                                 {['top', 'center', 'bottom', 'left', 'right'].map((pos) => (
                                                     <button
                                                         key={pos}
                                                         type="button"
                                                         onClick={() => setImagenPosition(pos)}
-                                                        className={`px-3 py-1.5 text-xs font-medium rounded-md border transition-all ${imagenPosition === pos
-                                                            ? 'bg-cop-blue text-white border-cop-blue shadow-sm'
-                                                            : 'bg-white text-text-secondary border-border-elite hover:border-cop-blue/50 hover:text-cop-blue'
+                                                        className={`px-4 py-2 text-xs font-semibold rounded-lg border transition-all duration-200 ${imagenPosition === pos
+                                                            ? 'bg-[#1E3A8A] text-white border-[#1E3A8A] shadow-[0_2px_8px_rgba(30,58,138,0.3)] scale-105'
+                                                            : 'bg-white text-[#475569] border-[rgba(30,58,138,0.15)] hover:border-[#1E3A8A] hover:text-[#1E3A8A] hover:shadow-sm'
                                                             }`}
                                                     >
                                                         {pos === 'top' ? 'Arriba' :
@@ -443,24 +454,24 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
 
                                 <div className="relative">
                                     <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                                        <div className="w-full border-t border-border-elite"></div>
+                                        <div className="w-full border-t border-[rgba(30,58,138,0.12)]"></div>
                                     </div>
                                     <div className="relative flex justify-center">
-                                        <span className="bg-surface px-2 text-xs text-text-muted uppercase">O usa URL</span>
+                                        <span className="bg-white px-3 text-xs text-[#94A3B8] uppercase font-semibold">O usa URL</span>
                                     </div>
                                 </div>
 
                                 <div>
                                     <label htmlFor="imagen-url-input" className="sr-only">URL de la imagen</label>
-                                    <div className="relative">
-                                        <LinkIcon size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
+                                    <div className="relative group">
+                                        <LinkIcon size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#94A3B8] group-focus-within:text-[#1E3A8A] transition-colors" />
                                         <input
                                             id="imagen-url-input"
                                             type="url"
                                             value={imagenUrl}
                                             onChange={(e) => setImagenUrl(e.target.value)}
                                             placeholder="https://pagina.com/imagen.jpg"
-                                            className={`${inputStyle} pl-10`}
+                                            className={`${inputStyle} pl-11`}
                                         />
                                     </div>
                                 </div>
@@ -469,7 +480,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                     </div>
 
                     <div>
-                        <label htmlFor="descripcion" className={labelStyle}>Descripción Adicional</label>
+                        <label htmlFor="descripcion" className="block text-sm font-semibold text-[#1E3A8A] mb-2">Descripción Adicional</label>
                         <textarea
                             id="descripcion"
                             value={descripcion}
@@ -483,17 +494,17 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
             </div>
 
             {/* --- Actions --- */}
-            <div className="flex items-center justify-end gap-4 pt-6">
+            <div className="flex items-center justify-end gap-4 pt-4">
                 <Link
                     href="/admin"
-                    className="btn btn-secondary shadow-elite-xs"
+                    className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold text-[#475569] bg-white border border-[rgba(30,58,138,0.15)] rounded-xl hover:bg-[#F9FBFF] hover:border-[rgba(30,58,138,0.25)] shadow-sm hover:shadow-md transition-all duration-200 active:scale-95"
                 >
                     Cancelar
                 </Link>
                 <button
                     type="submit"
                     disabled={loading || uploading}
-                    className="btn btn-primary shadow-btn-red hover:shadow-btn-red-hover active:scale-95 px-6"
+                    className="inline-flex items-center gap-2 px-8 py-3 text-sm font-bold text-white bg-gradient-to-b from-[#D91E18] to-[#b81a15] rounded-xl shadow-[0_4px_14px_rgba(217,30,24,0.35)] hover:shadow-[0_6px_24px_rgba(217,30,24,0.45)] hover:from-[#e62e28] hover:to-[#c91e18] transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     {loading ? (
                         <>

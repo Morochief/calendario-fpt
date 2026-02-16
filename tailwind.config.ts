@@ -71,25 +71,28 @@ const config: Config = {
                Shadows — Blue-tinted elevation system
                ======================================== */
             boxShadow: {
-                "elite-xs": "0 1px 2px rgba(30, 58, 138, 0.04)",
+                "elite-xs": "0 1px 3px rgba(30, 58, 138, 0.08)",
                 "elite-sm":
-                    "0 1px 4px rgba(30, 58, 138, 0.06), 0 1px 2px rgba(30, 58, 138, 0.04)",
+                    "0 2px 8px rgba(30, 58, 138, 0.10), 0 1px 3px rgba(30, 58, 138, 0.06)",
                 "elite-md":
-                    "0 4px 16px rgba(30, 58, 138, 0.08), 0 2px 4px rgba(30, 58, 138, 0.04)",
+                    "0 4px 20px rgba(30, 58, 138, 0.12), 0 2px 6px rgba(30, 58, 138, 0.08)",
                 "elite-lg":
-                    "0 8px 32px rgba(30, 58, 138, 0.10), 0 4px 8px rgba(30, 58, 138, 0.06)",
+                    "0 10px 40px rgba(30, 58, 138, 0.14), 0 4px 12px rgba(30, 58, 138, 0.08)",
                 "elite-xl":
-                    "0 16px 48px rgba(30, 58, 138, 0.12), 0 8px 16px rgba(30, 58, 138, 0.06)",
+                    "0 20px 60px rgba(30, 58, 138, 0.16), 0 8px 20px rgba(30, 58, 138, 0.08)",
 
                 // Glow effects
-                "glow-blue": "0 0 0 3px rgba(30, 58, 138, 0.08)",
-                "glow-red": "0 0 0 3px rgba(217, 30, 24, 0.08)",
-                "glow-success": "0 0 0 3px rgba(34, 197, 94, 0.1)",
+                "glow-blue": "0 0 0 3px rgba(30, 58, 138, 0.12)",
+                "glow-red": "0 0 0 3px rgba(217, 30, 24, 0.12)",
+                "glow-success": "0 0 0 3px rgba(34, 197, 94, 0.15)",
 
                 // Button-specific shadows
-                "btn-red": "0 1px 3px rgba(217, 30, 24, 0.2)",
-                "btn-red-hover": "0 4px 12px rgba(217, 30, 24, 0.25)",
-                "btn-blue": "0 2px 8px rgba(30, 58, 138, 0.3)",
+                "btn-red": "0 2px 8px rgba(217, 30, 24, 0.25)",
+                "btn-red-hover": "0 6px 20px rgba(217, 30, 24, 0.35)",
+                "btn-blue": "0 2px 10px rgba(30, 58, 138, 0.35)",
+
+                // Card hover lift
+                "card-hover": "0 12px 32px rgba(30, 58, 138, 0.15), 0 4px 8px rgba(30, 58, 138, 0.08)",
 
                 // Hero
                 "hero-logo": "0 8px 40px rgba(0, 0, 0, 0.08)",
