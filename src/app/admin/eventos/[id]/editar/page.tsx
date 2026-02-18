@@ -8,6 +8,7 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import EventForm from '@/components/EventForm';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import { createClient } from '@/lib/supabase';
+import { isAllowedAdmin } from '@/lib/utils';
 import { useToast } from '@/components/Toast';
 
 export default function EditarEventoPage() {
@@ -31,8 +32,7 @@ export default function EditarEventoPage() {
         }
 
         // Check if user is admin
-        const allowedAdmins = ['admin@fpdt.org.py', 'admin@fpt.com'];
-        if (!user.email || !allowedAdmins.includes(user.email)) {
+        if (!isAllowedAdmin(user.email)) {
             router.push('/');
             return;
         }

@@ -34,7 +34,7 @@ import { createClient } from '@/lib/supabase';
 import { Evento, Modalidad, TipoEvento } from '@/lib/types';
 import StatCard from '@/components/ui/StatCard';
 import EliteButton from '@/components/ui/EliteButton';
-import { cn } from '@/lib/utils';
+import { cn, isAllowedAdmin } from '@/lib/utils';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -77,8 +77,7 @@ export default function AdminPage() {
         }
 
         // Check if user is admin (simplified check for now)
-        const allowedAdmins = ['admin@fpdt.org.py', 'admin@fpt.com'];
-        if (!user.email || !allowedAdmins.includes(user.email)) {
+        if (!isAllowedAdmin(user.email)) {
             router.push('/');
             return;
         }

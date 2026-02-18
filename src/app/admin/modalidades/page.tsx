@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase';
+import { isAllowedAdmin } from '@/lib/utils';
 import { useToast } from '@/components/Toast';
 import Header from '@/components/Header';
 import EliteCard from '@/components/ui/EliteCard';
@@ -58,8 +59,7 @@ export default function ModalidadesPage() {
         }
 
         // Check if user is admin
-        const allowedAdmins = ['admin@fpdt.org.py', 'admin@fpt.com'];
-        if (!user.email || !allowedAdmins.includes(user.email)) {
+        if (!isAllowedAdmin(user.email)) {
             router.push('/');
             return;
         }

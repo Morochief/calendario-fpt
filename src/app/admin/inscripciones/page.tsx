@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase';
+import { isAllowedAdmin } from '@/lib/utils';
 import { Inscripcion, Modalidad, Evento, TipoEvento } from '@/lib/types';
 import { useToast } from '@/components/Toast';
 import Header from '@/components/Header';
@@ -64,8 +65,7 @@ export default function InscripcionesPage() {
         }
 
         // Check if user is admin
-        const allowedAdmins = ['admin@fpdt.org.py', 'admin@fpt.com'];
-        if (!user.email || !allowedAdmins.includes(user.email)) {
+        if (!isAllowedAdmin(user.email)) {
             router.push('/');
             return;
         }
@@ -288,7 +288,7 @@ export default function InscripcionesPage() {
                         <EliteTable
                             data={filteredInscripciones}
                             gridCols="2fr 1.5fr 1.5fr 1.5fr 120px 100px 100px"
-                            constrainMinWidth
+
                             keyExtractor={(i) => i.id}
                             header={
                                 <>

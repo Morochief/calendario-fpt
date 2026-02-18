@@ -9,6 +9,7 @@ import EliteCard from '@/components/ui/EliteCard';
 import EventForm from '@/components/EventForm';
 import { ArrowLeft, Loader2, Plus } from 'lucide-react';
 import { createClient } from '@/lib/supabase';
+import { isAllowedAdmin } from '@/lib/utils';
 
 export default function NuevoEventoPage() {
     const [loading, setLoading] = useState(true);
@@ -24,8 +25,7 @@ export default function NuevoEventoPage() {
         }
 
         // Check if user is admin
-        const allowedAdmins = ['admin@fpdt.org.py', 'admin@fpt.com'];
-        if (!user.email || !allowedAdmins.includes(user.email)) {
+        if (!isAllowedAdmin(user.email)) {
             router.push('/');
             return;
         }

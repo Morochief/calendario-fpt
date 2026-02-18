@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, Settings, ChevronRight } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface BreadcrumbItem {
     label: string;
@@ -20,7 +21,11 @@ const ROUTES: Record<string, BreadcrumbItem> = {
     '/admin/clubes': { label: 'Clubes' },
 };
 
-export default function Breadcrumbs() {
+interface BreadcrumbsProps {
+    className?: string;
+}
+
+export default function Breadcrumbs({ className }: BreadcrumbsProps) {
     const pathname = usePathname();
 
     // Generate breadcrumb items from current path
@@ -53,7 +58,7 @@ export default function Breadcrumbs() {
     }
 
     return (
-        <nav aria-label="Breadcrumb" className="mb-4">
+        <nav aria-label="Breadcrumb" className={cn("mb-4", className)}>
             <ol className="flex items-center flex-wrap gap-2 text-sm text-text-muted">
                 {breadcrumbs.map((item, index) => {
                     const isLast = index === breadcrumbs.length - 1;
