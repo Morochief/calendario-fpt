@@ -157,13 +157,23 @@ export default function Header() {
                     ))}
                     <div className="h-px bg-gray-100 my-2" />
                     {user ? (
-                        <button
-                            onClick={handleLogout}
-                            className="flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition-colors w-full text-left"
-                        >
-                            <Settings size={18} strokeWidth={2} />
-                            <span className="font-medium">Cerrar Sesión ({user.email})</span>
-                        </button>
+                        <>
+                            <Link
+                                href="/admin"
+                                onClick={() => setMenuOpen(false)}
+                                className="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-colors"
+                            >
+                                <Settings size={18} strokeWidth={2} />
+                                <span className="font-medium">Panel Admin</span>
+                            </Link>
+                            <button
+                                onClick={handleLogout}
+                                className="flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition-colors w-full text-left"
+                            >
+                                <X size={18} strokeWidth={2} />
+                                <span className="font-medium">Cerrar Sesión ({user.email})</span>
+                            </button>
+                        </>
                     ) : (
                         <Link
                             href="/admin"
