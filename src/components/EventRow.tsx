@@ -1,7 +1,7 @@
 'use client';
 
 import { EventoConModalidad } from '@/lib/types';
-import { Clock } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 
 interface EventRowProps {
     evento: EventoConModalidad;
@@ -30,12 +30,10 @@ export default function EventRow({ evento, onClick }: EventRowProps) {
                 borderLeftColor: modalityColor,
             }}
         >
-            {evento.hora && (
-                <span className="flex items-center gap-1 text-text-muted font-semibold text-xs shrink-0">
-                    <Clock size={12} />
-                    {evento.hora.slice(0, 5)}
-                </span>
-            )}
+            <span className="flex items-center gap-1 text-text-muted font-semibold text-xs shrink-0 uppercase tracking-tight">
+                <Calendar size={12} />
+                {new Date(evento.fecha + 'T12:00:00').toLocaleDateString('es-ES', { day: '2-digit', month: 'short' }).replace('.', '')}
+            </span>
 
             <span className="font-semibold text-cop-blue whitespace-nowrap overflow-hidden text-ellipsis flex-1 group-hover:text-fpt-red transition-colors">
                 {evento.titulo}
