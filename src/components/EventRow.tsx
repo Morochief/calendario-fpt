@@ -2,6 +2,7 @@
 
 import { EventoConModalidad } from '@/lib/types';
 import { Calendar } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface EventRowProps {
     evento: EventoConModalidad;
@@ -35,9 +36,26 @@ export default function EventRow({ evento, onClick }: EventRowProps) {
                 {new Date(evento.fecha + 'T12:00:00').toLocaleDateString('es-ES', { day: '2-digit', month: 'short' }).replace('.', '')}
             </span>
 
-            <span className="font-semibold text-cop-blue whitespace-nowrap overflow-hidden text-ellipsis flex-1 group-hover:text-fpt-red transition-colors">
+            <span className={cn(
+                "font-semibold whitespace-nowrap overflow-hidden text-ellipsis flex-1 transition-colors",
+                (evento.estado_override === 'cancelado' || evento.estado_override === 'suspendido')
+                    ? "text-slate-400 line-through decoration-slate-300"
+                    : "text-cop-blue group-hover:text-fpt-red"
+            )}>
                 {evento.titulo}
             </span>
+
+            {evento.estado_override && (
+                <span className={cn(
+                    "text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-md ml-2 shrink-0 border",
+                    evento.estado_override === 'cancelado' ? "bg-red-50 text-red-600 border-red-100" :
+                        evento.estado_override === 'suspendido' ? "bg-orange-50 text-orange-600 border-orange-100" :
+                            "bg-yellow-50 text-yellow-600 border-yellow-100"
+                )}>
+                    {evento.estado_override === 'cancelado' ? 'Canc' :
+                        evento.estado_override === 'suspendido' ? 'Susp' : 'Post'}
+                </span>
+            )}
         </div>
     );
 }

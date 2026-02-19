@@ -18,6 +18,7 @@ export type Evento = {
     imagen_position?: string;
     descripcion: string | null;
     tipo?: string;
+    estado_override?: string | null;
     created_at: string;
     modalidades?: Modalidad;
     tipos_evento?: TipoEvento;

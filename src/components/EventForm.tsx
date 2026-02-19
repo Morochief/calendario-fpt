@@ -40,6 +40,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
     const [descripcion, setDescripcion] = useState(initialData?.descripcion || '');
     const [tipoEventoId, setTipoEventoId] = useState(initialData?.tipo_evento_id || '');
     const [clubId, setClubId] = useState(initialData?.club_id || '');
+    const [estadoOverride, setEstadoOverride] = useState(initialData?.estado_override || '');
 
     useEffect(() => { loadOptions(); }, []);
 
@@ -56,6 +57,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
             setDescripcion(initialData.descripcion || '');
             setTipoEventoId(initialData.tipo_evento_id || '');
             setClubId(initialData.club_id || '');
+            setEstadoOverride(initialData.estado_override || '');
         }
     }, [initialData]);
 
@@ -108,6 +110,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
             imagen_url: imagenUrl || null, imagen_position: imagenPosition,
             descripcion: descripcion || null, tipo_evento_id: tipoEventoId || null,
             club_id: clubId || null,
+            estado_override: estadoOverride || null,
         };
 
         const validation = eventoCreateSchema.safeParse(formData);
@@ -219,6 +222,26 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                             }))}
                             error={errors.tipo_evento_id}
                             placeholder="Seleccionar tipo"
+                            icon={Tag}
+                        />
+                    </div>
+
+                    {/* Estado Override */}
+                    <div className="group">
+                        <label htmlFor="estado_override" className="block text-sm font-bold text-cop-blue/70 mb-2 ml-1 transition-colors group-focus-within:text-cop-blue uppercase tracking-wider">
+                            Estado (Manual) <span className="text-slate-400 font-normal lowercase tracking-normal">(Opcional)</span>
+                        </label>
+                        <EliteSelect
+                            label="Estado Manual"
+                            value={estadoOverride}
+                            onChange={setEstadoOverride}
+                            options={[
+                                { value: '', label: 'Automático (Por Fecha)' },
+                                { value: 'cancelado', label: 'Cancelado' },
+                                { value: 'suspendido', label: 'Suspendido' },
+                                { value: 'postpuesto', label: 'Postpuesto' }
+                            ]}
+                            placeholder="Seleccionar estado"
                             icon={Tag}
                         />
                     </div>

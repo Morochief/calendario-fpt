@@ -158,6 +158,22 @@ export default function EventModal({ evento, onClose }: EventModalProps) {
                                 {tipoNombre}
                             </span>
                         )}
+                        {evento.estado_override && (
+                            <span style={{
+                                fontSize: '0.6875rem', fontWeight: 800, textTransform: 'uppercase',
+                                padding: '0.25rem 0.625rem', borderRadius: '6px',
+                                color: evento.estado_override === 'cancelado' ? '#DC2626' :
+                                    evento.estado_override === 'suspendido' ? '#EA580C' : '#CA8A04',
+                                border: `1.5px solid ${evento.estado_override === 'cancelado' ? '#DC2626' :
+                                    evento.estado_override === 'suspendido' ? '#EA580C' : '#CA8A04'
+                                    }30`,
+                                background: `${evento.estado_override === 'cancelado' ? '#DC2626' :
+                                    evento.estado_override === 'suspendido' ? '#EA580C' : '#CA8A04'
+                                    }08`,
+                            }}>
+                                {evento.estado_override}
+                            </span>
+                        )}
                     </div>
 
                     {/* Title */}

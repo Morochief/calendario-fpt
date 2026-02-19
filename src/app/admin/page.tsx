@@ -142,8 +142,11 @@ export default function AdminPage() {
     }
 
     // Determine Event Status
-    function getEventStatus(fecha: string): 'activo' | 'finalizado' | 'borrador' {
-        const eventDate = new Date(fecha + 'T23:59:59');
+    function getEventStatus(evento: any): 'activo' | 'finalizado' | 'borrador' | 'cancelado' | 'suspendido' | 'postpuesto' {
+        if (evento.estado_override) {
+            return evento.estado_override as any;
+        }
+        const eventDate = new Date(evento.fecha + 'T23:59:59');
         const now = new Date();
         return eventDate < now ? 'finalizado' : 'activo'; // Simple logic for now
     }
@@ -160,7 +163,7 @@ export default function AdminPage() {
                 ID: evento.id.substring(0, 8),
                 Fecha: evento.fecha,
                 Evento: evento.titulo,
-                Estado: getEventStatus(evento.fecha).toUpperCase(),
+                Estado: getEventStatus(evento).toUpperCase(),
                 Modalidad: evento.modalidades?.nombre || '',
                 Tipo: evento.tipos_evento?.nombre || evento.tipo || '',
                 Inscritos: evento.inscripciones?.[0]?.count || 0,
@@ -553,7 +556,7 @@ export default function AdminPage() {
                             ) : (
                                 paginatedEventos.map((evento, idx) => {
                                     const fecha = new Date(evento.fecha + 'T12:00:00');
-                                    const status = getEventStatus(evento.fecha);
+                                    const status = getEventStatus(evento);
                                     const isNext = nextEvent?.id === evento.id;
 
                                     return (
@@ -592,7 +595,11 @@ export default function AdminPage() {
                                                     <span className="w-1 h-1 rounded-full bg-slate-300" />
                                                     <span className={cn(
                                                         "text-[10px] font-bold px-1.5 py-0.5 rounded-md uppercase tracking-wide",
-                                                        status === 'activo' ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-600"
+                                                        status === 'activo' ? "bg-emerald-100 text-emerald-700" :
+                                                            status === 'finalizado' ? "bg-slate-100 text-slate-600" :
+                                                                status === 'cancelado' ? "bg-red-100 text-red-700" :
+                                                                    status === 'suspendido' ? "bg-orange-100 text-orange-700" :
+                                                                        "bg-yellow-100 text-yellow-700" // postpuesto
                                                     )}>
                                                         {status}
                                                     </span>
@@ -625,18 +632,25 @@ export default function AdminPage() {
                                             </div>
 
                                             {/* Estado (Desktop) */}
-                                            <div className="hidden md:block p-2 text-center">
-                                                {status === 'activo' ? (
-                                                    <span className="inline-flex items-center gap-2 text-[10px] font-black px-3 py-1.5 rounded-full text-emerald-600 bg-emerald-50/50 border border-emerald-100 uppercase tracking-wider shadow-sm">
-                                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                                                        Activo
-                                                    </span>
-                                                ) : (
-                                                    <span className="inline-flex items-center gap-2 text-[10px] font-black px-3 py-1.5 rounded-full text-slate-400 bg-slate-50 border border-slate-100 uppercase tracking-wider">
-                                                        <span className="w-1.5 h-1.5 rounded-full bg-slate-300" />
-                                                        Cerrado
-                                                    </span>
-                                                )}
+                                            <div className="hidden md:flex justify-center p-2">
+                                                <span className={cn(
+                                                    "inline-flex items-center gap-2 text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-wider shadow-sm border",
+                                                    status === 'activo' ? "text-emerald-600 bg-emerald-50/50 border-emerald-100" :
+                                                        status === 'finalizado' ? "text-slate-500 bg-slate-50 border-slate-100" :
+                                                            status === 'cancelado' ? "text-red-600 bg-red-50/50 border-red-100" :
+                                                                status === 'suspendido' ? "text-orange-600 bg-orange-50/50 border-orange-100" :
+                                                                    "text-yellow-600 bg-yellow-50/50 border-yellow-100" // postpuesto
+                                                )}>
+                                                    <span className={cn(
+                                                        "w-1.5 h-1.5 rounded-full",
+                                                        status === 'activo' ? "bg-emerald-500" :
+                                                            status === 'finalizado' ? "bg-slate-400" :
+                                                                status === 'cancelado' ? "bg-red-500" :
+                                                                    status === 'suspendido' ? "bg-orange-500" :
+                                                                        "bg-yellow-500"
+                                                    )} />
+                                                    {status === 'finalizado' ? 'Cerrado' : status}
+                                                </span>
                                             </div>
 
                                             {/* Modalidad (Desktop) */}

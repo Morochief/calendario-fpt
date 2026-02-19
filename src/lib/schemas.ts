@@ -78,6 +78,7 @@ export const eventoSchema = z.object({
     imagen_position: z.string().optional().default('center'),
     descripcion: z.string().max(1000).nullable().optional(),
     tipo: z.string().max(50).nullable().optional(), // Legacy field
+    estado_override: z.string().nullable().optional(),
     created_at: z.string().optional(),
 });
 
