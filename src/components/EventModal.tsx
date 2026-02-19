@@ -1,7 +1,7 @@
 'use client';
 
 import { EventoConModalidad } from '@/lib/types';
-import { Clock, MapPin, Map, X, Calendar as CalendarIcon, Building2 } from 'lucide-react';
+import { Clock, MapPin, Map, X, Calendar as CalendarIcon, Building2, ExternalLink } from 'lucide-react';
 import { useEffect, useState, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -237,9 +237,31 @@ export default function EventModal({ evento, onClose }: EventModalProps) {
                                 }}>
                                     <Building2 size={16} style={{ color: evento.clubes.color || '#1E3A8A' }} />
                                 </div>
-                                <span style={{ color: evento.clubes.color || '#475569', fontSize: '0.9375rem', fontWeight: 500 }}>
-                                    {evento.clubes.nombre}
-                                </span>
+                                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                    <span style={{ color: evento.clubes.color || '#475569', fontSize: '0.9375rem', fontWeight: 500 }}>
+                                        {evento.clubes.nombre}
+                                    </span>
+                                    {evento.clubes.website_url && (
+                                        <a
+                                            href={evento.clubes.website_url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            style={{
+                                                fontSize: '0.75rem',
+                                                color: '#3B82F6',
+                                                textDecoration: 'none',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '0.25rem',
+                                                marginTop: '0.125rem'
+                                            }}
+                                            onMouseEnter={(e) => e.currentTarget.style.textDecoration = 'underline'}
+                                            onMouseLeave={(e) => e.currentTarget.style.textDecoration = 'none'}
+                                        >
+                                            Visitar sitio web <ExternalLink size={10} />
+                                        </a>
+                                    )}
+                                </div>
                             </div>
                         )}
                     </div>

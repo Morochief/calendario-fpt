@@ -1,7 +1,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Club } from '@/lib/types';
-import { Filter, Check, ChevronDown, X, Building2 } from 'lucide-react';
+import { Filter, Check, ChevronDown, X, Building2, ExternalLink } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface ClubFilterProps {
@@ -97,16 +97,29 @@ export default function ClubFilter({ clubes, selected, onSelect }: ClubFilterPro
 
                             <div className="space-y-1">
                                 {clubes.map((club) => (
-                                    <button
-                                        key={club.id}
-                                        className={`flex items-center gap-3 px-4 py-2.5 rounded-[12px] cursor-pointer transition-all border-none bg-transparent w-full text-left text-[14px] text-[var(--color-text)] hover:bg-[var(--color-bg)] hover:translate-x-1 group ${selected === club.id ? 'bg-[var(--color-cop-blue)]/5 font-semibold' : ''}`}
-                                        onClick={() => handleSelect(club.id)}
-                                    >
-                                        <div className="w-5 flex justify-center">
-                                            {selected === club.id ? <Check size={16} strokeWidth={2} className="text-[var(--color-cop-blue)]" /> : <Building2 size={16} className="text-slate-400 group-hover:text-[var(--color-cop-blue)]" />}
-                                        </div>
-                                        <span className="flex-1">{club.nombre} ({club.siglas})</span>
-                                    </button>
+                                    <div key={club.id} className="flex items-center group/item hover:bg-[var(--color-bg)] rounded-[12px] pr-2 transition-all">
+                                        <button
+                                            className={`flex items-center gap-3 px-4 py-2.5 rounded-[12px] cursor-pointer transition-all border-none bg-transparent flex-1 text-left text-[14px] text-[var(--color-text)] group ${selected === club.id ? 'bg-[var(--color-cop-blue)]/5 font-semibold' : ''}`}
+                                            onClick={() => handleSelect(club.id)}
+                                        >
+                                            <div className="w-5 flex justify-center">
+                                                {selected === club.id ? <Check size={16} strokeWidth={2} className="text-[var(--color-cop-blue)]" /> : <Building2 size={16} className="text-slate-400 group-hover:text-[var(--color-cop-blue)]" />}
+                                            </div>
+                                            <span className="flex-1 text-left truncate">{club.nombre}</span>
+                                        </button>
+                                        {club.website_url && (
+                                            <a
+                                                href={club.website_url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="p-1.5 text-slate-400 hover:text-[var(--color-cop-blue)] hover:bg-blue-50 rounded-full transition-colors opacity-0 group-hover/item:opacity-100 focus:opacity-100"
+                                                title="Visitar sitio web oficial"
+                                                onClick={(e) => e.stopPropagation()}
+                                            >
+                                                <ExternalLink size={14} />
+                                            </a>
+                                        )}
+                                    </div>
                                 ))}
                             </div>
                         </motion.div>

@@ -94,6 +94,7 @@ export type Club = {
     color: string;
     contacto_nombre?: string | null;
     contacto_telefono?: string | null;
+    website_url?: string | null;
     created_at?: string;
 };
 
