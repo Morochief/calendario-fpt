@@ -112,7 +112,7 @@ export default function ClubFilter({ clubes, selected, onSelect }: ClubFilterPro
                                                 href={club.website_url}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="p-1.5 text-slate-400 hover:text-[var(--color-cop-blue)] hover:bg-blue-50 rounded-full transition-colors opacity-0 group-hover/item:opacity-100 focus:opacity-100"
+                                                className="p-1.5 text-slate-400 hover:text-[var(--color-cop-blue)] hover:bg-blue-50 rounded-full transition-colors"
                                                 title="Visitar sitio web oficial"
                                                 onClick={(e) => e.stopPropagation()}
                                             >
