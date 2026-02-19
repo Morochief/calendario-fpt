@@ -285,27 +285,12 @@ export default function AdminPage() {
                 </div>
 
                 {/* ========== CARDS: INSCRIPCIONES + CONFIGURACIÓN ========== */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12 stagger-children" style={{ animationDelay: '0.1s' }}>
-                    <Link className="group bg-white/90 backdrop-blur-sm p-6 rounded-2xl border border-white/20 shadow-lg shadow-slate-200/50 hover:shadow-xl hover:shadow-red-900/5 hover:-translate-y-1 transition-all duration-300 ease-out flex items-center gap-6 relative overflow-hidden h-full"
-                        href="/admin/inscripciones">
-                        {/* Hover Bar Effect */}
-                        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-fpt-red to-red-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out origin-left"></div>
 
-                        <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity transform translate-x-8 -translate-y-8 pointer-events-none">
-                            <Users size={150} className="text-fpt-red" />
-                        </div>
-                        <div className="p-4 bg-gradient-to-br from-red-50 to-red-100 border border-red-200 text-fpt-red rounded-xl group-hover:scale-110 transition-transform shadow-sm relative z-10 group-hover:shadow-red-500/20">
-                            <Users size={32} strokeWidth={2.5} />
-                        </div>
-                        <div className="z-10">
-                            <h3 className="font-bold text-cop-blue text-xl group-hover:text-fpt-red transition-colors">Inscripciones</h3>
-                            <p className="text-slate-500 text-sm mt-1 font-medium group-hover:text-slate-600 transition-colors">Ver lista de inscripciones</p>
-                        </div>
-                        {/* Badge con contador */}
-                        <span className="ml-auto bg-white border border-red-200 text-fpt-red text-xs font-black px-3 py-1 rounded-full shadow-sm z-10 group-hover:bg-fpt-red group-hover:text-white group-hover:border-fpt-red transition-all duration-300 transform group-hover:scale-110 group-hover:shadow-lg shadow-red-900/5">{kpiInscripciones}</span>
-                    </Link>
 
-                    <div className="group bg-white/90 backdrop-blur-sm p-6 rounded-2xl border border-white/20 shadow-lg shadow-slate-200/50 hover:shadow-xl hover:shadow-blue-900/5 transition-all duration-300 ease-out col-span-1 md:col-span-2 lg:col-span-2 relative overflow-hidden h-full">
+
+                {/* ========== CONFIGURACIÓN GLOBAL ========== */}
+                <div className="grid grid-cols-1 mb-12 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+                    <div className="group bg-white/90 backdrop-blur-sm p-8 rounded-3xl border border-white/40 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-blue-900/5 transition-all duration-500 ease-out relative overflow-hidden">
 
                         {/* Hover Bar Effect */}
                         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cop-blue to-blue-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out origin-left"></div>
@@ -319,7 +304,17 @@ export default function AdminPage() {
                             </div>
                             Configuración
                         </h3>
-                        <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 relative z-10 w-full">
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 relative z-10 w-full">
+                            <Link className="flex flex-col items-center justify-center gap-3 p-4 bg-white/50 hover:bg-white text-slate-600 rounded-xl border border-slate-200 transition-all duration-200 font-bold text-sm hover:border-fpt-red hover:text-fpt-red hover:shadow-lg hover:-translate-y-1 active:scale-95 group/link h-full relative overflow-hidden"
+                                href="/admin/inscripciones">
+                                <div className="absolute top-2 right-2 bg-red-100 text-fpt-red text-[10px] font-black px-2 py-0.5 rounded-full border border-red-200 shadow-sm z-20">
+                                    {kpiInscripciones}
+                                </div>
+                                <div className="p-3 bg-slate-50 rounded-full group-hover/link:bg-red-50 transition-colors relative z-10">
+                                    <Users size={24} className="text-slate-400 group-hover/link:text-fpt-red transition-colors" />
+                                </div>
+                                <span className="text-center group-hover/link:text-fpt-red relative z-10">Inscripciones</span>
+                            </Link>
                             <Link className="flex flex-col items-center justify-center gap-3 p-4 bg-white/50 hover:bg-white text-slate-600 rounded-xl border border-slate-200 transition-all duration-200 font-bold text-sm hover:border-cop-blue hover:text-cop-blue hover:shadow-lg hover:-translate-y-1 active:scale-95 group/link h-full"
                                 href="/admin/modalidades">
                                 <div className="p-3 bg-slate-50 rounded-full group-hover/link:bg-blue-50 transition-colors">
