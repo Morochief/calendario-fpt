@@ -484,173 +484,186 @@ export default function AdminPage() {
                     </div>
 
                     {/* Grid Table — mathematically aligned columns */}
-                    <div className="p-6 bg-slate-50/50 overflow-x-auto min-h-[400px]">
-                        {/* Shared grid template for perfect column sync */}
-                        {(() => {
-                            const gridCols = '48px 140px 1.5fr 120px 180px 110px 80px 100px';
-                            return (
-                                <>
-                                    {/* Header Row */}
-                                    <div
-                                        style={{ gridTemplateColumns: gridCols }}
-                                        className="grid items-center px-4 mb-3"
-                                    >
-                                        <div className="flex items-center">
-                                            <input type="checkbox" className="w-4 h-4 rounded border-slate-300 text-cop-blue focus:ring-blue-500/20 transition-all cursor-pointer" />
-                                        </div>
-                                        <div className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em] py-3 px-2">Fecha</div>
-                                        <div className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em] py-3 px-2">Título del Evento</div>
-                                        <div className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em] py-3 px-2 text-center">Estado</div>
-                                        <div className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em] py-3 px-2 text-center">Modalidad</div>
-                                        <div className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em] py-3 px-2 text-center">Tipo</div>
-                                        <div className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em] py-3 px-2 text-center">Inscritos</div>
-                                        <div className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em] py-3 px-2 text-right">Acciones</div>
-                                    </div>
+                    <div className="p-6 bg-slate-50/50 overflow-hidden min-h-[400px]">
+                        {/* Headers */}
+                        <div className="grid grid-cols-[1fr_auto] md:grid-cols-[48px_140px_1.5fr_120px_180px_110px_80px_100px] items-center px-4 mb-3 gap-4">
+                            <div className="hidden md:flex items-center">
+                                <input type="checkbox" className="w-4 h-4 rounded border-slate-300 text-cop-blue focus:ring-blue-500/20 transition-all cursor-pointer" />
+                            </div>
+                            <div className="hidden md:block text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em] py-3 px-2">Fecha</div>
+                            <div className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em] py-3 px-2">Evento</div>
+                            <div className="hidden md:block text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em] py-3 px-2 text-center">Estado</div>
+                            <div className="hidden md:block text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em] py-3 px-2 text-center">Modalidad</div>
+                            <div className="hidden md:block text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em] py-3 px-2 text-center">Tipo</div>
+                            <div className="hidden md:block text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em] py-3 px-2 text-center">Inscritos</div>
+                            <div className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em] py-3 px-2 text-right">Acciones</div>
+                        </div>
 
-                                    {/* Data Rows */}
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }} className="stagger-children">
-                                        {paginatedEventos.length === 0 ? (
-                                            <div className="py-20 text-center bg-white/50 backdrop-blur-sm rounded-2xl border border-slate-100 flex flex-col items-center justify-center">
-                                                <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-6 shadow-inner">
-                                                    <Search size={32} className="text-slate-300" />
+                        {/* Data Rows */}
+                        <div className="flex flex-col gap-3 stagger-children">
+                            {paginatedEventos.length === 0 ? (
+                                <div className="py-20 text-center bg-white/50 backdrop-blur-sm rounded-2xl border border-slate-100 flex flex-col items-center justify-center">
+                                    <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-6 shadow-inner">
+                                        <Search size={32} className="text-slate-300" />
+                                    </div>
+                                    <h4 className="text-lg font-bold text-slate-700 mb-2">No se encontraron eventos</h4>
+                                    <button
+                                        onClick={() => {
+                                            setSearchTerm('');
+                                            setFilterEstado('');
+                                            setFilterModalidad('');
+                                            setFilterTipo('');
+                                        }}
+                                        className="mt-4 px-6 py-2.5 rounded-xl bg-white border border-slate-200 text-cop-blue font-bold text-sm hover:border-cop-blue hover:bg-blue-50 transition-all shadow-sm"
+                                    >
+                                        Limpiar filtros
+                                    </button>
+                                </div>
+                            ) : (
+                                paginatedEventos.map((evento, idx) => {
+                                    const fecha = new Date(evento.fecha + 'T12:00:00');
+                                    const status = getEventStatus(evento.fecha);
+                                    const isNext = nextEvent?.id === evento.id;
+
+                                    return (
+                                        <div
+                                            key={evento.id}
+                                            className="group relative grid grid-cols-[1fr_auto] md:grid-cols-[48px_140px_1.5fr_120px_180px_110px_80px_100px] items-center bg-white rounded-xl border border-slate-100 shadow-sm transition-all duration-300 hover:shadow-xl hover:shadow-blue-900/5 hover:border-cop-blue/20 hover:-translate-y-0.5 hover:z-10 animate-fade-in gap-4 p-4 md:p-0"
+                                            style={{ animationDelay: `${idx * 0.03}s` }}
+                                        >
+                                            {/* Checkbox */}
+                                            <div className="hidden md:block px-4 py-5">
+                                                <input type="checkbox" className="w-4 h-4 rounded border-slate-300 text-cop-blue focus:ring-blue-500/20 transition-all cursor-pointer" />
+                                            </div>
+
+                                            {/* Fecha (Desktop) */}
+                                            <div className="hidden md:block p-2">
+                                                <div className="flex flex-col">
+                                                    <span className="font-bold text-slate-800 text-sm">
+                                                        {fecha.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })}
+                                                    </span>
+                                                    {isNext && (
+                                                        <div className="flex items-center gap-1.5 mt-1">
+                                                            <div className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+                                                            <span className="text-[9px] font-black uppercase tracking-wider text-amber-600">Próximo</span>
+                                                        </div>
+                                                    )}
                                                 </div>
-                                                <h4 className="text-lg font-bold text-slate-700 mb-2">No se encontraron eventos</h4>
-                                                <p className="text-slate-400 max-w-xs mx-auto mb-6">
-                                                    Prueba con otros términos de búsqueda o ajusta los filtros.
-                                                </p>
-                                                <button
-                                                    onClick={() => {
-                                                        setSearchTerm('');
-                                                        setFilterEstado('');
-                                                        setFilterModalidad('');
-                                                        setFilterTipo('');
-                                                    }}
-                                                    className="px-6 py-2.5 rounded-xl bg-white border border-slate-200 text-cop-blue font-bold text-sm hover:border-cop-blue hover:bg-blue-50 transition-all shadow-sm"
+                                            </div>
+
+                                            {/* Título + Mobile Info */}
+                                            <div className="p-2 overflow-hidden flex flex-col justify-center">
+                                                {/* Mobile Date/Status Badge */}
+                                                <div className="md:hidden flex items-center gap-2 mb-1.5">
+                                                    <span className="text-xs font-semibold text-slate-500">
+                                                        {fecha.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })}
+                                                    </span>
+                                                    <span className="w-1 h-1 rounded-full bg-slate-300" />
+                                                    <span className={cn(
+                                                        "text-[10px] font-bold px-1.5 py-0.5 rounded-md uppercase tracking-wide",
+                                                        status === 'activo' ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-600"
+                                                    )}>
+                                                        {status}
+                                                    </span>
+                                                    {isNext && (
+                                                        <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-md border border-amber-100">PROX</span>
+                                                    )}
+                                                </div>
+
+                                                <Link
+                                                    href={`/admin/eventos/${evento.id}/editar`}
+                                                    className="font-bold text-slate-800 text-base block truncate transition-all group-hover:text-cop-blue"
                                                 >
-                                                    Limpiar todos los filtros
+                                                    {evento.titulo}
+                                                </Link>
+
+                                                {/* Mobile Secondary Info */}
+                                                <div className="md:hidden flex items-center gap-2 mt-1 text-xs text-slate-500">
+                                                    {evento.modalidades && (
+                                                        <span className="flex items-center gap-1">
+                                                            <span className="w-1.5 h-1.5 rounded-full" style={{ background: evento.modalidades.color }} />
+                                                            {evento.modalidades.nombre}
+                                                        </span>
+                                                    )}
+                                                </div>
+
+                                                {/* Desktop ID (Hidden on Mobile as requested) */}
+                                                <p className="hidden md:block text-[10px] text-slate-400 mt-0.5 group-hover:text-slate-500 transition-colors uppercase tracking-widest font-semibold">
+                                                    ID: {evento.id.substring(0, 8)}
+                                                </p>
+                                            </div>
+
+                                            {/* Estado (Desktop) */}
+                                            <div className="hidden md:block p-2 text-center">
+                                                {status === 'activo' ? (
+                                                    <span className="inline-flex items-center gap-2 text-[10px] font-black px-3 py-1.5 rounded-full text-emerald-600 bg-emerald-50/50 border border-emerald-100 uppercase tracking-wider shadow-sm">
+                                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                                                        Activo
+                                                    </span>
+                                                ) : (
+                                                    <span className="inline-flex items-center gap-2 text-[10px] font-black px-3 py-1.5 rounded-full text-slate-400 bg-slate-50 border border-slate-100 uppercase tracking-wider">
+                                                        <span className="w-1.5 h-1.5 rounded-full bg-slate-300" />
+                                                        Cerrado
+                                                    </span>
+                                                )}
+                                            </div>
+
+                                            {/* Modalidad (Desktop) */}
+                                            <div className="hidden md:block p-2 text-center">
+                                                <span className="inline-flex items-center gap-2 text-[10px] font-black px-3 py-1.5 rounded-full border bg-white shadow-sm uppercase tracking-wider"
+                                                    style={{
+                                                        color: evento.modalidades?.color || '#1E3A8A',
+                                                        borderColor: `${(evento.modalidades?.color || '#1E3A8A')}30`
+                                                    }}
+                                                >
+                                                    <span className="w-1.5 h-1.5 rounded-full"
+                                                        style={{ background: evento.modalidades?.color || '#1E3A8A' }}
+                                                    />
+                                                    {evento.modalidades?.nombre}
+                                                </span>
+                                            </div>
+
+                                            {/* Tipo (Desktop) */}
+                                            <div className="hidden md:block p-2 text-center">
+                                                <span className="inline-flex text-[10px] font-bold px-3 py-1.5 rounded-lg text-slate-500 bg-slate-50 border border-slate-100 uppercase tracking-widest">
+                                                    {evento.tipos_evento?.nombre || evento.tipo || '-'}
+                                                </span>
+                                            </div>
+
+                                            {/* Inscritos (Desktop) */}
+                                            <div className="hidden md:block p-2 text-center">
+                                                <div className={cn(
+                                                    "inline-flex flex-col items-center justify-center min-w-[40px] h-10 rounded-xl font-black text-sm border transition-all",
+                                                    (evento.inscripciones?.[0]?.count || 0) > 0
+                                                        ? "text-cop-blue bg-blue-50/50 border-blue-100 shadow-sm group-hover:scale-110"
+                                                        : "text-slate-300 bg-slate-50/50 border-slate-100"
+                                                )}>
+                                                    {evento.inscripciones?.[0]?.count || 0}
+                                                </div>
+                                            </div>
+
+                                            {/* Acciones */}
+                                            <div className="flex justify-end gap-2 py-4 pr-6 md:py-4 md:pr-6">
+                                                <Link
+                                                    href={`/admin/eventos/${evento.id}/editar`}
+                                                    title="Editar evento"
+                                                    className="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-200 text-slate-400 transition-all duration-300 hover:text-cop-blue hover:border-cop-blue hover:shadow-lg hover:shadow-blue-900/10 hover:-translate-y-1 active:scale-95"
+                                                >
+                                                    <Edit size={18} />
+                                                </Link>
+                                                <button
+                                                    onClick={() => handleDelete(evento.id)}
+                                                    title="Eliminar evento"
+                                                    className="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-200 text-slate-400 transition-all duration-300 hover:text-fpt-red hover:border-fpt-red hover:shadow-lg hover:shadow-red-900/10 hover:-translate-y-1 active:scale-95"
+                                                >
+                                                    <Trash2 size={18} />
                                                 </button>
                                             </div>
-                                        ) : (
-                                            paginatedEventos.map((evento, idx) => {
-                                                const fecha = new Date(evento.fecha + 'T12:00:00');
-                                                const status = getEventStatus(evento.fecha);
-                                                const isNext = nextEvent?.id === evento.id;
-
-                                                return (
-                                                    <div
-                                                        key={evento.id}
-                                                        className="group relative grid items-center bg-white rounded-xl border border-slate-100 shadow-sm transition-all duration-300 hover:shadow-xl hover:shadow-blue-900/5 hover:border-cop-blue/20 hover:-translate-y-0.5 hover:z-10 animate-fade-in"
-                                                        style={{
-                                                            gridTemplateColumns: gridCols,
-                                                            animationDelay: `${idx * 0.03}s`
-                                                        }}
-                                                    >
-                                                        {/* Checkbox */}
-                                                        <div className="px-4 py-5">
-                                                            <input type="checkbox" className="w-4 h-4 rounded border-slate-300 text-cop-blue focus:ring-blue-500/20 transition-all cursor-pointer" />
-                                                        </div>
-
-                                                        {/* Fecha */}
-                                                        <div className="p-2">
-                                                            <div className="flex flex-col">
-                                                                <span className="font-bold text-slate-800 text-sm">
-                                                                    {fecha.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })}
-                                                                </span>
-                                                                {isNext && (
-                                                                    <div className="flex items-center gap-1.5 mt-1">
-                                                                        <div className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
-                                                                        <span className="text-[9px] font-black uppercase tracking-wider text-amber-600">Próximo</span>
-                                                                    </div>
-                                                                )}
-                                                            </div>
-                                                        </div>
-
-                                                        {/* Título */}
-                                                        <div className="p-2 overflow-hidden">
-                                                            <Link
-                                                                href={`/admin/eventos/${evento.id}/editar`}
-                                                                className="font-bold text-slate-800 text-base block truncate transition-all group-hover:text-cop-blue"
-                                                                title={evento.titulo}
-                                                            >
-                                                                {evento.titulo}
-                                                            </Link>
-                                                            <p className="text-[10px] text-slate-400 mt-0.5 group-hover:text-slate-500 transition-colors uppercase tracking-widest font-semibold">ID: {evento.id.substring(0, 8)}</p>
-                                                        </div>
-
-                                                        {/* Estado */}
-                                                        <div className="p-2 text-center">
-                                                            {status === 'activo' ? (
-                                                                <span className="inline-flex items-center gap-2 text-[10px] font-black px-3 py-1.5 rounded-full text-emerald-600 bg-emerald-50/50 border border-emerald-100 uppercase tracking-wider shadow-sm">
-                                                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                                                                    Activo
-                                                                </span>
-                                                            ) : (
-                                                                <span className="inline-flex items-center gap-2 text-[10px] font-black px-3 py-1.5 rounded-full text-slate-400 bg-slate-50 border border-slate-100 uppercase tracking-wider">
-                                                                    <span className="w-1.5 h-1.5 rounded-full bg-slate-300" />
-                                                                    Cerrado
-                                                                </span>
-                                                            )}
-                                                        </div>
-
-                                                        {/* Modalidad */}
-                                                        <div className="p-2 text-center">
-                                                            <span className="inline-flex items-center gap-2 text-[10px] font-black px-3 py-1.5 rounded-full border bg-white shadow-sm uppercase tracking-wider"
-                                                                style={{
-                                                                    color: evento.modalidades?.color || '#1E3A8A',
-                                                                    borderColor: `${(evento.modalidades?.color || '#1E3A8A')}30`
-                                                                }}
-                                                            >
-                                                                <span className="w-1.5 h-1.5 rounded-full"
-                                                                    style={{ background: evento.modalidades?.color || '#1E3A8A' }}
-                                                                />
-                                                                {evento.modalidades?.nombre}
-                                                            </span>
-                                                        </div>
-
-                                                        {/* Tipo */}
-                                                        <div className="p-2 text-center">
-                                                            <span className="inline-flex text-[10px] font-bold px-3 py-1.5 rounded-lg text-slate-500 bg-slate-50 border border-slate-100 uppercase tracking-widest">
-                                                                {evento.tipos_evento?.nombre || evento.tipo || '-'}
-                                                            </span>
-                                                        </div>
-
-                                                        {/* Inscritos */}
-                                                        <div className="p-2 text-center">
-                                                            <div className={cn(
-                                                                "inline-flex flex-col items-center justify-center min-w-[40px] h-10 rounded-xl font-black text-sm border transition-all",
-                                                                (evento.inscripciones?.[0]?.count || 0) > 0
-                                                                    ? "text-cop-blue bg-blue-50/50 border-blue-100 shadow-sm group-hover:scale-110"
-                                                                    : "text-slate-300 bg-slate-50/50 border-slate-100"
-                                                            )}>
-                                                                {evento.inscripciones?.[0]?.count || 0}
-                                                            </div>
-                                                        </div>
-
-                                                        {/* Acciones */}
-                                                        <div className="flex justify-end gap-2 py-4 pr-6">
-                                                            <Link
-                                                                href={`/admin/eventos/${evento.id}/editar`}
-                                                                title="Editar evento"
-                                                                className="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-200 text-slate-400 transition-all duration-300 hover:text-cop-blue hover:border-cop-blue hover:shadow-lg hover:shadow-blue-900/10 hover:-translate-y-1 active:scale-95"
-                                                            >
-                                                                <Edit size={18} />
-                                                            </Link>
-                                                            <button
-                                                                onClick={() => handleDelete(evento.id)}
-                                                                title="Eliminar evento"
-                                                                className="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-200 text-slate-400 transition-all duration-300 hover:text-fpt-red hover:border-fpt-red hover:shadow-lg hover:shadow-red-900/10 hover:-translate-y-1 active:scale-95"
-                                                            >
-                                                                <Trash2 size={18} />
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                );
-                                            })
-                                        )}
-                                    </div>
-                                </>
-                            );
-                        })()}
+                                        </div>
+                                    );
+                                })
+                            )}
+                        </div>
                     </div>
 
                     {/* Paginación */}
