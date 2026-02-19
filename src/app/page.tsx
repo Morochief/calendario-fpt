@@ -5,10 +5,11 @@ import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import Footer from '@/components/Footer';
 import ModalityFilter from '@/components/ModalityFilter';
+import ClubFilter from '@/components/ClubFilter';
 import MonthCard from '@/components/MonthCard';
 import AnnualCalendar from '@/components/AnnualCalendar';
 import { createClient } from '@/lib/supabase';
-import { Modalidad, EventoConModalidad, MESES } from '@/lib/types';
+import { Modalidad, EventoConModalidad, MESES, Club } from '@/lib/types';
 import { AlertTriangle } from 'lucide-react';
 import ScrollReveal from '@/components/ui/ScrollReveal';
 import SectionTitle from '@/components/SectionTitle';
@@ -18,8 +19,10 @@ type ViewType = 'mensual' | 'anual';
 
 export default function CalendarPage() {
   const [modalidades, setModalidades] = useState<Modalidad[]>([]);
+  const [clubes, setClubes] = useState<Club[]>([]);
   const [eventos, setEventos] = useState<EventoConModalidad[]>([]);
   const [selectedModalidad, setSelectedModalidad] = useState<string | null>(null);
+  const [selectedClub, setSelectedClub] = useState<string | null>(null);
   const [vista, setVista] = useState<ViewType>('mensual');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -39,6 +42,14 @@ export default function CalendarPage() {
 
       if (modError) throw modError;
       setModalidades(modalidadesData || []);
+
+      const { data: clubesData, error: clubError } = await supabase
+        .from('clubes')
+        .select('*')
+        .order('nombre');
+
+      if (clubError) throw clubError;
+      setClubes(clubesData || []);
 
       const { data: eventosData, error: evError } = await supabase
         .from('eventos')
@@ -60,9 +71,11 @@ export default function CalendarPage() {
     }
   }
 
-  const eventosFiltrados = selectedModalidad
-    ? eventos.filter(e => e.modalidad_id === selectedModalidad)
-    : eventos;
+  const eventosFiltrados = eventos.filter(e => {
+    const matchModalidad = selectedModalidad ? e.modalidad_id === selectedModalidad : true;
+    const matchClub = selectedClub ? e.club_id === selectedClub : true;
+    return matchModalidad && matchClub;
+  });
 
   if (loading) {
     return (
@@ -147,15 +160,22 @@ export default function CalendarPage() {
             </div>
           </div>
 
-          {modalidades.length > 0 && (
-            <ModalityFilter
-              modalidades={modalidades}
-              selected={selectedModalidad}
-              onSelect={setSelectedModalidad}
-            />
-          )}
-
-
+          <div className="flex flex-col md:flex-row gap-4 mb-6 relative z-[var(--z-filter)]">
+            {modalidades.length > 0 && (
+              <ModalityFilter
+                modalidades={modalidades}
+                selected={selectedModalidad}
+                onSelect={setSelectedModalidad}
+              />
+            )}
+            {clubes.length > 0 && (
+              <ClubFilter
+                clubes={clubes}
+                selected={selectedClub}
+                onSelect={setSelectedClub}
+              />
+            )}
+          </div>
 
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 min-h-[600px] relative overflow-hidden">
             <AnimatePresence mode="wait">
