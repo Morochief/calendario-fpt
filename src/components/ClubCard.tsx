@@ -66,7 +66,7 @@ export default function ClubCard({ abbreviation, name, color }: ClubCardProps) {
                         style={{ background: color }}
                     />
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                        Afiliado
+                        Afederado
                     </span>
                 </div>
             </div>
