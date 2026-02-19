@@ -78,7 +78,13 @@ export default function EliteSelect({
 
     useEffect(() => {
         if (!isOpen) return;
-        const handleScroll = () => setIsOpen(false);
+        const handleScroll = (e: Event) => {
+            // Ignore scroll events originating from within the menu (e.g. scrolling the options list)
+            if (menuRef.current && menuRef.current.contains(e.target as Node)) {
+                return;
+            }
+            setIsOpen(false);
+        };
         window.addEventListener('scroll', handleScroll, true);
         return () => window.removeEventListener('scroll', handleScroll, true);
     }, [isOpen]);
