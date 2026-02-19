@@ -19,24 +19,24 @@ VALUES ('club_logos', 'club_logos', true)
 ON CONFLICT (id) DO NOTHING;
 
 -- Politica para que cualquiera pueda ver los logos
-CREATE POLICY "Public Access" 
+CREATE POLICY "club_logos_public_access" 
 ON storage.objects FOR SELECT 
 USING ( bucket_id = 'club_logos' );
 
 -- Politica para que administradores autenticados puedan subir
-CREATE POLICY "Admin Upload Access" 
+CREATE POLICY "club_logos_admin_insert" 
 ON storage.objects FOR INSERT 
 TO authenticated
 WITH CHECK ( bucket_id = 'club_logos' );
 
 -- Politica para que administradores autenticados puedan actualizar
-CREATE POLICY "Admin Update Access" 
+CREATE POLICY "club_logos_admin_update" 
 ON storage.objects FOR UPDATE 
 TO authenticated
 USING ( bucket_id = 'club_logos' );
 
 -- Politica para que administradores autenticados puedan eliminar
-CREATE POLICY "Admin Delete Access" 
+CREATE POLICY "club_logos_admin_delete" 
 ON storage.objects FOR DELETE 
 TO authenticated
 USING ( bucket_id = 'club_logos' );
