@@ -84,6 +84,7 @@ export default function ClubesPage() {
                                             abbreviation={club.siglas}
                                             name={club.estado === 'pendiente' ? `${club.nombre} (Pendiente)` : club.nombre}
                                             color={club.color || '#1E3A8A'}
+                                            logoUrl={club.logo_url}
                                         />
                                     </div>
                                 ))

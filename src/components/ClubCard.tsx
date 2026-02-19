@@ -8,9 +8,10 @@ interface ClubCardProps {
     abbreviation: string;
     name: string;
     color: string;
+    logoUrl?: string | null;
 }
 
-export default function ClubCard({ abbreviation, name, color }: ClubCardProps) {
+export default function ClubCard({ abbreviation, name, color, logoUrl }: ClubCardProps) {
     const [isHovered, setIsHovered] = useState(false);
 
     return (
@@ -35,16 +36,24 @@ export default function ClubCard({ abbreviation, name, color }: ClubCardProps) {
             />
 
             <div>
-                {/* Icon Container */}
                 <div
-                    className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-all duration-300 border"
+                    className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-all duration-300 border relative overflow-hidden"
                     style={{
-                        backgroundColor: isHovered ? color : `${color}10`,
+                        backgroundColor: isHovered && !logoUrl ? color : `${color}10`,
                         borderColor: isHovered ? color : `${color}30`,
                         color: isHovered ? '#FFFFFF' : color,
                     }}
                 >
-                    <Building2 size={24} strokeWidth={1.5} />
+                    {logoUrl ? (
+                        /* eslint-disable-next-line @next/next/no-img-element */
+                        <img
+                            src={logoUrl}
+                            alt={`Logo ${abbreviation}`}
+                            className="absolute inset-0 w-full h-full object-contain p-1"
+                        />
+                    ) : (
+                        <Building2 size={24} strokeWidth={1.5} />
+                    )}
                 </div>
 
                 <h3

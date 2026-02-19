@@ -13,8 +13,9 @@ import EliteTable, { EliteHeader, EliteCell } from '@/components/ui/EliteTable';
 import EliteButton from '@/components/ui/EliteButton';
 import EliteModal from '@/components/ui/EliteModal';
 import {
-    Plus, Edit2, Trash2, Save, Building2, Phone, User, Tag
+    Plus, Edit2, Trash2, Save, Building2, Phone, User, Tag, Image as ImageIcon, X
 } from 'lucide-react';
+import Image from 'next/image';
 
 const PRESET_COLORS = [
     '#D91E18', '#1E3A8A', '#059669', '#DC2626', '#2563EB',
@@ -57,7 +58,10 @@ export default function AdminClubesPage() {
         color: '#1E3A8A',
         contacto_nombre: '',
         contacto_telefono: '',
+        logo_url: '',
     });
+    const [logoFile, setLogoFile] = useState<File | null>(null);
+    const [logoPreview, setLogoPreview] = useState<string | null>(null);
 
     const { showToast } = useToast();
 
@@ -74,10 +78,45 @@ export default function AdminClubesPage() {
 
     const sanitize = (text: string) => text.replace(/[<>]/g, '').trim();
 
+    async function uploadLogo(file: File, clubSiglas: string): Promise<string | null> {
+        const supabase = createClient();
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${clubSiglas.toLowerCase()}-${Date.now()}.${fileExt}`;
+        const filePath = `${fileName}`;
+
+        try {
+            const { error: uploadError } = await supabase.storage
+                .from('club_logos')
+                .upload(filePath, file);
+
+            if (uploadError) throw uploadError;
+
+            const { data } = supabase.storage
+                .from('club_logos')
+                .getPublicUrl(filePath);
+
+            return data.publicUrl;
+        } catch (error) {
+            console.error('Error uploading logo:', error);
+            showToast('Error subiendo el logo, pero el club se guardará.', 'error');
+            return null;
+        }
+    }
+
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         setSaving(true);
         const supabase = createClient();
+
+        // 1. Upload Logo if there's a file
+        let uploadedLogoUrl = formData.logo_url;
+        if (logoFile) {
+            const newLogoUrl = await uploadLogo(logoFile, formData.siglas);
+            if (newLogoUrl) {
+                uploadedLogoUrl = newLogoUrl;
+            }
+        }
+
         const payload = {
             nombre: sanitize(formData.nombre),
             siglas: sanitize(formData.siglas).toUpperCase(),
@@ -85,6 +124,7 @@ export default function AdminClubesPage() {
             color: formData.color,
             contacto_nombre: sanitize(formData.contacto_nombre) || null,
             contacto_telefono: sanitize(formData.contacto_telefono) || null,
+            logo_url: uploadedLogoUrl || null,
         };
         try {
             if (editingId) {
@@ -121,6 +161,8 @@ export default function AdminClubesPage() {
     }
 
     const openModal = (club?: Club) => {
+        setLogoFile(null);
+        setLogoPreview(null);
         if (club) {
             setEditingId(club.id);
             setFormData({
@@ -130,7 +172,11 @@ export default function AdminClubesPage() {
                 color: club.color,
                 contacto_nombre: club.contacto_nombre || '',
                 contacto_telefono: club.contacto_telefono || '',
+                logo_url: club.logo_url || '',
             });
+            if (club.logo_url) {
+                setLogoPreview(club.logo_url);
+            }
         } else {
             setEditingId(null);
             setFormData({
@@ -140,6 +186,7 @@ export default function AdminClubesPage() {
                 color: '#1E3A8A',
                 contacto_nombre: '',
                 contacto_telefono: '',
+                logo_url: '',
             });
         }
         setIsModalOpen(true);
@@ -203,12 +250,23 @@ export default function AdminClubesPage() {
                             renderRow={(club) => (
                                 <>
                                     <EliteCell align="center">
-                                        <div
-                                            className="w-8 h-8 rounded-lg shadow-sm mx-auto flex items-center justify-center text-white font-bold text-xs"
-                                            style={{ backgroundColor: club.color }}
-                                        >
-                                            {club.nombre.substring(0, 1)}
-                                        </div>
+                                        {club.logo_url ? (
+                                            <div className="w-8 h-8 rounded-lg shadow-sm mx-auto overflow-hidden relative bg-white border border-slate-200">
+                                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                <img
+                                                    src={club.logo_url}
+                                                    alt={`Logo ${club.siglas}`}
+                                                    className="w-full h-full object-contain p-0.5"
+                                                />
+                                            </div>
+                                        ) : (
+                                            <div
+                                                className="w-8 h-8 rounded-lg shadow-sm mx-auto flex items-center justify-center text-white font-bold text-xs"
+                                                style={{ backgroundColor: club.color }}
+                                            >
+                                                {club.nombre.substring(0, 1)}
+                                            </div>
+                                        )}
                                     </EliteCell>
                                     <EliteCell>
                                         <span className="font-semibold text-text-elite text-sm">{club.nombre}</span>
@@ -438,6 +496,70 @@ export default function AdminClubesPage() {
                                     <div className="w-full h-full flex items-center justify-center bg-white" style={{ backgroundColor: formData.color }}>
                                         <Plus size={10} className="text-white mix-blend-difference" />
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Logo Upload */}
+                        <div className="pt-2 border-t border-slate-200/60 mt-2">
+                            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+                                Logo del Club (Opcional)
+                            </label>
+
+                            <div className="flex items-center gap-4">
+                                <div className="h-16 w-16 rounded-xl border border-slate-200 overflow-hidden bg-white shadow-sm flex items-center justify-center shrink-0 relative group">
+                                    {logoPreview ? (
+                                        <>
+                                            <Image
+                                                src={logoPreview}
+                                                alt="Preview"
+                                                fill
+                                                className="object-contain p-1"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setLogoFile(null);
+                                                    setLogoPreview(null);
+                                                    setFormData({ ...formData, logo_url: '' });
+                                                }}
+                                                className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                            >
+                                                <X size={20} className="text-white" />
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <ImageIcon size={24} className="text-slate-300" />
+                                    )}
+                                </div>
+                                <div className="flex-1">
+                                    <input
+                                        type="file"
+                                        id="logo-upload"
+                                        accept="image/png, image/jpeg, image/webp, image/svg+xml"
+                                        className="hidden"
+                                        onChange={(e) => {
+                                            const file = e.target.files?.[0];
+                                            if (file) {
+                                                if (file.size > 2 * 1024 * 1024) {
+                                                    showToast('La imagen no debe pesar más de 2MB', 'error');
+                                                    return;
+                                                }
+                                                setLogoFile(file);
+                                                const url = URL.createObjectURL(file);
+                                                setLogoPreview(url);
+                                            }
+                                        }}
+                                    />
+                                    <label
+                                        htmlFor="logo-upload"
+                                        className="inline-flex items-center justify-center px-3 py-2 border border-slate-300 shadow-sm text-xs font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 cursor-pointer transition-colors"
+                                    >
+                                        Seleccionar Imagen
+                                    </label>
+                                    <p className="mt-1 text-[10px] text-slate-500">
+                                        PNG, JPG o SVG. Máx 2MB. Relación 1:1 (cuadrado) recomendada.
+                                    </p>
                                 </div>
                             </div>
                         </div>
