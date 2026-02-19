@@ -131,8 +131,27 @@ export default function CalendarPage() {
               type="institucional"
               className="mb-0" // Override margin if needed by layout
             />
+          </div>
 
-            <div className="flex bg-white p-1 rounded-full border border-[var(--color-border)] shadow-[var(--shadow-sm)] w-fit relative z-10">
+          <div className="flex flex-col lg:flex-row gap-4 mb-6 relative z-[var(--z-filter)] items-start lg:items-center justify-between">
+            <div className="flex flex-col md:flex-row gap-4 w-full lg:w-auto">
+              {modalidades.length > 0 && (
+                <ModalityFilter
+                  modalidades={modalidades}
+                  selected={selectedModalidad}
+                  onSelect={setSelectedModalidad}
+                />
+              )}
+              {clubes.length > 0 && (
+                <ClubFilter
+                  clubes={clubes}
+                  selected={selectedClub}
+                  onSelect={setSelectedClub}
+                />
+              )}
+            </div>
+
+            <div className="flex bg-white p-1 rounded-full border border-[var(--color-border)] shadow-[var(--shadow-sm)] w-fit relative z-10 shrink-0">
               <button
                 onClick={() => setVista('mensual')}
                 className={`relative px-6 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${vista === 'mensual'
@@ -158,23 +177,6 @@ export default function CalendarPage() {
                 Vista Anual
               </button>
             </div>
-          </div>
-
-          <div className="flex flex-col md:flex-row gap-4 mb-6 relative z-[var(--z-filter)]">
-            {modalidades.length > 0 && (
-              <ModalityFilter
-                modalidades={modalidades}
-                selected={selectedModalidad}
-                onSelect={setSelectedModalidad}
-              />
-            )}
-            {clubes.length > 0 && (
-              <ClubFilter
-                clubes={clubes}
-                selected={selectedClub}
-                onSelect={setSelectedClub}
-              />
-            )}
           </div>
 
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 min-h-[600px] relative overflow-hidden">
