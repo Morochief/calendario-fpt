@@ -18,7 +18,7 @@ export default function ClubesPage() {
             const { data } = await supabase
                 .from('clubes')
                 .select('*')
-                .in('estado', ['afiliado', 'pendiente'])
+                .in('estado', ['afederado', 'pendiente'])
                 .order('nombre');
 
             if (data) setClubes(data);
