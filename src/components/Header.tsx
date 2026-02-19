@@ -77,21 +77,16 @@ export default function Header() {
             </Link>
 
             <button
-                className="hidden p-2 text-text-elite rounded-elite-sm hover:bg-cop-blue/5 active:scale-95 transition-all duration-fast"
+                className="md:hidden p-2 text-text-elite rounded-elite-sm hover:bg-cop-blue/5 active:scale-95 transition-all duration-fast"
                 onClick={() => setMenuOpen(!menuOpen)}
                 aria-label={menuOpen ? 'Cerrar menú' : 'Abrir menú'}
                 aria-expanded={menuOpen}
             >
-                {menuOpen ? <X size={20} strokeWidth={1.5} /> : <Menu size={20} strokeWidth={1.5} />}
+                {menuOpen ? <X size={24} strokeWidth={1.5} /> : <Menu size={24} strokeWidth={1.5} />}
             </button>
 
-            <nav className={cn(
-                "flex items-center gap-1",
-                // Mobile styles would need a media query or a separate mobile logic, 
-                // but assuming desktop-first for now based on previous CSS.
-                // If mobile menu handling is needed via CSS class 'open', we might need conditional rendering or block/hidden toggles.
-                menuOpen ? "flex" : "hidden sm:flex"
-            )}>
+            {/* Desktop Nav */}
+            <nav className="hidden md:flex items-center gap-1">
                 {[
                     { href: '/', label: 'Calendario', icon: Calendar },
                     { href: '/reglamentos', label: 'Reglamentos', icon: FileText },
@@ -141,6 +136,46 @@ export default function Header() {
                     </Link>
                 )}
             </nav>
+
+            {/* Mobile Nav Drawer */}
+            {menuOpen && (
+                <div className="absolute top-[64px] left-0 w-full bg-white border-b border-gray-100 shadow-lg md:hidden flex flex-col p-4 gap-2 animate-in slide-in-from-top-2">
+                    {[
+                        { href: '/', label: 'Calendario', icon: Calendar },
+                        { href: '/reglamentos', label: 'Reglamentos', icon: FileText },
+                        { href: '/clubes', label: 'Clubes', icon: Users },
+                    ].map((item) => (
+                        <Link
+                            key={item.href}
+                            href={item.href}
+                            onClick={() => setMenuOpen(false)}
+                            className="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-colors"
+                        >
+                            <item.icon size={18} strokeWidth={2} />
+                            <span className="font-medium">{item.label}</span>
+                        </Link>
+                    ))}
+                    <div className="h-px bg-gray-100 my-2" />
+                    {user ? (
+                        <button
+                            onClick={handleLogout}
+                            className="flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition-colors w-full text-left"
+                        >
+                            <Settings size={18} strokeWidth={2} />
+                            <span className="font-medium">Cerrar Sesión ({user.email})</span>
+                        </button>
+                    ) : (
+                        <Link
+                            href="/admin"
+                            onClick={() => setMenuOpen(false)}
+                            className="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-colors"
+                        >
+                            <Settings size={18} strokeWidth={2} />
+                            <span className="font-medium">Admin</span>
+                        </Link>
+                    )}
+                </div>
+            )}
         </header>
     );
 }
