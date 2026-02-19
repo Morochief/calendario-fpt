@@ -13,7 +13,7 @@ import EliteTable, { EliteHeader, EliteCell } from '@/components/ui/EliteTable';
 import EliteButton from '@/components/ui/EliteButton';
 import EliteModal from '@/components/ui/EliteModal';
 import {
-    Plus, Edit2, Trash2, Save, Loader2, Building2, Phone, User
+    Plus, Edit2, Trash2, Save, Building2, Phone, User, Tag
 } from 'lucide-react';
 
 const PRESET_COLORS = [
@@ -168,23 +168,27 @@ export default function AdminClubesPage() {
 
                     {/* Page Header */}
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                        <h1 className="text-2xl font-bold text-text-elite">
-                            Gestión de Clubes
-                        </h1>
-                        <button
-                            className="btn btn-primary shadow-btn-red hover:shadow-btn-red-hover active:scale-95"
+                        <div>
+                            <h1 className="text-2xl font-bold text-text-elite tracking-tight">
+                                Gestión de Clubes
+                            </h1>
+                            <p className="text-sm text-text-muted mt-1">
+                                Administra las entidades afiliadas y sus detalles.
+                            </p>
+                        </div>
+                        <EliteButton
                             onClick={() => openModal()}
+                            icon={<Plus size={18} />}
                         >
-                            <Plus size={20} />
                             Nuevo Club
-                        </button>
+                        </EliteButton>
                     </div>
 
                     {/* Content Card */}
                     <EliteCard title="Listado Oficial de Clubes">
                         <EliteTable
                             data={clubes}
-                            gridCols="48px 2fr 80px 120px 1fr 90px"
+                            gridCols="60px 2fr 100px 100px 1fr 100px"
                             keyExtractor={(club) => club.id}
                             header={
                                 <>
@@ -200,60 +204,68 @@ export default function AdminClubesPage() {
                                 <>
                                     <EliteCell align="center">
                                         <div
-                                            className="w-6 h-6 rounded-full border border-black/10 shadow-sm mx-auto"
+                                            className="w-8 h-8 rounded-lg shadow-sm mx-auto flex items-center justify-center text-white font-bold text-xs"
                                             style={{ backgroundColor: club.color }}
-                                        />
+                                        >
+                                            {club.nombre.substring(0, 1)}
+                                        </div>
                                     </EliteCell>
                                     <EliteCell>
                                         <span className="font-semibold text-text-elite text-sm">{club.nombre}</span>
                                     </EliteCell>
                                     <EliteCell align="center">
-                                        <span className="inline-block px-2 py-0.5 bg-cop-blue/5 rounded text-xs font-mono font-semibold text-cop-blue">
+                                        <span className="inline-block px-2 py-1 bg-slate-100 rounded-md text-xs font-mono font-bold text-slate-600 border border-slate-200">
                                             {club.siglas}
                                         </span>
                                     </EliteCell>
                                     <EliteCell align="center">
                                         {club.estado === 'afiliado' ? (
-                                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-200">
                                                 Afiliado
                                             </span>
                                         ) : club.estado === 'inactivo' ? (
-                                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
+                                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-50 text-slate-500 border border-slate-200">
                                                 Inactivo
                                             </span>
                                         ) : (
-                                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200">
                                                 Pendiente
                                             </span>
                                         )}
                                     </EliteCell>
                                     <EliteCell>
                                         {club.contacto_nombre ? (
-                                            <div className="text-xs text-text-secondary leading-relaxed">
-                                                <div className="font-medium text-text-elite">{club.contacto_nombre}</div>
+                                            <div className="flex flex-col gap-0.5">
+                                                <div className="flex items-center gap-1.5 text-xs font-medium text-text-elite">
+                                                    <User size={12} className="text-cop-blue" />
+                                                    {club.contacto_nombre}
+                                                </div>
                                                 {club.contacto_telefono && (
-                                                    <div className="text-text-muted">{club.contacto_telefono}</div>
+                                                    <div className="flex items-center gap-1.5 text-xs text-text-muted ml-0.5">
+                                                        <Phone size={10} />
+                                                        {club.contacto_telefono}
+                                                    </div>
                                                 )}
                                             </div>
                                         ) : (
-                                            <span className="text-xs text-text-muted italic">Sin contacto</span>
+                                            <span className="text-xs text-text-muted italic opacity-60">Sin contacto</span>
                                         )}
                                     </EliteCell>
                                     <EliteCell align="right">
-                                        <div className="flex justify-end gap-1">
+                                        <div className="flex justify-end gap-2">
                                             <button
                                                 onClick={() => openModal(club)}
-                                                className="p-1.5 text-text-muted hover:text-cop-blue hover:bg-cop-blue/5 rounded-lg transition-all"
+                                                className="p-2 text-slate-400 hover:text-cop-blue hover:bg-cop-blue/5 rounded-lg transition-all"
                                                 title="Editar"
                                             >
-                                                <Edit2 size={15} />
+                                                <Edit2 size={16} />
                                             </button>
                                             <button
                                                 onClick={() => handleDelete(club)}
-                                                className="p-1.5 text-text-muted hover:text-fpt-red hover:bg-fpt-red/5 rounded-lg transition-all"
+                                                className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
                                                 title="Eliminar"
                                             >
-                                                <Trash2 size={15} />
+                                                <Trash2 size={16} />
                                             </button>
                                         </div>
                                     </EliteCell>
@@ -264,25 +276,29 @@ export default function AdminClubesPage() {
                 </div>
             </main>
 
-            {/* Create/Edit Modal */}
+            {/* Create/Edit Modal - Premium Style */}
             <EliteModal
                 isOpen={isModalOpen}
                 onClose={closeModal}
                 title={editingId ? "Editar Club" : "Registrar Nuevo Club"}
                 width="max-w-lg"
             >
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-5">
 
                     {/* Section: Identidad */}
                     <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-4">
-                        <h4 className="flex items-center gap-2 text-xs font-bold text-cop-blue uppercase tracking-wider mb-3">
-                            <Building2 size={14} />
-                            Identidad del Club
-                        </h4>
+                        <div className="flex items-center gap-2 mb-2">
+                            <div className="p-1.5 bg-white rounded-md shadow-sm text-cop-blue">
+                                <Building2 size={16} />
+                            </div>
+                            <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide">
+                                Identidad del Club
+                            </h3>
+                        </div>
 
                         {/* Nombre Oficial */}
                         <div>
-                            <label htmlFor="club-nombre" className="admin-label mb-1.5 block">
+                            <label htmlFor="club-nombre" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
                                 Nombre Oficial <span className="text-red-500">*</span>
                             </label>
                             <input
@@ -290,7 +306,7 @@ export default function AdminClubesPage() {
                                 type="text"
                                 value={formData.nombre}
                                 onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
-                                className="admin-input w-full"
+                                className="w-full px-3 py-2.5 bg-white rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-semibold text-slate-800 placeholder:text-slate-400"
                                 placeholder="Ej. Club de Tiro Práctico..."
                                 required
                             />
@@ -299,7 +315,7 @@ export default function AdminClubesPage() {
                         {/* Siglas + Estado */}
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label htmlFor="club-siglas" className="admin-label mb-1.5 block">
+                                <label htmlFor="club-siglas" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
                                     Siglas <span className="text-red-500">*</span>
                                 </label>
                                 <input
@@ -307,72 +323,91 @@ export default function AdminClubesPage() {
                                     type="text"
                                     value={formData.siglas}
                                     onChange={(e) => setFormData({ ...formData, siglas: e.target.value.toUpperCase() })}
-                                    className="admin-input w-full uppercase font-mono"
+                                    className="w-full px-3 py-2.5 bg-white rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-mono font-bold text-slate-800 uppercase placeholder:text-slate-400"
                                     placeholder="Ej. CPTP"
                                     required
                                     maxLength={8}
                                 />
                             </div>
                             <div>
-                                <label htmlFor="club-estado" className="admin-label mb-1.5 block">
+                                <label htmlFor="club-estado" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
                                     Estado
                                 </label>
-                                <select
-                                    id="club-estado"
-                                    value={formData.estado}
-                                    onChange={(e) => {
-                                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                        setFormData({ ...formData, estado: e.target.value as any });
-                                    }}
-                                    className="admin-input w-full"
-                                >
-                                    <option value="pendiente">Pendiente</option>
-                                    <option value="afiliado">Afiliado</option>
-                                    <option value="inactivo">Inactivo</option>
-                                </select>
+                                <div className="relative">
+                                    <select
+                                        id="club-estado"
+                                        value={formData.estado}
+                                        onChange={(e) => {
+                                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                            setFormData({ ...formData, estado: e.target.value as any });
+                                        }}
+                                        className="w-full px-3 py-2.5 bg-white rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all appearance-none font-medium text-slate-700 cursor-pointer"
+                                    >
+                                        <option value="pendiente">Pendiente</option>
+                                        <option value="afiliado">Afiliado</option>
+                                        <option value="inactivo">Inactivo</option>
+                                    </select>
+                                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
+                                        <Tag size={14} />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     {/* Section: Contacto + Color */}
                     <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-4">
-                        <h4 className="flex items-center gap-2 text-xs font-bold text-cop-blue uppercase tracking-wider mb-3">
-                            <User size={14} />
-                            Contacto y Branding
-                        </h4>
+                        <div className="flex items-center gap-2 mb-2">
+                            <div className="p-1.5 bg-white rounded-md shadow-sm text-cop-blue">
+                                <User size={16} />
+                            </div>
+                            <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide">
+                                Contacto y Branding
+                            </h3>
+                        </div>
 
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label htmlFor="club-contacto-nombre" className="admin-label mb-1.5 block">
+                                <label htmlFor="club-contacto-nombre" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
                                     Referente
                                 </label>
-                                <input
-                                    id="club-contacto-nombre"
-                                    type="text"
-                                    value={formData.contacto_nombre}
-                                    onChange={(e) => setFormData({ ...formData, contacto_nombre: e.target.value })}
-                                    className="admin-input w-full"
-                                    placeholder="Ej. Juan Pérez"
-                                />
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                        <User size={14} />
+                                    </div>
+                                    <input
+                                        id="club-contacto-nombre"
+                                        type="text"
+                                        value={formData.contacto_nombre}
+                                        onChange={(e) => setFormData({ ...formData, contacto_nombre: e.target.value })}
+                                        className="w-full pl-9 pr-3 py-2.5 bg-white rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-medium text-slate-700 placeholder:text-slate-400"
+                                        placeholder="Ej. Juan Pérez"
+                                    />
+                                </div>
                             </div>
                             <div>
-                                <label htmlFor="club-contacto-telefono" className="admin-label mb-1.5 block">
+                                <label htmlFor="club-contacto-telefono" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
                                     Teléfono
                                 </label>
-                                <input
-                                    id="club-contacto-telefono"
-                                    type="tel"
-                                    value={formData.contacto_telefono}
-                                    onChange={(e) => setFormData({ ...formData, contacto_telefono: e.target.value })}
-                                    className="admin-input w-full"
-                                    placeholder="Ej. 0981 123 456"
-                                />
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                        <Phone size={14} />
+                                    </div>
+                                    <input
+                                        id="club-contacto-telefono"
+                                        type="tel"
+                                        value={formData.contacto_telefono}
+                                        onChange={(e) => setFormData({ ...formData, contacto_telefono: e.target.value })}
+                                        className="w-full pl-9 pr-3 py-2.5 bg-white rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-medium text-slate-700 placeholder:text-slate-400"
+                                        placeholder="Ej. 0981..."
+                                    />
+                                </div>
                             </div>
                         </div>
 
-                        {/* Color Distintivo (Compact) */}
-                        <div className="pt-2 border-t border-slate-200 mt-2">
-                            <label className="admin-label mb-2 block">Color Distintivo</label>
+                        {/* Color Distintivo */}
+                        <div className="pt-2 border-t border-slate-200/60 mt-2">
+                            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Color Distintivo</label>
                             <div className="flex flex-wrap gap-2">
                                 {PRESET_COLORS.map((c) => (
                                     <button
@@ -380,22 +415,24 @@ export default function AdminClubesPage() {
                                         type="button"
                                         onClick={() => setFormData({ ...formData, color: c })}
                                         className={`
-                                            w-6 h-6 rounded-full border-2 transition-all hover:scale-110 shadow-sm
-                                            ${formData.color === c ? 'border-slate-800 scale-110 ring-1 ring-slate-300' : 'border-transparent'}
+                                            w-6 h-6 rounded-md border-2 transition-all hover:scale-110 shadow-sm
+                                            ${formData.color === c ? 'border-slate-800 scale-110 ring-2 ring-slate-200' : 'border-transparent'}
                                         `}
                                         style={{ backgroundColor: c }}
                                         title={c}
                                     />
                                 ))}
                                 {/* Custom Color Input Wrapper */}
-                                <div className="relative w-6 h-6 rounded-full overflow-hidden border border-slate-300 ml-1">
+                                <div className="relative w-6 h-6 rounded-md overflow-hidden border border-slate-300 ml-1 hover:border-slate-400 transition-colors">
                                     <input
                                         type="color"
                                         value={formData.color}
                                         onChange={(e) => setFormData({ ...formData, color: e.target.value })}
-                                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                        className="absolute inset-0 w-[150%] h-[150%] -top-[25%] -left-[25%] opacity-0 cursor-pointer"
                                     />
-                                    <div className="w-full h-full" style={{ backgroundColor: formData.color }} />
+                                    <div className="w-full h-full flex items-center justify-center bg-white" style={{ backgroundColor: formData.color }}>
+                                        <Plus size={10} className="text-white mix-blend-difference" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -403,25 +440,12 @@ export default function AdminClubesPage() {
 
                     {/* Actions */}
                     <div className="flex justify-end gap-3 pt-2">
-                        <button
-                            type="button"
-                            onClick={closeModal}
-                            className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
-                        >
+                        <EliteButton type="button" variant="secondary" onClick={closeModal}>
                             Cancelar
-                        </button>
-                        <button
-                            type="submit"
-                            disabled={saving}
-                            className="btn btn-primary shadow-btn-red hover:shadow-btn-red-hover active:scale-95"
-                        >
-                            {saving ? (
-                                <Loader2 size={18} className="animate-spin" />
-                            ) : (
-                                <Save size={18} />
-                            )}
-                            <span className="ml-2">{editingId ? 'Actualizar' : 'Guardar'}</span>
-                        </button>
+                        </EliteButton>
+                        <EliteButton type="submit" isLoading={saving} icon={<Save size={16} />}>
+                            {editingId ? 'Actualizar' : 'Guardar'}
+                        </EliteButton>
                     </div>
                 </form>
             </EliteModal>
