@@ -71,7 +71,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
             setTiposEvento(tiposData);
             if (tiposData.length > 0 && !tipoEventoId && !isEditing) setTipoEventoId(tiposData[0].id);
         }
-        const { data: clubesData } = await supabase.from('clubes').select('*').eq('estado', 'afiliado').order('nombre');
+        const { data: clubesData } = await supabase.from('clubes').select('*').eq('estado', 'afederado').order('nombre');
         if (clubesData) setClubes(clubesData);
     }
 
