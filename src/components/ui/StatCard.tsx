@@ -11,6 +11,8 @@ interface StatCardProps {
     description?: string;
     iconColor?: string; // e.g. "text-cop-blue"
     iconBg?: string; // e.g. "bg-blue-50"
+    trendColor?: string; // e.g. "text-emerald-600"
+    trendBg?: string; // e.g. "bg-emerald-50"
     className?: string;
 }
 
@@ -22,6 +24,8 @@ export default function StatCard({
     description,
     iconColor = "text-cop-blue",
     iconBg = "bg-blue-50",
+    trendColor = "text-emerald-600",
+    trendBg = "bg-emerald-50",
     className
 }: StatCardProps) {
     return (
@@ -66,7 +70,12 @@ export default function StatCard({
             {(description || trend) && (
                 <div className="relative z-10 flex items-center gap-2 mt-3">
                     {trend && (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-100">
+                        <span className={cn(
+                            "text-[10px] font-bold px-2 py-0.5 rounded-full border",
+                            trendBg,
+                            trendColor,
+                            trendColor.replace('text-', 'border-').replace('600', '100') // Basic border color derivation or just let it inherit/be static
+                        )}>
                             {trend}
                         </span>
                     )}

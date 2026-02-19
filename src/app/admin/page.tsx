@@ -46,6 +46,7 @@ export default function AdminPage() {
     })[]>([]);
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
+    const [weeklyInscriptions, setWeeklyInscriptions] = useState(0);
 
     // Filters
     const [searchTerm, setSearchTerm] = useState('');
@@ -106,6 +107,20 @@ export default function AdminPage() {
         if (!error && data) {
             setEventos(data);
         }
+
+        // Fetch weekly inscriptions count
+        const oneWeekAgo = new Date();
+        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+        const { count, error: countError } = await supabase
+            .from('inscripciones')
+            .select('*', { count: 'exact', head: true })
+            .gte('created_at', oneWeekAgo.toISOString());
+
+        if (!countError) {
+            setWeeklyInscriptions(count || 0);
+        }
+
         setLoading(false);
     }
 
@@ -261,7 +276,8 @@ export default function AdminPage() {
                     <StatCard
                         label="Inscripciones"
                         value={kpiInscripciones}
-                        trend="+3 esta semana"
+                        trend={weeklyInscriptions > 0 ? `+${weeklyInscriptions} esta semana` : "Sin nuevas"}
+                        trendColor={weeklyInscriptions > 0 ? "text-emerald-600" : "text-slate-400"}
                         icon={Users}
                         iconColor="text-fpt-red"
                         iconBg="bg-red-50"
