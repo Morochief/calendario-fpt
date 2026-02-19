@@ -9,9 +9,10 @@ interface MiniMonthProps {
     mesIndex: number;
     year: number;
     eventos: EventoConModalidad[];
+    onEventClick: (evento: EventoConModalidad) => void;
 }
 
-export default function MiniMonth({ mes, mesIndex, year, eventos }: MiniMonthProps) {
+export default function MiniMonth({ mes, mesIndex, year, eventos, onEventClick }: MiniMonthProps) {
     const [expandido, setExpandido] = useState(false);
 
     const firstDay = new Date(year, mesIndex, 1);
@@ -91,7 +92,12 @@ export default function MiniMonth({ mes, mesIndex, year, eventos }: MiniMonthPro
             {eventosDelMes.length > 0 && (
                 <div className="mt-2 pt-2 border-t border-border-elite">
                     {eventosAMostrar.map((e, i) => (
-                        <div key={i} className="flex items-center gap-1.5 py-1 text-[10px] text-text-elite cursor-pointer transition-all rounded-[3px] px-1 hover:bg-cop-blue/10 hover:translate-x-0.5" title={e.titulo}>
+                        <div
+                            key={i}
+                            className="flex items-center gap-1.5 py-1 text-[10px] text-text-elite cursor-pointer transition-all rounded-[3px] px-1 hover:bg-cop-blue/10 hover:translate-x-0.5"
+                            title={e.titulo}
+                            onClick={() => onEventClick(e)}
+                        >
                             <span
                                 className="w-[5px] h-[5px] rounded-full shrink-0"
                                 style={{ background: e.modalidades?.color || '#171717' }}
