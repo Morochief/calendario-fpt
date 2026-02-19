@@ -149,50 +149,34 @@ export default function AdminPage() {
     }
 
     // Export functionality
-    const exportToCSV = () => {
+    const exportToExcel = () => {
         if (filteredEventos.length === 0) {
             showToast('No hay eventos para exportar', 'info');
             return;
         }
 
-        const headers = ['ID', 'Fecha', 'Evento', 'Estado', 'Modalidad', 'Tipo', 'Inscritos', 'Club Organizador'];
+        import('xlsx').then(XLSX => {
+            const dataToExport = filteredEventos.map(evento => ({
+                ID: evento.id.substring(0, 8),
+                Fecha: evento.fecha,
+                Evento: evento.titulo,
+                Estado: getEventStatus(evento.fecha).toUpperCase(),
+                Modalidad: evento.modalidades?.nombre || '',
+                Tipo: evento.tipos_evento?.nombre || evento.tipo || '',
+                Inscritos: evento.inscripciones?.[0]?.count || 0,
+                'Club Organizador': evento.clubes?.nombre || ''
+            }));
 
-        const escapeCSV = (val: string | number | undefined | null) => {
-            if (val === null || val === undefined) return '""';
-            const str = String(val);
-            if (str.includes(',') || str.includes('"') || str.includes('\n')) {
-                return `"${str.replace(/"/g, '""')}"`;
-            }
-            return str;
-        };
+            const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Eventos');
 
-        const rows = filteredEventos.map(evento => {
-            return [
-                evento.id.substring(0, 8), // Export short ID to match UI, or full if preferred. Full is better for data.
-                evento.fecha,
-                evento.titulo,
-                getEventStatus(evento.fecha).toUpperCase(),
-                evento.modalidades?.nombre || '',
-                evento.tipos_evento?.nombre || evento.tipo || '',
-                evento.inscripciones?.[0]?.count || 0,
-                evento.clubes?.nombre || ''
-            ].map(escapeCSV).join(',');
+            XLSX.writeFile(workbook, `eventos_fpt_${new Date().toISOString().split('T')[0]}.xlsx`);
+            showToast('Archivo Excel exportado correctamente', 'success');
+        }).catch(err => {
+            console.error('Error importing xlsx:', err);
+            showToast('Error al exportar a Excel', 'error');
         });
-
-        const csvContent = '\uFEFF' + [headers.join(','), ...rows].join('\n'); // UTF-8 BOM
-
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement('a');
-        const url = URL.createObjectURL(blob);
-
-        link.setAttribute('href', url);
-        link.setAttribute('download', `eventos_fpt_${new Date().toISOString().split('T')[0]}.csv`);
-        link.style.visibility = 'hidden';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-
-        showToast('Archivo exportado correctamente', 'success');
     };
 
     // Filter Logic
@@ -293,7 +277,7 @@ export default function AdminPage() {
                     <div className="flex items-center gap-3">
                         {/* Botón exportar */}
                         <button
-                            onClick={exportToCSV}
+                            onClick={exportToExcel}
                             className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-cop-blue font-bold text-sm transition-all duration-200 hover:border-cop-blue hover:bg-blue-50 hover:shadow-md active:scale-95"
                         >
                             <Download size={18} strokeWidth={2.5} />
