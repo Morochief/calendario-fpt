@@ -219,12 +219,16 @@ export default function AdminClubesPage() {
                                         </span>
                                     </EliteCell>
                                     <EliteCell align="center">
-                                        {club.estado === 'afiliado' ? (
+                                        {club.estado === 'afederado' ? (
                                             <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-200">
-                                                Afiliado
+                                                Afederado
+                                            </span>
+                                        ) : club.estado === 'no_afederado' ? (
+                                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-50 text-gray-700 border border-gray-200">
+                                                No Afederado
                                             </span>
                                         ) : club.estado === 'inactivo' ? (
-                                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-50 text-slate-500 border border-slate-200">
+                                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-200">
                                                 Inactivo
                                             </span>
                                         ) : (
@@ -344,7 +348,8 @@ export default function AdminClubesPage() {
                                         className="w-full px-3 py-2.5 bg-white rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all appearance-none font-medium text-slate-700 cursor-pointer"
                                     >
                                         <option value="pendiente">Pendiente</option>
-                                        <option value="afiliado">Afiliado</option>
+                                        <option value="afederado">Afederado</option>
+                                        <option value="no_afederado">No Afederado</option>
                                         <option value="inactivo">Inactivo</option>
                                     </select>
                                     <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">

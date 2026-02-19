@@ -90,7 +90,7 @@ export type Club = {
     id: string;
     nombre: string;
     siglas: string;
-    estado: 'afiliado' | 'pendiente' | 'inactivo';
+    estado: 'afederado' | 'no_afederado' | 'pendiente' | 'inactivo';
     color: string;
     contacto_nombre?: string | null;
     contacto_telefono?: string | null;
