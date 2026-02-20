@@ -179,8 +179,10 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                                 "transition-all duration-300 focus:bg-white focus:border-cop-blue/20 focus:shadow-lg focus:shadow-blue-900/5 outline-none",
                                 errors.titulo && "border-fpt-red/30 bg-fpt-red-[4px]"
                             )}
+                            aria-invalid={errors.titulo ? "true" : "false"}
+                            aria-describedby={errors.titulo ? "titulo-error" : undefined}
                         />
-                        {errors.titulo && <p className="text-fpt-red text-[11px] font-bold mt-2 ml-1 uppercase tracking-tight">{errors.titulo}</p>}
+                        {errors.titulo && <p id="titulo-error" role="alert" className="text-fpt-red text-[11px] font-bold mt-2 ml-1 uppercase tracking-tight">{errors.titulo}</p>}
                     </div>
 
                     {/* Modalidad */}
@@ -299,8 +301,10 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                                 "text-slate-800 font-bold transition-all duration-300 focus:bg-white focus:border-cop-blue/20",
                                 errors.fecha && "border-fpt-red/30"
                             )}
+                            aria-invalid={errors.fecha ? "true" : "false"}
+                            aria-describedby={errors.fecha ? "fecha-error" : undefined}
                         />
-                        {errors.fecha && <p className="text-fpt-red text-[11px] font-bold mt-2 ml-1 uppercase tracking-tight">{errors.fecha}</p>}
+                        {errors.fecha && <p id="fecha-error" role="alert" className="text-fpt-red text-[11px] font-bold mt-2 ml-1 uppercase tracking-tight">{errors.fecha}</p>}
                     </div>
 
                     {/* Hora */}
@@ -311,8 +315,14 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                             type="time"
                             value={hora}
                             onChange={(e) => setHora(e.target.value)}
-                            className="w-full px-5 py-3.5 rounded-xl bg-slate-50 border-2 border-transparent outline-none text-slate-800 font-bold transition-all duration-300 focus:bg-white focus:border-cop-blue/20"
+                            className={cn(
+                                "w-full px-5 py-3.5 rounded-xl bg-slate-50 border-2 border-transparent outline-none text-slate-800 font-bold transition-all duration-300 focus:bg-white focus:border-cop-blue/20",
+                                errors.hora && "border-fpt-red/30"
+                            )}
+                            aria-invalid={errors.hora ? "true" : "false"}
+                            aria-describedby={errors.hora ? "hora-error" : undefined}
                         />
+                        {errors.hora && <p id="hora-error" role="alert" className="text-fpt-red text-[11px] font-bold mt-2 ml-1 uppercase tracking-tight">{errors.hora}</p>}
                     </div>
 
                     {/* Ubicación */}
