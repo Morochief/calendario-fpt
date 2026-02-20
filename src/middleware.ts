@@ -28,6 +28,9 @@ export async function middleware(request: NextRequest) {
                     );
                 },
             },
+            cookieOptions: {
+                maxAge: 4 * 60 * 60, // 4 hours
+            }
         }
     );
 

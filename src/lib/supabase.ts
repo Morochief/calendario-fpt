@@ -20,7 +20,12 @@ export function createClient(): SupabaseClientType {
     if (!supabaseInstance) {
         supabaseInstance = createBrowserClient(
             env.NEXT_PUBLIC_SUPABASE_URL,
-            env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+            env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+            {
+                cookieOptions: {
+                    maxAge: 4 * 60 * 60, // 4 hours
+                }
+            }
         );
     }
     return supabaseInstance;

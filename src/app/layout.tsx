@@ -3,6 +3,7 @@ import "./globals.css";
 import { ToastProvider } from "@/components/Toast";
 import Watermark from "@/components/Watermark";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import AutoLogout from "@/components/AutoLogout";
 
 export const metadata: Metadata = {
   title: "Calendario 2026 | Federación Paraguaya de Tiro",
@@ -37,6 +38,7 @@ export default function RootLayout({
         <Watermark />
         <div style={{ position: 'relative', zIndex: 1 }}>
           <ToastProvider>
+            <AutoLogout />
             {children}
             <SpeedInsights />
           </ToastProvider>

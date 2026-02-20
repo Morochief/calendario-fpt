@@ -27,6 +27,9 @@ export async function createServerSupabaseClient() {
                     }
                 },
             },
+            cookieOptions: {
+                maxAge: 4 * 60 * 60, // 4 hours
+            }
         }
     );
 }
