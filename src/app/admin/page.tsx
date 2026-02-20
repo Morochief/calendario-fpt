@@ -53,6 +53,7 @@ export default function AdminPage() {
     const [filterEstado, setFilterEstado] = useState('');
     const [filterModalidad, setFilterModalidad] = useState('');
     const [filterTipo, setFilterTipo] = useState('');
+    const [filterClub, setFilterClub] = useState('');
 
     // Derived Data for Filters (Unique values)
     const uniqueModalidades = useMemo(() => {
@@ -63,6 +64,11 @@ export default function AdminPage() {
     const uniqueTipos = useMemo(() => {
         const tipos = new Set(eventos.map(e => e.tipos_evento?.nombre || e.tipo).filter(Boolean));
         return Array.from(tipos).sort();
+    }, [eventos]);
+
+    const uniqueClubes = useMemo(() => {
+        const clubs = new Set(eventos.map(e => e.clubes?.nombre).filter(Boolean));
+        return Array.from(clubs).sort();
     }, [eventos]);
 
     const router = useRouter();
@@ -193,12 +199,14 @@ export default function AdminPage() {
 
             const matchesTipo = (filterTipo && filterTipo !== 'todos') ? (evento.tipos_evento?.nombre === filterTipo || evento.tipo === filterTipo) : true;
 
+            const matchesClub = (filterClub && filterClub !== 'todos') ? evento.clubes?.nombre === filterClub : true;
+
             const status = getEventStatus(evento.fecha);
             const matchesEstado = (filterEstado && filterEstado !== 'todos') ? status === filterEstado : true;
 
-            return matchesSearch && matchesModalidad && matchesTipo && matchesEstado;
+            return matchesSearch && matchesModalidad && matchesTipo && matchesClub && matchesEstado;
         });
-    }, [eventos, searchTerm, filterModalidad, filterTipo, filterEstado]);
+    }, [eventos, searchTerm, filterModalidad, filterTipo, filterClub, filterEstado]);
 
     // KPI Calculations
     const kpiTotal = eventos.length;
@@ -498,14 +506,31 @@ export default function AdminPage() {
                                 ]}
                             />
 
+                            {/* Filtro por club */}
+                            <AdminFilterDropdown
+                                label="Club"
+                                icon={Building2}
+                                value={filterClub}
+                                onChange={setFilterClub}
+                                options={[
+                                    { value: 'todos', label: 'Todos los clubes' },
+                                    ...uniqueClubes.filter(Boolean).map(c => ({
+                                        value: c || '',
+                                        label: c || '',
+                                        color: '#F43F5E'
+                                    }))
+                                ]}
+                            />
+
                             {/* Botón limpiar filtros */}
-                            {(filterEstado || filterModalidad || filterTipo || searchTerm) && (
+                            {(filterEstado || filterModalidad || filterTipo || filterClub || searchTerm) && (
                                 <button
                                     onClick={() => {
                                         setSearchTerm('');
                                         setFilterEstado('');
                                         setFilterModalidad('');
                                         setFilterTipo('');
+                                        setFilterClub('');
                                     }}
                                     className="px-4 py-2 text-xs text-fpt-red hover:bg-red-50 font-bold transition-colors flex items-center gap-1.5 rounded-lg ml-auto"
                                     title="Limpiar filtros"
@@ -520,7 +545,7 @@ export default function AdminPage() {
                     {/* Grid Table — mathematically aligned columns */}
                     <div className="p-6 bg-slate-50/50 overflow-hidden min-h-[400px]">
                         {/* Headers */}
-                        <div className="grid grid-cols-[1fr_auto] md:grid-cols-[48px_140px_1.5fr_120px_180px_110px_80px_100px] items-center px-4 mb-3 gap-4">
+                        <div className="grid grid-cols-[1fr_auto] md:grid-cols-[48px_110px_1.5fr_120px_160px_160px_90px_100px] items-center px-4 mb-3 gap-3">
                             <div className="hidden md:flex items-center">
                                 <input type="checkbox" className="w-4 h-4 rounded border-slate-300 text-cop-blue focus:ring-blue-500/20 transition-all cursor-pointer" />
                             </div>
@@ -528,7 +553,7 @@ export default function AdminPage() {
                             <div className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em] py-3 px-2">Evento</div>
                             <div className="hidden md:block text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em] py-3 px-2 text-center">Estado</div>
                             <div className="hidden md:block text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em] py-3 px-2 text-center">Modalidad</div>
-                            <div className="hidden md:block text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em] py-3 px-2 text-center">Tipo</div>
+                            <div className="hidden md:block text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em] py-3 px-2 text-center">Club</div>
                             <div className="hidden md:block text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em] py-3 px-2 text-center">Inscritos</div>
                             <div className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em] py-3 px-2 text-right">Acciones</div>
                         </div>
@@ -547,6 +572,7 @@ export default function AdminPage() {
                                             setFilterEstado('');
                                             setFilterModalidad('');
                                             setFilterTipo('');
+                                            setFilterClub('');
                                         }}
                                         className="mt-4 px-6 py-2.5 rounded-xl bg-white border border-slate-200 text-cop-blue font-bold text-sm hover:border-cop-blue hover:bg-blue-50 transition-all shadow-sm"
                                     >
@@ -562,7 +588,7 @@ export default function AdminPage() {
                                     return (
                                         <div
                                             key={evento.id}
-                                            className="group relative grid grid-cols-[1fr_auto] md:grid-cols-[48px_140px_1.5fr_120px_180px_110px_80px_100px] items-center bg-white rounded-xl border border-slate-100 shadow-sm transition-all duration-300 hover:shadow-xl hover:shadow-blue-900/5 hover:border-cop-blue/20 hover:-translate-y-0.5 hover:z-10 animate-fade-in gap-4 p-4 md:p-0"
+                                            className="group relative grid grid-cols-[1fr_auto] md:grid-cols-[48px_110px_1.5fr_120px_160px_160px_90px_100px] items-center bg-white rounded-xl border border-slate-100 shadow-sm transition-all duration-300 hover:shadow-xl hover:shadow-blue-900/5 hover:border-cop-blue/20 hover:-translate-y-0.5 hover:z-10 animate-fade-in gap-3 p-4 md:p-0"
                                             style={{ animationDelay: `${idx * 0.03}s` }}
                                         >
                                             {/* Checkbox */}
@@ -655,24 +681,36 @@ export default function AdminPage() {
 
                                             {/* Modalidad (Desktop) */}
                                             <div className="hidden md:block p-2 text-center">
-                                                <span className="inline-flex items-center gap-2 text-[10px] font-black px-3 py-1.5 rounded-full border bg-white shadow-sm uppercase tracking-wider"
-                                                    style={{
-                                                        color: evento.modalidades?.color || '#1E3A8A',
-                                                        borderColor: `${(evento.modalidades?.color || '#1E3A8A')}30`
-                                                    }}
-                                                >
-                                                    <span className="w-1.5 h-1.5 rounded-full"
-                                                        style={{ background: evento.modalidades?.color || '#1E3A8A' }}
-                                                    />
-                                                    {evento.modalidades?.nombre}
-                                                </span>
+                                                <div className="flex flex-col items-center justify-center gap-1">
+                                                    <span className="inline-flex items-center justify-center max-w-full text-[10px] font-black px-2.5 py-1 rounded-md border bg-white shadow-sm uppercase tracking-widest truncate"
+                                                        style={{
+                                                            color: evento.modalidades?.color || '#1E3A8A',
+                                                            borderColor: `${(evento.modalidades?.color || '#1E3A8A')}30`
+                                                        }}
+                                                    >
+                                                        {evento.modalidades?.nombre}
+                                                    </span>
+                                                    <span className="text-[9px] font-bold text-slate-400 uppercase">
+                                                        {evento.tipos_evento?.nombre || evento.tipo || '-'}
+                                                    </span>
+                                                </div>
                                             </div>
 
-                                            {/* Tipo (Desktop) */}
+                                            {/* Club (Desktop) */}
                                             <div className="hidden md:block p-2 text-center">
-                                                <span className="inline-flex text-[10px] font-bold px-3 py-1.5 rounded-lg text-slate-500 bg-slate-50 border border-slate-100 uppercase tracking-widest">
-                                                    {evento.tipos_evento?.nombre || evento.tipo || '-'}
-                                                </span>
+                                                {evento.clubes ? (
+                                                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-50 border border-slate-100 text-[10px] font-bold text-slate-600 truncate max-w-full shadow-sm">
+                                                        {evento.clubes.logo_url ? (
+                                                            /* eslint-disable-next-line @next/next/no-img-element */
+                                                            <img src={evento.clubes.logo_url} alt="Logo" className="w-3.5 h-3.5 object-contain" />
+                                                        ) : (
+                                                            <Building2 size={12} className="text-slate-400" />
+                                                        )}
+                                                        <span className="truncate">{evento.clubes.siglas || evento.clubes.nombre}</span>
+                                                    </span>
+                                                ) : (
+                                                    <span className="text-[10px] text-slate-400 font-medium">-</span>
+                                                )}
                                             </div>
 
                                             {/* Inscritos (Desktop) */}
