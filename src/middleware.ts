@@ -55,8 +55,10 @@ export async function middleware(request: NextRequest) {
 
         // SECURITY: Authorization Check (Allowed Admins Only)
         // Matches src/lib/utils.ts
-        const ALLOWED_ADMINS = ['admin@fpdt.org.py', 'admin@fpt.com', 'admin@fptd.com.py'];
-        if (user.email && !ALLOWED_ADMINS.includes(user.email)) {
+        const adminEmailsStr = process.env.NEXT_PUBLIC_ADMIN_EMAILS || 'admin@fpdt.org.py,admin@fpt.com,admin@fptd.com.py';
+        const allowedAdmins = adminEmailsStr.split(',').map(e => e.trim().toLowerCase());
+
+        if (user.email && !allowedAdmins.includes(user.email.toLowerCase())) {
             // Redirect unauthorized users to home
             return NextResponse.redirect(new URL('/', request.url));
         }
