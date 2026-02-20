@@ -543,9 +543,10 @@ export default function AdminPage() {
                             />
 
                             {/* Filtro por club (Uso del componente público) */}
-                            <div className="flex-1 min-w-[280px]">
+                            <div className="flex-1 min-w-[220px]">
                                 <ClubFilter
                                     className="relative flex pointer-events-none"
+                                    variant="admin"
                                     clubes={uniqueClubes}
                                     selected={filterClub === 'todos' || filterClub === '' ? null : filterClub}
                                     onSelect={(selectedId) => setFilterClub(selectedId || '')}

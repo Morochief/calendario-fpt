@@ -9,9 +9,10 @@ interface ClubFilterProps {
     selected: string | null;
     onSelect: (id: string | null) => void;
     className?: string; // Optional wrapper class to override defaults (like sticky)
+    variant?: 'public' | 'admin';
 }
 
-export default function ClubFilter({ clubes, selected, onSelect, className }: ClubFilterProps) {
+export default function ClubFilter({ clubes, selected, onSelect, className, variant = 'public' }: ClubFilterProps) {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -36,19 +37,55 @@ export default function ClubFilter({ clubes, selected, onSelect, className }: Cl
         <div className={className || "sticky top-[80px] z-[var(--z-filter)] flex py-4 pointer-events-none mb-4 justify-start"} ref={dropdownRef}>
             <div className="relative pointer-events-auto">
                 <button
-                    className={`flex items-center justify-between gap-4 px-6 py-3 bg-white/90 backdrop-blur-md border border-[var(--color-border)] rounded-full font-semibold text-sm text-[var(--color-text)] cursor-pointer shadow-[var(--shadow-md)] transition-all duration-300 hover:border-[var(--color-cop-blue)] hover:shadow-[var(--shadow-lg)] active:scale-98 min-w-[280px] group ${isOpen ? 'ring-2 ring-[var(--color-cop-blue)]/10 border-[var(--color-cop-blue)]' : ''}`}
+                    className={
+                        variant === 'admin'
+                            ? ""
+                            : `flex items-center justify-between gap-4 px-6 py-3 bg-white/90 backdrop-blur-md border border-[var(--color-border)] rounded-full font-semibold text-sm text-[var(--color-text)] cursor-pointer shadow-[var(--shadow-md)] transition-all duration-300 hover:border-[var(--color-cop-blue)] hover:shadow-[var(--shadow-lg)] active:scale-98 min-w-[280px] group ${isOpen ? 'ring-2 ring-[var(--color-cop-blue)]/10 border-[var(--color-cop-blue)]' : ''}`
+                    }
+                    style={
+                        variant === 'admin' ? {
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            gap: '0.5rem',
+                            minWidth: '220px',
+                            padding: '0.5rem 0.875rem',
+                            background: isOpen ? 'rgba(30, 58, 138, 0.04)' : 'white',
+                            border: `1.5px solid ${isOpen ? 'rgba(30, 58, 138, 0.3)' : 'rgba(30, 58, 138, 0.12)'}`,
+                            borderRadius: '10px',
+                            cursor: 'pointer',
+                            fontSize: '0.8125rem',
+                            fontWeight: 600,
+                            color: selected === null ? '#475569' : '#1E3A8A',
+                            transition: 'all 0.2s ease',
+                            boxShadow: isOpen ? '0 0 0 3px rgba(30, 58, 138, 0.08)' : '0 1px 3px rgba(0,0,0,0.04)',
+                            width: '100%'
+                        } : {}
+                    }
+                    onMouseEnter={(e) => {
+                        if (variant === 'admin' && !isOpen) {
+                            e.currentTarget.style.borderColor = 'rgba(30, 58, 138, 0.25)';
+                            e.currentTarget.style.boxShadow = '0 2px 8px rgba(30, 58, 138, 0.08)';
+                        }
+                    }}
+                    onMouseLeave={(e) => {
+                        if (variant === 'admin' && !isOpen) {
+                            e.currentTarget.style.borderColor = 'rgba(30, 58, 138, 0.12)';
+                            e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.04)';
+                        }
+                    }}
                     onClick={() => setIsOpen(!isOpen)}
                 >
-                    <div className="flex items-center gap-3">
+                    <div className={variant === 'admin' ? "" : "flex items-center gap-3"} style={variant === 'admin' ? { display: 'flex', alignItems: 'center', gap: '0.5rem', overflow: 'hidden' } : {}}>
                         {selectedClub ? (
                             <>
-                                <Building2 size={18} strokeWidth={1.5} className="text-[var(--color-cop-blue)]" />
-                                <span className="text-[var(--color-text)] truncate max-w-[180px]">{selectedClub.nombre}</span>
+                                <Building2 size={variant === 'admin' ? 15 : 18} strokeWidth={1.5} className={variant === 'admin' ? "" : "text-[var(--color-cop-blue)]"} style={variant === 'admin' ? { color: '#1E3A8A', flexShrink: 0 } : {}} />
+                                <span className={variant === 'admin' ? "" : "text-[var(--color-text)] truncate max-w-[180px]"} style={variant === 'admin' ? { overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } : {}}>{selectedClub.nombre}</span>
                             </>
                         ) : (
                             <>
-                                <Building2 size={18} strokeWidth={1.5} className="text-[var(--color-text-secondary)] group-hover:text-[var(--color-cop-blue)] transition-colors" />
-                                <span className="text-[var(--color-text-secondary)] group-hover:text-[var(--color-text)] transition-colors">Filtrar por Club</span>
+                                <Building2 size={variant === 'admin' ? 15 : 18} strokeWidth={1.5} className={variant === 'admin' ? "" : "text-[var(--color-text-secondary)] group-hover:text-[var(--color-cop-blue)] transition-colors"} style={variant === 'admin' ? { color: '#94A3B8', flexShrink: 0 } : {}} />
+                                <span className={variant === 'admin' ? "" : "text-[var(--color-text-secondary)] group-hover:text-[var(--color-text)] transition-colors"} style={variant === 'admin' ? { overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } : {}}>Club</span>
                             </>
                         )}
                     </div>
@@ -64,9 +101,10 @@ export default function ClubFilter({ clubes, selected, onSelect, className }: Cl
                             </div>
                         )}
                         <ChevronDown
-                            size={16}
+                            size={variant === 'admin' ? 14 : 16}
                             strokeWidth={1.5}
-                            className={`text-[var(--color-text-secondary)] transition-transform duration-300 ${isOpen ? 'rotate-180 text-[var(--color-cop-blue)]' : ''}`}
+                            className={variant === 'admin' ? "" : `text-[var(--color-text-secondary)] transition-transform duration-300 ${isOpen ? 'rotate-180 text-[var(--color-cop-blue)]' : ''}`}
+                            style={variant === 'admin' ? { color: selected === null ? '#94A3B8' : '#1E3A8A', flexShrink: 0, transition: 'transform 0.2s ease', transform: isOpen ? 'rotate(180deg)' : 'rotate(0)' } : {}}
                         />
                     </div>
                 </button>
