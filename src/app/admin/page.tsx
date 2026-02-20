@@ -27,7 +27,9 @@ import {
     ChevronDown,
     Activity,
     Tag,
-    Building2
+    Building2,
+    ArrowDownAZ,
+    CalendarDays
 } from 'lucide-react';
 
 import { createClient } from '@/lib/supabase';
@@ -54,6 +56,8 @@ export default function AdminPage() {
     const [filterModalidad, setFilterModalidad] = useState('');
     const [filterTipo, setFilterTipo] = useState('');
     const [filterClub, setFilterClub] = useState('');
+    const [filterMes, setFilterMes] = useState('');
+    const [sortOrder, setSortOrder] = useState('fecha_desc');
 
     // Derived Data for Filters (Unique values)
     const uniqueModalidades = useMemo(() => {
@@ -69,6 +73,14 @@ export default function AdminPage() {
     const uniqueClubes = useMemo(() => {
         const clubs = new Set(eventos.map(e => e.clubes?.nombre).filter(Boolean));
         return Array.from(clubs).sort();
+    }, [eventos]);
+
+    const uniqueMeses = useMemo(() => {
+        const meses = new Set(eventos.map(e => new Date(e.fecha + 'T12:00:00').getMonth()));
+        return Array.from(meses).sort((a, b) => a - b).map(m => ({
+            value: m.toString(),
+            label: new Date(2026, m, 1).toLocaleString('es-ES', { month: 'long' })
+        }));
     }, [eventos]);
 
     const router = useRouter();
@@ -190,7 +202,7 @@ export default function AdminPage() {
 
     // Filter Logic
     const filteredEventos = useMemo(() => {
-        return eventos.filter(evento => {
+        let filtered = eventos.filter(evento => {
             const matchesSearch =
                 evento.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 evento.modalidades?.nombre.toLowerCase().includes(searchTerm.toLowerCase());
@@ -201,12 +213,30 @@ export default function AdminPage() {
 
             const matchesClub = (filterClub && filterClub !== 'todos') ? evento.clubes?.nombre === filterClub : true;
 
-            const status = getEventStatus(evento.fecha);
+            const status = getEventStatus(evento);
             const matchesEstado = (filterEstado && filterEstado !== 'todos') ? status === filterEstado : true;
 
-            return matchesSearch && matchesModalidad && matchesTipo && matchesClub && matchesEstado;
+            const eventMonth = new Date(evento.fecha + 'T12:00:00').getMonth().toString();
+            const matchesMes = (filterMes && filterMes !== 'todos') ? eventMonth === filterMes : true;
+
+            return matchesSearch && matchesModalidad && matchesTipo && matchesClub && matchesEstado && matchesMes;
         });
-    }, [eventos, searchTerm, filterModalidad, filterTipo, filterClub, filterEstado]);
+
+        filtered.sort((a, b) => {
+            if (sortOrder === 'fecha_asc') {
+                return new Date(a.fecha).getTime() - new Date(b.fecha).getTime();
+            } else if (sortOrder === 'fecha_desc') {
+                return new Date(b.fecha).getTime() - new Date(a.fecha).getTime();
+            } else if (sortOrder === 'az') {
+                return a.titulo.localeCompare(b.titulo);
+            } else if (sortOrder === 'za') {
+                return b.titulo.localeCompare(a.titulo);
+            }
+            return 0;
+        });
+
+        return filtered;
+    }, [eventos, searchTerm, filterModalidad, filterTipo, filterClub, filterEstado, filterMes, sortOrder]);
 
     // KPI Calculations
     const kpiTotal = eventos.length;
@@ -522,8 +552,38 @@ export default function AdminPage() {
                                 ]}
                             />
 
+                            {/* Filtro por mes */}
+                            <AdminFilterDropdown
+                                label="Mes"
+                                icon={CalendarDays}
+                                value={filterMes}
+                                onChange={setFilterMes}
+                                options={[
+                                    { value: 'todos', label: 'Todos los meses' },
+                                    ...uniqueMeses.map(m => ({
+                                        value: m.value,
+                                        label: m.label.charAt(0).toUpperCase() + m.label.slice(1),
+                                        color: '#38BDF8'
+                                    }))
+                                ]}
+                            />
+
+                            {/* Ordenar por */}
+                            <AdminFilterDropdown
+                                label="Ordenar"
+                                icon={ArrowDownAZ}
+                                value={sortOrder}
+                                onChange={setSortOrder}
+                                options={[
+                                    { value: 'fecha_desc', label: 'Fecha (Más recientes)' },
+                                    { value: 'fecha_asc', label: 'Fecha (Más antiguos)' },
+                                    { value: 'az', label: 'Título (A-Z)' },
+                                    { value: 'za', label: 'Título (Z-A)' }
+                                ]}
+                            />
+
                             {/* Botón limpiar filtros */}
-                            {(filterEstado || filterModalidad || filterTipo || filterClub || searchTerm) && (
+                            {(filterEstado || filterModalidad || filterTipo || filterClub || filterMes || searchTerm || sortOrder !== 'fecha_desc') && (
                                 <button
                                     onClick={() => {
                                         setSearchTerm('');
@@ -531,6 +591,8 @@ export default function AdminPage() {
                                         setFilterModalidad('');
                                         setFilterTipo('');
                                         setFilterClub('');
+                                        setFilterMes('');
+                                        setSortOrder('fecha_desc');
                                     }}
                                     className="px-4 py-2 text-xs text-fpt-red hover:bg-red-50 font-bold transition-colors flex items-center gap-1.5 rounded-lg ml-auto"
                                     title="Limpiar filtros"
@@ -573,6 +635,8 @@ export default function AdminPage() {
                                             setFilterModalidad('');
                                             setFilterTipo('');
                                             setFilterClub('');
+                                            setFilterMes('');
+                                            setSortOrder('fecha_desc');
                                         }}
                                         className="mt-4 px-6 py-2.5 rounded-xl bg-white border border-slate-200 text-cop-blue font-bold text-sm hover:border-cop-blue hover:bg-blue-50 transition-all shadow-sm"
                                     >
