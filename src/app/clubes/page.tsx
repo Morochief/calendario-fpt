@@ -16,9 +16,8 @@ export default function ClubesPage() {
         async function loadClubes() {
             const supabase = createClient();
             const { data } = await supabase
-                .from('clubes')
+                .from('clubes_publicos')
                 .select('*')
-                .in('estado', ['afederado', 'pendiente'])
                 .order('nombre');
 
             if (data) setClubes(data);

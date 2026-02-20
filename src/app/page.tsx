@@ -44,7 +44,7 @@ export default function CalendarPage() {
       setModalidades(modalidadesData || []);
 
       const { data: clubesData, error: clubError } = await supabase
-        .from('clubes')
+        .from('clubes_publicos')
         .select('*')
         .order('nombre');
 
@@ -57,7 +57,7 @@ export default function CalendarPage() {
           *,
           modalidades (*),
           tipos_evento (*),
-          clubes (*)
+          clubes (id, nombre, siglas, website_url, logo_url, color, estado)
         `)
         .order('fecha');
 
