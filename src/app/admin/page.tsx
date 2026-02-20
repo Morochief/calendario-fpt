@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Header from '@/components/Header';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import AdminFilterDropdown from '@/components/AdminFilterDropdown';
+import ClubFilter from '@/components/ClubFilter';
 import Pagination from '@/components/Pagination';
 import { useToast } from '@/components/Toast';
 import {
@@ -71,8 +72,13 @@ export default function AdminPage() {
     }, [eventos]);
 
     const uniqueClubes = useMemo(() => {
-        const clubs = new Set(eventos.map(e => e.clubes?.nombre).filter(Boolean));
-        return Array.from(clubs).sort();
+        const clubsMap = new Map();
+        eventos.forEach(e => {
+            if (e.clubes && e.clubes.id) {
+                clubsMap.set(e.clubes.id, e.clubes);
+            }
+        });
+        return Array.from(clubsMap.values()).sort((a, b) => a.nombre.localeCompare(b.nombre));
     }, [eventos]);
 
     const uniqueMeses = useMemo(() => {
@@ -211,7 +217,7 @@ export default function AdminPage() {
 
             const matchesTipo = (filterTipo && filterTipo !== 'todos') ? (evento.tipos_evento?.nombre === filterTipo || evento.tipo === filterTipo) : true;
 
-            const matchesClub = (filterClub && filterClub !== 'todos') ? evento.clubes?.nombre === filterClub : true;
+            const matchesClub = (filterClub && filterClub !== 'todos') ? evento.clubes?.id === filterClub : true;
 
             const status = getEventStatus(evento);
             const matchesEstado = (filterEstado && filterEstado !== 'todos') ? status === filterEstado : true;
@@ -536,21 +542,15 @@ export default function AdminPage() {
                                 ]}
                             />
 
-                            {/* Filtro por club */}
-                            <AdminFilterDropdown
-                                label="Club"
-                                icon={Building2}
-                                value={filterClub}
-                                onChange={setFilterClub}
-                                options={[
-                                    { value: 'todos', label: 'Todos los clubes' },
-                                    ...uniqueClubes.filter(Boolean).map(c => ({
-                                        value: c || '',
-                                        label: c || '',
-                                        color: '#F43F5E'
-                                    }))
-                                ]}
-                            />
+                            {/* Filtro por club (Uso del componente público) */}
+                            <div className="flex-1 min-w-[280px]">
+                                <ClubFilter
+                                    className="relative flex pointer-events-none"
+                                    clubes={uniqueClubes}
+                                    selected={filterClub === 'todos' || filterClub === '' ? null : filterClub}
+                                    onSelect={(selectedId) => setFilterClub(selectedId || '')}
+                                />
+                            </div>
 
                             {/* Filtro por mes */}
                             <AdminFilterDropdown

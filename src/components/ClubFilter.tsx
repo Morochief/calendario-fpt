@@ -8,9 +8,10 @@ interface ClubFilterProps {
     clubes: Club[];
     selected: string | null;
     onSelect: (id: string | null) => void;
+    className?: string; // Optional wrapper class to override defaults (like sticky)
 }
 
-export default function ClubFilter({ clubes, selected, onSelect }: ClubFilterProps) {
+export default function ClubFilter({ clubes, selected, onSelect, className }: ClubFilterProps) {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -32,7 +33,7 @@ export default function ClubFilter({ clubes, selected, onSelect }: ClubFilterPro
     };
 
     return (
-        <div className="sticky top-[80px] z-[var(--z-filter)] flex py-4 pointer-events-none mb-4 justify-start" ref={dropdownRef}>
+        <div className={className || "sticky top-[80px] z-[var(--z-filter)] flex py-4 pointer-events-none mb-4 justify-start"} ref={dropdownRef}>
             <div className="relative pointer-events-auto">
                 <button
                     className={`flex items-center justify-between gap-4 px-6 py-3 bg-white/90 backdrop-blur-md border border-[var(--color-border)] rounded-full font-semibold text-sm text-[var(--color-text)] cursor-pointer shadow-[var(--shadow-md)] transition-all duration-300 hover:border-[var(--color-cop-blue)] hover:shadow-[var(--shadow-lg)] active:scale-98 min-w-[280px] group ${isOpen ? 'ring-2 ring-[var(--color-cop-blue)]/10 border-[var(--color-cop-blue)]' : ''}`}
