@@ -52,10 +52,10 @@ export default function ClubesPage() {
                             <Building2 size={32} className="text-white" />
                         </div>
                         <h1 className="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight drop-shadow-sm">
-                            Clubes Participantes
+                            Clubes Afederados
                         </h1>
                         <p className="text-blue-100/80 max-w-xl mx-auto text-lg leading-relaxed font-light">
-                            Clubes afiliados a la Federación Paraguaya de Tiro que participan en las competencias oficiales de la temporada 2026.
+                            Clubes miembros de la Federación Paraguaya de Tiro organizadores de competencias oficiales en la temporada 2026.
                         </p>
                     </div>
                 </div>
