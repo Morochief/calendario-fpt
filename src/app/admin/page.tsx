@@ -59,6 +59,7 @@ export default function AdminPage() {
     const [filterClub, setFilterClub] = useState('');
     const [filterMes, setFilterMes] = useState('');
     const [sortOrder, setSortOrder] = useState('fecha_desc');
+    const [serverTimeOffset, setServerTimeOffset] = useState<number>(0);
 
     // Derived Data for Filters (Unique values)
     const uniqueModalidades = useMemo(() => {
@@ -116,6 +117,16 @@ export default function AdminPage() {
     }, []);
 
     async function loadEventos() {
+        // Sync server time to prevent client timezone spoofing
+        fetch('/api/time')
+            .then(res => res.json())
+            .then(data => {
+                const serverNow = new Date(data.now).getTime();
+                const clientNow = Date.now();
+                setServerTimeOffset(serverNow - clientNow);
+            })
+            .catch(err => console.error('Failed to sync server time', err));
+
         const supabase = createClient();
         const { data, error } = await supabase
             .from('eventos')
@@ -170,8 +181,8 @@ export default function AdminPage() {
         if (evento.estado_override) {
             return evento.estado_override as any;
         }
-        const eventDate = new Date(evento.fecha + 'T23:59:59');
-        const now = new Date();
+        const eventDate = new Date(evento.fecha + 'T23:59:59').getTime();
+        const now = Date.now() + serverTimeOffset;
         return eventDate < now ? 'finalizado' : 'activo'; // Simple logic for now
     }
 
