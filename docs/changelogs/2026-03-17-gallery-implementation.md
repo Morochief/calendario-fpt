@@ -56,6 +56,11 @@ Durante el despliegue en Vercel, se identificó un error crítico que detenía e
 - **Fuentes**: Migración a `next/font/google` para eliminar peticiones externas a Google Fonts.
 - **Imagen Prioritaria**: Los logos principales ahora usan `next/image` con `priority` para acelerar el renderizado inicial y bajar el FCP por debajo de los 1.8s.
 
+### **Mejora 9: Optimización de Interactividad (INP)**
+- **Memoización**: Implementación de `React.memo` en toda la jerarquía del calendario para evitar re-renderizados innecesarios.
+- **Procesamiento de Datos**: Centralización del filtrado de eventos en el componente principal para liberar el hilo principal en dispositivos móviles.
+- **Optimización de DOM**: Reducción drástica del número de componentes latentes (Modales) para mejorar la fluidez general.
+
 ---
 *Estado: Funcionalidad de base de datos, diseño, seguridad, monitoreo y rendimiento 100% operativa.*
 *Documentación generada por Antigravity.*

@@ -1,5 +1,4 @@
-'use client';
-
+import { memo } from 'react';
 import { EventoConModalidad } from '@/lib/types';
 import { Clock, MapPin, Map, Building2 } from 'lucide-react';
 
@@ -16,7 +15,7 @@ function isValidImageUrl(url: string): boolean {
     }
 }
 
-export default function EventCard({ evento }: EventCardProps) {
+const EventCard = memo(({ evento }: EventCardProps) => {
     const fecha = new Date(evento.fecha + 'T12:00:00');
     const dia = fecha.getDate();
     const mes = fecha.toLocaleDateString('es-ES', { month: 'short' });
@@ -141,4 +140,8 @@ export default function EventCard({ evento }: EventCardProps) {
             </div>
         </div>
     );
-}
+});
+
+EventCard.displayName = 'EventCard';
+
+export default EventCard;

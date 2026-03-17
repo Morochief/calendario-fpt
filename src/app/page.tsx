@@ -14,6 +14,8 @@ import { AlertTriangle } from 'lucide-react';
 import ScrollReveal from '@/components/ui/ScrollReveal';
 import SectionTitle from '@/components/SectionTitle';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useMemo } from 'react';
+import EventModal from '@/components/EventModal';
 
 type ViewType = 'mensual' | 'anual';
 
@@ -26,6 +28,7 @@ export default function CalendarPage() {
   const [vista, setVista] = useState<ViewType>('mensual');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<EventoConModalidad | null>(null);
 
   useEffect(() => {
     loadData();
@@ -71,11 +74,31 @@ export default function CalendarPage() {
     }
   }
 
-  const eventosFiltrados = eventos.filter(e => {
-    const matchModalidad = selectedModalidad ? e.modalidad_id === selectedModalidad : true;
-    const matchClub = selectedClub ? e.club_id === selectedClub : true;
-    return matchModalidad && matchClub;
-  });
+  const eventosFiltrados = useMemo(() => {
+    return eventos.filter(e => {
+        const matchModalidad = selectedModalidad ? e.modalidad_id === selectedModalidad : true;
+        const matchClub = selectedClub ? e.club_id === selectedClub : true;
+        return matchModalidad && matchClub;
+    });
+  }, [eventos, selectedModalidad, selectedClub]);
+
+  const eventosPorMes = useMemo(() => {
+    const buckets: { [key: number]: EventoConModalidad[] } = {};
+    for (let i = 0; i < 12; i++) buckets[i] = [];
+    
+    eventosFiltrados.forEach(e => {
+        const fecha = new Date(e.fecha + 'T12:00:00');
+        const m = fecha.getMonth();
+        buckets[m].push(e);
+    });
+
+    // Ordenar cada mes
+    Object.keys(buckets).forEach(m => {
+        buckets[Number(m)].sort((a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime());
+    });
+
+    return buckets;
+  }, [eventosFiltrados]);
 
   if (loading) {
     return (
@@ -195,7 +218,8 @@ export default function CalendarPage() {
                       key={mes}
                       mes={mes}
                       mesIndex={index}
-                      eventos={eventosFiltrados}
+                      eventos={eventosPorMes[index]}
+                      onEventClick={setSelectedEvent}
                     />
                   ))}
                 </motion.div>
@@ -207,12 +231,19 @@ export default function CalendarPage() {
                   exit={{ opacity: 0, x: -20 }}
                   transition={{ duration: 0.3, ease: "easeInOut" }}
                 >
-                  <AnnualCalendar eventos={eventosFiltrados} year={2026} />
+                  <AnnualCalendar eventos={eventosFiltrados} year={2026} onEventClick={setSelectedEvent} />
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
         </ScrollReveal>
+
+        {selectedEvent && (
+            <EventModal
+                evento={selectedEvent}
+                onClose={() => setSelectedEvent(null)}
+            />
+        )}
       </main>
       <Footer />
     </>

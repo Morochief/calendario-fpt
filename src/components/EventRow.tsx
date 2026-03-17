@@ -1,5 +1,4 @@
-'use client';
-
+import { memo } from 'react';
 import { EventoConModalidad } from '@/lib/types';
 import { Calendar } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -9,7 +8,7 @@ interface EventRowProps {
     onClick: () => void;
 }
 
-export default function EventRow({ evento, onClick }: EventRowProps) {
+const EventRow = memo(({ evento, onClick }: EventRowProps) => {
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
@@ -58,4 +57,8 @@ export default function EventRow({ evento, onClick }: EventRowProps) {
             )}
         </div>
     );
-}
+});
+
+EventRow.displayName = 'EventRow';
+
+export default EventRow;

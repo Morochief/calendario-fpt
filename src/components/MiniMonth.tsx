@@ -1,6 +1,4 @@
-'use client';
-
-import { useState } from 'react';
+import { useState, memo, useMemo } from 'react';
 import { EventoConModalidad } from '@/lib/types';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
@@ -12,60 +10,65 @@ interface MiniMonthProps {
     onEventClick: (evento: EventoConModalidad) => void;
 }
 
-export default function MiniMonth({ mes, mesIndex, year, eventos, onEventClick }: MiniMonthProps) {
+const MiniMonth = memo(({ mes, mesIndex, year, eventos, onEventClick }: MiniMonthProps) => {
     const [expandido, setExpandido] = useState(false);
 
-    const firstDay = new Date(year, mesIndex, 1);
-    const lastDay = new Date(year, mesIndex + 1, 0);
-    const daysInMonth = lastDay.getDate();
-    const startDayOfWeek = firstDay.getDay();
+    const { dias, eventosDelMes } = useMemo(() => {
+        const firstDay = new Date(year, mesIndex, 1);
+        const lastDay = new Date(year, mesIndex + 1, 0);
+        const daysInMonth = lastDay.getDate();
+        const startDayOfWeek = firstDay.getDay();
 
-    const eventosDelMes = eventos.filter(e => {
-        const fecha = new Date(e.fecha + 'T12:00:00');
-        return fecha.getMonth() === mesIndex && fecha.getFullYear() === year;
-    });
+        const eventosDelMesLocal = eventos.filter(e => {
+            const fecha = new Date(e.fecha + 'T12:00:00');
+            return fecha.getMonth() === mesIndex && fecha.getFullYear() === year;
+        });
 
-    const eventosPorDia: { [key: number]: EventoConModalidad[] } = {};
-    eventosDelMes.forEach(e => {
-        const dia = new Date(e.fecha + 'T12:00:00').getDate();
-        if (!eventosPorDia[dia]) eventosPorDia[dia] = [];
-        eventosPorDia[dia].push(e);
-    });
+        const eventosPorDia: { [key: number]: EventoConModalidad[] } = {};
+        eventosDelMesLocal.forEach(e => {
+            const dia = new Date(e.fecha + 'T12:00:00').getDate();
+            if (!eventosPorDia[dia]) eventosPorDia[dia] = [];
+            eventosPorDia[dia].push(e);
+        });
 
-    const dias = [];
+        const diasArray = [];
 
-    for (let i = 0; i < startDayOfWeek; i++) {
-        dias.push(<div key={`empty-${i}`} className="bg-transparent"></div>);
-    }
+        for (let i = 0; i < startDayOfWeek; i++) {
+            diasArray.push(<div key={`empty-${i}`} className="bg-transparent"></div>);
+        }
 
-    for (let dia = 1; dia <= daysInMonth; dia++) {
-        const eventosDelDia = eventosPorDia[dia] || [];
-        const tieneEventos = eventosDelDia.length > 0;
+        for (let dia = 1; dia <= daysInMonth; dia++) {
+            const eventosDelDia = eventosPorDia[dia] || [];
+            const tieneEventos = eventosDelDia.length > 0;
 
-        dias.push(
-            <div
-                key={dia}
-                className={`aspect-square flex flex-col items-center justify-center text-[11px] text-[var(--color-text-secondary)] rounded-[6px] cursor-default relative transition-all duration-200 ${tieneEventos
-                    ? 'bg-white font-bold cursor-pointer shadow-[var(--shadow-sm)] border border-[var(--color-border)] hover:scale-110 hover:z-10 hover:shadow-[var(--shadow-md)] hover:border-[var(--color-cop-blue)] hover:text-[var(--color-cop-blue)] group'
-                    : ''
-                    }`}
-                title={tieneEventos ? eventosDelDia.map(e => e.titulo).join('\n') : ''}
-            >
-                <span className="leading-none">{dia}</span>
-                {tieneEventos && (
-                    <div className="flex gap-px mt-px">
-                        {eventosDelDia.slice(0, 3).map((e, i) => (
-                            <span
-                                key={i}
-                                className="w-[3px] h-[3px] rounded-full transition-colors group-hover:bg-[var(--color-cop-blue)]"
-                                style={{ background: e.modalidades?.color || '#171717' }}
-                            />
-                        ))}
-                    </div>
-                )}
-            </div>
-        );
-    }
+            diasArray.push(
+                <div
+                    key={dia}
+                    className={`aspect-square flex flex-col items-center justify-center text-[11px] text-[var(--color-text-secondary)] rounded-[6px] cursor-default relative transition-all duration-200 ${tieneEventos
+                        ? 'bg-white font-bold cursor-pointer shadow-[var(--shadow-sm)] border border-[var(--color-border)] hover:scale-110 hover:z-10 hover:shadow-[var(--shadow-md)] hover:border-[var(--color-cop-blue)] hover:text-[var(--color-cop-blue)] group'
+                        : ''
+                        }`}
+                    title={tieneEventos ? eventosDelDia.map(e => e.titulo).join('\n') : ''}
+                    onClick={() => tieneEventos && onEventClick(eventosDelDia[0])}
+                >
+                    <span className="leading-none">{dia}</span>
+                    {tieneEventos && (
+                        <div className="flex gap-px mt-px">
+                            {eventosDelDia.slice(0, 3).map((e, i) => (
+                                <span
+                                    key={i}
+                                    className="w-[3px] h-[3px] rounded-full transition-colors group-hover:bg-[var(--color-cop-blue)]"
+                                    style={{ background: e.modalidades?.color || '#171717' }}
+                                />
+                            ))}
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        return { dias: diasArray, eventosDelMes: eventosDelMesLocal };
+    }, [mesIndex, year, eventos, onEventClick]);
 
     const eventosAMostrar = expandido ? eventosDelMes : eventosDelMes.slice(0, 3);
     const tieneEventosOcultos = eventosDelMes.length > 3 && !expandido;
@@ -91,7 +94,7 @@ export default function MiniMonth({ mes, mesIndex, year, eventos, onEventClick }
             </div>
             {eventosDelMes.length > 0 && (
                 <div className="mt-2 pt-2 border-t border-border-elite">
-                    {eventosAMostrar.map((e, i) => (
+                    {eventosAMostrar.map((e: EventoConModalidad, i: number) => (
                         <div
                             key={i}
                             className="flex items-center gap-1.5 py-1 text-[10px] text-text-elite cursor-pointer transition-all rounded-[3px] px-1 hover:bg-cop-blue/10 hover:translate-x-0.5"
@@ -130,4 +133,8 @@ export default function MiniMonth({ mes, mesIndex, year, eventos, onEventClick }
             )}
         </div>
     );
-}
+});
+
+MiniMonth.displayName = 'MiniMonth';
+
+export default MiniMonth;
