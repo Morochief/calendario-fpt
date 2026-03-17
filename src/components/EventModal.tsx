@@ -61,7 +61,26 @@ export default function EventModal({ evento, onClose }: EventModalProps) {
             .select('*')
             .eq('evento_id', evento.id)
             .order('orden', { ascending: true });
-        setImagenes(data || []);
+            
+        let finalGallery: ImagenEvento[] = data || [];
+
+        // Integrar Portada (Presencia Visual) como primera imagen si existe
+        if (evento.imagen_url && isValidImageUrl(evento.imagen_url)) {
+            const isAlreadyInGallery = finalGallery.some(img => img.url === evento.imagen_url);
+            if (!isAlreadyInGallery) {
+                const portada: ImagenEvento = {
+                    id: 'portada',
+                    evento_id: evento.id,
+                    url: evento.imagen_url,
+                    descripcion: 'Portada del Evento',
+                    orden: -1,
+                    created_at: new Date().toISOString()
+                };
+                finalGallery = [portada, ...finalGallery];
+            }
+        }
+
+        setImagenes(finalGallery);
         setLoadingGallery(false);
     }
 
