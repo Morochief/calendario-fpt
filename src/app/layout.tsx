@@ -6,9 +6,32 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import AutoLogout from "@/components/AutoLogout";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://calendario-fpdt.vercel.app"),
   title: "Calendario 2026 | Federación Paraguaya de Tiro",
   description: "Calendario oficial de competiciones de la Federación Paraguaya de Tiro - 2026",
   keywords: "tiro práctico, Paraguay, IPSC, competiciones, calendario, FPT",
+  openGraph: {
+    title: "Calendario 2026 | Federación Paraguaya de Tiro",
+    description: "Calendario oficial de competiciones de la Federación Paraguaya de Tiro - 2026",
+    url: "https://calendario-fpdt.vercel.app",
+    siteName: "Federación Paraguaya de Tiro",
+    images: [
+      {
+        url: "/LOGO FPDT.png",
+        width: 800,
+        height: 600,
+        alt: "Federación Paraguaya de Tiro",
+      },
+    ],
+    locale: "es_PY",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Calendario 2026 | Federación Paraguaya de Tiro",
+    description: "Calendario oficial de competiciones de la Federación Paraguaya de Tiro - 2026",
+    images: ["/LOGO FPDT.png"],
+  },
   icons: {
     icon: "/LOGO_FPDT-removebg-preview.svg",
     shortcut: "/LOGO_FPDT-removebg-preview.svg",
