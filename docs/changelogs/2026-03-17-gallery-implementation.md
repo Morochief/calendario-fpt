@@ -48,6 +48,10 @@ Durante el despliegue en Vercel, se identificó un error crítico que detenía e
 - **Auto-Logout**: Se redujo el tiempo de inactividad de 60 a 30 minutos.
 - **Middleware Sync**: Sincronización del servidor y cliente para validación de sesión coherente.
 
+### **Mejora 7: Monitoreo con Vercel Analytics**
+- **Implementación**: Se instaló `@vercel/analytics` y se integró el componente `<Analytics />` en el RootLayout.
+- **Objetivo**: Proveer métricas detalladas sobre el tráfico y comportamiento de los usuarios sin comprometer la privacidad.
+
 ---
-*Estado: Funcionalidad de base de datos, diseño y seguridad 100% operativa.*
+*Estado: Funcionalidad de base de datos, diseño, seguridad y monitoreo 100% operativa.*
 *Documentación generada por Antigravity.*
