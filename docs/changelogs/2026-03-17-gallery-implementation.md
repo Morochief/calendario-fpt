@@ -28,6 +28,9 @@ Durante el despliegue en Vercel, se identificó un error crítico que detenía e
 2.  **Tipado Estricto**: Se añadieron tipos explícitos (`React.MouseEvent`, `ImagenEvento`, `number`) en todos los puntos críticos de `EventModal.tsx`.
 3.  **Guardas de Seguridad**: Se añadieron validaciones `if (imagenes.length === 0) return;` en las funciones de navegación del carrusel.
 
+### **Error 2: Storage RLS Policy (StorageApiError)**
+- **Problema**: El despliegue inicial fallaba al subir imágenes debido a que el bucket `event-images` no tenía políticas de acceso configuradas.
+- **Error**: `StorageApiError: new row violates row-level security policy`.
 - **Solución**: Se creó y aplicó el script `migration_storage_gallery.sql` para definir permisos de lectura pública e inserción/borrado solo para administradores.
 
 ### **Mejora 3: Estética y Visibilidad (Tailwind v4)**
@@ -40,6 +43,11 @@ Durante el despliegue en Vercel, se identificó un error crítico que detenía e
 ### **Mejora 5: Social Media & SEO (WhatsApp)**
 - **Open Graph**: Se configuraron metadatos en `layout.tsx` (og:image, og:description) usando `metadataBase` para asegurar que el enlace genere una vista previa profesional (con logo) al ser compartido en WhatsApp.
 
+### **Mejora 6: Seguridad de Sesión Estricta**
+- **Cookies Volátiles & Almacenamiento Temporal**: Se eliminó el `maxAge` de las cookies y se configuró el cliente para usar `sessionStorage` en lugar de `localStorage`. Esto asegura que la sesión no sobreviva al cierre del proceso del navegador o de la pestaña.
+- **Auto-Logout**: Se redujo el tiempo de inactividad de 60 a 30 minutos.
+- **Middleware Sync**: Sincronización del servidor y cliente para validación de sesión coherente.
+
 ---
-*Estado: Funcionalidad de base de datos y diseño 100% operativa.*
+*Estado: Funcionalidad de base de datos, diseño y seguridad 100% operativa.*
 *Documentación generada por Antigravity.*
