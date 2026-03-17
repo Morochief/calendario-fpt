@@ -6,7 +6,10 @@
    ======================================== */
 
 @theme {
-  /* We can extend the theme here if needed */
+  --color-cop-blue: #1E3A8A;
+  --color-fpt-red: #D91E18;
+  --color-elite-bg: #F9FBFF;
+  --color-elite-surface: #FFFFFF;
 }
 
 :root {

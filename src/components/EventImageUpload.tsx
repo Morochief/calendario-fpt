@@ -3,8 +3,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createClient } from '@/lib/supabase';
 import { ImagenEvento } from '@/lib/types';
-import { Image as ImageIcon, X, Plus, UploadCloud, Loader2, Info } from 'lucide-react';
+import { Image as ImageIcon, X, Plus, UploadCloud, Loader2, Info, Camera } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import EliteButton from './ui/EliteButton';
 
 interface EventImageUploadProps {
     eventoId?: string; // Optional for new events (creation flow)
@@ -40,25 +41,34 @@ export default function EventImageUpload({ eventoId, onImagesChange, className }
     }
 
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (!e.target.files || e.target.files.length === 0) return;
+        const selectedFiles = e.target.files;
+        console.log('Archivos detectados en input:', selectedFiles?.length);
         
-        const files = Array.from(e.target.files);
+        if (!selectedFiles || selectedFiles.length === 0) return;
+        
+        const files: File[] = Array.from(selectedFiles);
+        console.log('Archivos convertidos a Array:', files.length);
         
         if (eventoId) {
-            // Edit mode: Upload directly
+            console.log('Modo Edición: Subiendo directamente a Supabase...');
             handleUpload(files);
         } else {
-            // Creation mode: Add to pending
-            const newPending = files.map(file => ({
+            console.log('Modo Creación: Añadiendo a la lista de pendientes...');
+            const newPending = files.map((file: File) => ({
                 file,
                 preview: URL.createObjectURL(file)
             }));
-            const updatedPending = [...pendingFiles, ...newPending];
-            setPendingFiles(updatedPending);
-            if (onImagesChange) onImagesChange(updatedPending.map(p => p.file));
+            setPendingFiles((prev: { file: File, preview: string }[]) => {
+                const updated = [...prev, ...newPending];
+                console.log('Lista de pendientes actualizada, nuevo total:', updated.length);
+                if (onImagesChange) onImagesChange(updated.map((p: { file: File }) => p.file));
+                return updated;
+            });
         }
         
-        if (fileInputRef.current) fileInputRef.current.value = '';
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
     };
 
     async function handleUpload(files: File[]) {
@@ -67,9 +77,11 @@ export default function EventImageUpload({ eventoId, onImagesChange, className }
         const maxOrden = imagenes.length > 0 ? Math.max(...imagenes.map(i => i.orden)) : 0;
 
         for (let idx = 0; idx < files.length; idx++) {
-            const file = files[idx];
+            const file: File = files[idx];
             const ext = file.name.split('.').pop();
             const fileName = `gallery_${eventoId}_${Date.now()}_${idx}.${ext}`;
+            
+            console.log(`Subiendo archivo ${idx + 1}/${files.length}: ${fileName}`);
 
             const { error: uploadError } = await supabase.storage
                 .from('event-images')
@@ -111,9 +123,11 @@ export default function EventImageUpload({ eventoId, onImagesChange, className }
     }
 
     const removePending = (index: number) => {
-        const updated = pendingFiles.filter((_, i) => i !== index);
-        setPendingFiles(updated);
-        if (onImagesChange) onImagesChange(updated.map(p => p.file));
+        setPendingFiles((prev: { file: File, preview: string }[]) => {
+            const updated = prev.filter((_, i: number) => i !== index);
+            if (onImagesChange) onImagesChange(updated.map((p: { file: File }) => p.file));
+            return updated;
+        });
     };
 
     if (loading) return (
@@ -136,15 +150,18 @@ export default function EventImageUpload({ eventoId, onImagesChange, className }
                     </div>
                 </div>
 
-                <button
+                <EliteButton
                     type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    disabled={uploading}
-                    className="flex items-center gap-2 px-5 py-2.5 bg-cop-blue text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-lg shadow-blue-900/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
+                    onClick={() => {
+                        console.log('Botón Agregar clickeado');
+                        fileInputRef.current?.click();
+                    }}
+                    isLoading={uploading}
+                    icon={<Plus size={16} />}
+                    className="px-6 py-2.5 rounded-xl shadow-btn-blue uppercase tracking-widest"
                 >
-                    {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus size={16} />}
                     Agregar Imágenes
-                </button>
+                </EliteButton>
                 <input
                     ref={fileInputRef}
                     type="file"
@@ -170,7 +187,7 @@ export default function EventImageUpload({ eventoId, onImagesChange, className }
             {(imagenes.length > 0 || pendingFiles.length > 0) && (
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                     {/* Existing Images */}
-                    {imagenes.map((img) => (
+                    {imagenes.map((img: ImagenEvento) => (
                         <div key={img.id} className="group relative aspect-square rounded-2xl overflow-hidden border-2 border-slate-100 bg-slate-50 shadow-sm hover:shadow-md transition-all">
                             <img src={img.url} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
@@ -187,17 +204,17 @@ export default function EventImageUpload({ eventoId, onImagesChange, className }
                     ))}
 
                     {/* Pending Files */}
-                    {pendingFiles.map((pf, idx) => (
-                        <div key={`pending-${idx}`} className="group relative aspect-square rounded-2xl overflow-hidden border-2 border-dashed border-cop-blue/30 bg-cop-blue/5 shadow-sm transition-all">
-                            <img src={pf.preview} alt="" className="w-full h-full object-cover opacity-60" />
-                            <div className="absolute inset-0 flex flex-col items-center justify-center p-2">
-                                <span className="px-2 py-1 bg-cop-blue text-white text-[8px] font-black uppercase tracking-tighter rounded-md mb-2 shadow-sm">Pendiente</span>
+                    {pendingFiles.map((pf: { file: File, preview: string }, idx: number) => (
+                        <div key={`pending-${idx}`} className="group relative aspect-square rounded-2xl overflow-hidden border-2 border-dashed border-cop-blue/40 bg-cop-blue/10 shadow-sm transition-all animate-in zoom-in-50 duration-300">
+                            <img src={pf.preview} alt="" className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
+                            <div className="absolute inset-0 flex flex-col items-center justify-center p-2 bg-slate-900/10 group-hover:bg-transparent transition-colors">
+                                <span className="px-2.5 py-1 bg-cop-blue text-white text-[9px] font-black uppercase tracking-tighter rounded-lg mb-2 shadow-glow-blue border border-white/20">PENDIENTE</span>
                                 <button
                                     type="button"
                                     onClick={() => removePending(idx)}
-                                    className="p-2 rounded-xl bg-white border border-slate-100 text-fpt-red hover:bg-fpt-red hover:text-white transition-all shadow-sm"
+                                    className="p-2.5 rounded-xl bg-white border border-slate-200 text-fpt-red hover:bg-fpt-red hover:text-white transition-all shadow-md active:scale-90"
                                 >
-                                    <X size={14} />
+                                    <X size={16} />
                                 </button>
                             </div>
                         </div>
