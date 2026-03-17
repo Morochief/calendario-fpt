@@ -28,10 +28,17 @@ Durante el despliegue en Vercel, se identificó un error crítico que detenía e
 2.  **Tipado Estricto**: Se añadieron tipos explícitos (`React.MouseEvent`, `ImagenEvento`, `number`) en todos los puntos críticos de `EventModal.tsx`.
 3.  **Guardas de Seguridad**: Se añadieron validaciones `if (imagenes.length === 0) return;` en las funciones de navegación del carrusel.
 
-### **Error 2: Storage RLS Policy (StorageApiError)**
-- **Problema**: El despliegue inicial fallaba al subir imágenes debido a que el bucket `event-images` no tenía políticas de acceso configuradas.
-- **Error**: `new row violates row-level security policy`.
 - **Solución**: Se creó y aplicó el script `migration_storage_gallery.sql` para definir permisos de lectura pública e inserción/borrado solo para administradores.
+
+### **Mejora 3: Estética y Visibilidad (Tailwind v4)**
+- **Ajuste de Tema**: Debido a que el proyecto utiliza Tailwind v4, se configuraron los colores institucionales (`cop-blue`, `fpt-red`) en el bloque `@theme` de `globals.css`.
+- **Elite Components**: Se migró el botón de carga a `EliteButton` para garantizar el contraste adecuado y cumplir con la estética "Premium".
+
+### **Mejora 4: Flujo UX Integrado**
+- **Portada en Galería**: Se modificó `EventModal.tsx` para que la imagen de "Presencia Visual" sea automáticamente el primer slide de la galería si existe, unificando la vista previa con el contenido inmersivo.
+
+### **Mejora 5: Social Media & SEO (WhatsApp)**
+- **Open Graph**: Se configuraron metadatos en `layout.tsx` (og:image, og:description) usando `metadataBase` para asegurar que el enlace genere una vista previa profesional (con logo) al ser compartido en WhatsApp.
 
 ---
 *Estado: Funcionalidad de base de datos y diseño 100% operativa.*

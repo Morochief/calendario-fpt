@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase';
 import { useToast } from '@/components/Toast';
 
 // Inactivity timeout in milliseconds (e.g., 60 minutes = 3600000 ms)
-const INACTIVITY_TIMEOUT = 60 * 60 * 1000;
+const INACTIVITY_TIMEOUT = 30 * 60 * 1000;
 
 export default function AutoLogout() {
     const router = useRouter();

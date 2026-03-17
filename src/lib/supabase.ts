@@ -22,8 +22,10 @@ export function createClient(): SupabaseClientType {
             env.NEXT_PUBLIC_SUPABASE_URL,
             env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
             {
+                // No maxAge means session cookie (deleted when browser closes)
                 cookieOptions: {
-                    maxAge: 4 * 60 * 60, // 4 hours
+                    sameSite: 'lax',
+                    secure: process.env.NODE_ENV === 'production',
                 }
             }
         );
