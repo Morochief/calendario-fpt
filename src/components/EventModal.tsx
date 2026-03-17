@@ -65,8 +65,15 @@ export default function EventModal({ evento, onClose }: EventModalProps) {
         setLoadingGallery(false);
     }
 
-    const handleNext = () => setCurrentIdx(prev => (prev + 1) % imagenes.length);
-    const handlePrev = () => setCurrentIdx(prev => (prev - 1 + imagenes.length) % imagenes.length);
+    const handleNext = () => {
+        if (imagenes.length === 0) return;
+        setCurrentIdx((prev: number) => (prev + 1) % imagenes.length);
+    };
+    
+    const handlePrev = () => {
+        if (imagenes.length === 0) return;
+        setCurrentIdx((prev: number) => (prev - 1 + imagenes.length) % imagenes.length);
+    };
 
     if (!mounted || !evento) return null;
 
@@ -84,7 +91,7 @@ export default function EventModal({ evento, onClose }: EventModalProps) {
 
     return createPortal(
         <div
-            onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+            onClick={(e: React.MouseEvent) => { if (e.target === e.currentTarget) onClose(); }}
             role="dialog"
             aria-modal="true"
             aria-labelledby="event-modal-title"
@@ -125,12 +132,12 @@ export default function EventModal({ evento, onClose }: EventModalProps) {
                         boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
                         transition: 'all 0.2s',
                     }}
-                    onMouseEnter={(e) => {
+                    onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => {
                         e.currentTarget.style.background = '#FEE2E2';
                         e.currentTarget.style.color = '#D91E18';
                         e.currentTarget.style.borderColor = '#D91E18';
                     }}
-                    onMouseLeave={(e) => {
+                    onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) => {
                         e.currentTarget.style.background = 'rgba(255,255,255,0.9)';
                         e.currentTarget.style.color = '#475569';
                         e.currentTarget.style.borderColor = 'rgba(30,58,138,0.15)';
@@ -188,7 +195,7 @@ export default function EventModal({ evento, onClose }: EventModalProps) {
 
                             {/* Pagination Dots */}
                             <div className="absolute bottom-4 inset-x-0 flex justify-center gap-1.5">
-                                {imagenes.map((_, i) => (
+                                {imagenes.map((_: ImagenEvento, i: number) => (
                                     <div 
                                         key={i} 
                                         className={cn(
@@ -354,8 +361,8 @@ export default function EventModal({ evento, onClose }: EventModalProps) {
                                                 gap: '0.25rem',
                                                 marginTop: '0.125rem'
                                             }}
-                                            onMouseEnter={(e) => e.currentTarget.style.textDecoration = 'underline'}
-                                            onMouseLeave={(e) => e.currentTarget.style.textDecoration = 'none'}
+                                            onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => e.currentTarget.style.textDecoration = 'underline'}
+                                            onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => e.currentTarget.style.textDecoration = 'none'}
                                         >
                                             Visitar sitio web <ExternalLink size={10} />
                                         </a>
@@ -446,7 +453,7 @@ export default function EventModal({ evento, onClose }: EventModalProps) {
 
                         {/* Thumbnail Strip */}
                         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-3 p-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl pointer-events-auto max-w-[90vw] overflow-x-auto no-scrollbar scroll-smooth animate-slide-up">
-                            {imagenes.map((img, i) => (
+                            {imagenes.map((img: ImagenEvento, i: number) => (
                                 <button
                                     key={img.id}
                                     onClick={() => setCurrentIdx(i)}
