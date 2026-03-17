@@ -12,6 +12,7 @@ import { Save, X, Calendar, MapPin, Link as LinkIcon, Image as ImageIcon, AlignL
 import { cn } from '@/lib/utils';
 import EliteButton from '@/components/ui/EliteButton';
 import EliteSelect from '@/components/ui/EliteSelect';
+import EventImageUpload from '@/components/EventImageUpload';
 
 interface EventFormProps {
     initialData?: Partial<EventoInput> & { id?: string };
@@ -41,6 +42,7 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
     const [tipoEventoId, setTipoEventoId] = useState(initialData?.tipo_evento_id || '');
     const [clubId, setClubId] = useState(initialData?.club_id || '');
     const [estadoOverride, setEstadoOverride] = useState(initialData?.estado_override || '');
+    const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
 
     useEffect(() => { loadOptions(); }, []);
 
@@ -132,8 +134,29 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                 if (error) throw error;
                 showToast('Evento actualizado correctamente', 'success');
             } else {
-                const { error } = await supabase.from('eventos').insert(validation.data);
+                const { data: newEvent, error } = await supabase.from('eventos').insert(validation.data).select().single();
                 if (error) throw error;
+                
+                // Optimized Gallery Upload (Creation Flow)
+                if (galleryFiles.length > 0 && newEvent) {
+                    showToast('Subiendo galería...', 'info');
+                    for (let idx = 0; idx < galleryFiles.length; idx++) {
+                        const file = galleryFiles[idx];
+                        const ext = file.name.split('.').pop();
+                        const fileName = `gallery_${newEvent.id}_${Date.now()}_${idx}.${ext}`;
+
+                        const { error: uploadError } = await supabase.storage.from('event-images').upload(fileName, file);
+                        if (uploadError) continue;
+
+                        const { data: { publicUrl } } = supabase.storage.from('event-images').getPublicUrl(fileName);
+                        await supabase.from('imagenes_evento').insert({
+                            evento_id: newEvent.id,
+                            url: publicUrl,
+                            orden: idx + 1
+                        });
+                    }
+                }
+                
                 showToast('Evento creado correctamente', 'success');
             }
             router.push('/admin');
@@ -507,6 +530,14 @@ export default function EventForm({ initialData, isEditing = false }: EventFormP
                         )}
                     />
                 </div>
+            </section>
+
+            {/* ═══════ CLUSTER 5: GALERÍA ELITE ═══════ */}
+            <section className="bg-white p-6 sm:p-8 rounded-[2rem] border border-slate-100 shadow-sm space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+                <EventImageUpload 
+                    eventoId={initialData?.id} 
+                    onImagesChange={setGalleryFiles}
+                />
             </section>
 
             {/* ═══════ ACTIONS ═══════ */}

@@ -98,5 +98,12 @@ export type Club = {
     website_url?: string | null;
     logo_url?: string | null;
     created_at?: string;
-};
 
+export type ImagenEvento = {
+    id: string;
+    evento_id: string;
+    url: string;
+    descripcion: string | null;
+    orden: number;
+    created_at: string;
+};
