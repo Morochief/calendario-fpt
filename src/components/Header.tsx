@@ -57,19 +57,21 @@ export default function Header() {
             "transition-shadow duration-normal"
         )}>
             <Link href="/" className="flex items-center gap-3.5 group">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                    src="/LOGO_FPDT-removebg-preview.svg"
-                    alt="Federación Paraguaya de Tiro"
-                    style={{
-                        height: '48px',
-                        width: 'auto',
-                        objectFit: 'contain',
-                        imageRendering: 'auto',
-                        flexShrink: 0,
-                    }}
-                    className="transition-transform duration-300 group-hover:scale-105"
-                />
+                <div
+                    className={cn(
+                        "relative flex-shrink-0 transition-transform duration-300 group-hover:scale-105",
+                        "h-12 w-auto"
+                    )}
+                >
+                    <Image
+                        src="/LOGO_FPDT-removebg-preview.svg"
+                        alt="Federación Paraguaya de Tiro"
+                        width={64}
+                        height={48}
+                        priority
+                        className="h-full w-auto object-contain"
+                    />
+                </div>
                 <div className="flex flex-col">
                     <h1 className="text-base font-semibold text-text-elite tracking-elite leading-tight">FPDT</h1>
                     <span className="text-xs text-text-muted font-normal tracking-normal">Federación Paraguaya de Tiro</span>

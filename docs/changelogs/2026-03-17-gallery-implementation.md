@@ -52,6 +52,10 @@ Durante el despliegue en Vercel, se identificó un error crítico que detenía e
 - **Implementación**: Se instaló `@vercel/analytics` y se integró el componente `<Analytics />` en el RootLayout.
 - **Objetivo**: Proveer métricas detalladas sobre el tráfico y comportamiento de los usuarios sin comprometer la privacidad.
 
+### **Mejora 8: Optimización de Rendimiento (FCP)**
+- **Fuentes**: Migración a `next/font/google` para eliminar peticiones externas a Google Fonts.
+- **Imagen Prioritaria**: Los logos principales ahora usan `next/image` con `priority` para acelerar el renderizado inicial y bajar el FCP por debajo de los 1.8s.
+
 ---
-*Estado: Funcionalidad de base de datos, diseño, seguridad y monitoreo 100% operativa.*
+*Estado: Funcionalidad de base de datos, diseño, seguridad, monitoreo y rendimiento 100% operativa.*
 *Documentación generada por Antigravity.*

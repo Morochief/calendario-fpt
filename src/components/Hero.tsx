@@ -1,6 +1,7 @@
 'use client';
 
 import { ArrowDown } from 'lucide-react';
+import Image from 'next/image';
 
 export default function Hero() {
     const scrollToContent = () => {
@@ -25,10 +26,12 @@ export default function Hero() {
                     <div className="absolute inset-0 bg-white/20 blur-xl rounded-full transform scale-110" />
 
                     <div className="w-[200px] h-[200px] bg-white rounded-full flex items-center justify-center p-6 shadow-2xl relative z-10 transition-transform hover:scale-105 duration-500">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
+                        <Image
                             src="/LOGO_FPDT-removebg-preview.svg"
                             alt="Federación Paraguaya de Tiro"
+                            width={160}
+                            height={160}
+                            priority
                             className="w-full h-full object-contain"
                         />
                     </div>
