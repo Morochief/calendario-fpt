@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useTransition } from 'react';
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import Footer from '@/components/Footer';
@@ -16,6 +16,7 @@ import SectionTitle from '@/components/SectionTitle';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMemo } from 'react';
 import EventModal from '@/components/EventModal';
+import { cn } from '@/lib/utils';
 
 type ViewType = 'mensual' | 'anual';
 
@@ -29,6 +30,7 @@ export default function CalendarPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<EventoConModalidad | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     loadData();
@@ -146,97 +148,98 @@ export default function CalendarPage() {
       <Header />
       <Hero />
       <main className="main relative z-10 bg-white" id="calendario">
-        <ScrollReveal>
-          <div className="calendar-header pt-16 md:pt-24">
-            <SectionTitle
-              title="Calendario de Eventos"
-              subtitle="Temporada Oficial 2026"
-              type="institucional"
-              className="mb-0" // Override margin if needed by layout
-            />
+        <div className="calendar-header pt-16 md:pt-24">
+          <SectionTitle
+            title="Calendario de Eventos"
+            subtitle="Temporada Oficial 2026"
+            type="institucional"
+            className="mb-0"
+          />
+        </div>
+
+        <div className="flex flex-col lg:flex-row gap-4 mb-6 relative z-[var(--z-filter)] items-start lg:items-center justify-between">
+          <div className="flex flex-col md:flex-row gap-4 w-full lg:w-auto">
+            {modalidades.length > 0 && (
+              <ModalityFilter
+                modalidades={modalidades}
+                selected={selectedModalidad}
+                onSelect={(id) => startTransition(() => setSelectedModalidad(id))}
+              />
+            )}
+            {clubes.length > 0 && (
+              <ClubFilter
+                clubes={clubes}
+                selected={selectedClub}
+                onSelect={(id) => startTransition(() => setSelectedClub(id))}
+              />
+            )}
           </div>
 
-          <div className="flex flex-col lg:flex-row gap-4 mb-6 relative z-[var(--z-filter)] items-start lg:items-center justify-between">
-            <div className="flex flex-col md:flex-row gap-4 w-full lg:w-auto">
-              {modalidades.length > 0 && (
-                <ModalityFilter
-                  modalidades={modalidades}
-                  selected={selectedModalidad}
-                  onSelect={setSelectedModalidad}
-                />
+          <div className="flex bg-white p-1 rounded-full border border-[var(--color-border)] shadow-[var(--shadow-sm)] w-fit relative z-10 shrink-0">
+            <button
+              onClick={() => setVista('mensual')}
+              className={`relative px-6 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${vista === 'mensual'
+                ? 'text-[var(--color-cop-blue)] shadow-sm bg-blue-50/50'
+                : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text)]'
+                }`}
+            >
+              {vista === 'mensual' && (
+                <div className="absolute inset-0 bg-white rounded-full shadow-[var(--shadow-xs)] border border-[var(--color-border-hover)] -z-10 animate-in fade-in zoom-in-95 duration-200" />
               )}
-              {clubes.length > 0 && (
-                <ClubFilter
-                  clubes={clubes}
-                  selected={selectedClub}
-                  onSelect={setSelectedClub}
-                />
+              Vista Mensual
+            </button>
+            <button
+              onClick={() => setVista('anual')}
+              className={`relative px-6 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${vista === 'anual'
+                ? 'text-[var(--color-cop-blue)] shadow-sm bg-blue-50/50'
+                : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text)]'
+                }`}
+            >
+              {vista === 'anual' && (
+                <div className="absolute inset-0 bg-white rounded-full shadow-[var(--shadow-xs)] border border-[var(--color-border-hover)] -z-10 animate-in fade-in zoom-in-95 duration-200" />
               )}
-            </div>
+              Vista Anual
+            </button>
+          </div>
+        </div>
 
-            <div className="flex bg-white p-1 rounded-full border border-[var(--color-border)] shadow-[var(--shadow-sm)] w-fit relative z-10 shrink-0">
-              <button
-                onClick={() => setVista('mensual')}
-                className={`relative px-6 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${vista === 'mensual'
-                  ? 'text-[var(--color-cop-blue)] shadow-sm bg-blue-50/50'
-                  : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text)]'
-                  }`}
+        <div className={cn(
+          "bg-white p-6 rounded-3xl shadow-sm border border-slate-100 min-h-[600px] relative overflow-hidden transition-opacity duration-300",
+          isPending ? "opacity-60" : "opacity-100"
+        )}>
+          <AnimatePresence mode="wait">
+            {vista === 'mensual' ? (
+              <motion.div
+                key="mensual"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-20"
               >
-                {vista === 'mensual' && (
-                  <div className="absolute inset-0 bg-white rounded-full shadow-[var(--shadow-xs)] border border-[var(--color-border-hover)] -z-10 animate-in fade-in zoom-in-95 duration-200" />
-                )}
-                Vista Mensual
-              </button>
-              <button
-                onClick={() => setVista('anual')}
-                className={`relative px-6 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${vista === 'anual'
-                  ? 'text-[var(--color-cop-blue)] shadow-sm bg-blue-50/50'
-                  : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text)]'
-                  }`}
+                {MESES.map((mes, index) => (
+                  <MonthCard
+                    key={mes}
+                    mes={mes}
+                    mesIndex={index}
+                    eventos={eventosPorMes[index]}
+                    onEventClick={setSelectedEvent}
+                  />
+                ))}
+              </motion.div>
+            ) : (
+              <motion.div
+                key="anual"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
               >
-                {vista === 'anual' && (
-                  <div className="absolute inset-0 bg-white rounded-full shadow-[var(--shadow-xs)] border border-[var(--color-border-hover)] -z-10 animate-in fade-in zoom-in-95 duration-200" />
-                )}
-                Vista Anual
-              </button>
-            </div>
-          </div>
-
-          <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 min-h-[600px] relative overflow-hidden">
-            <AnimatePresence mode="wait">
-              {vista === 'mensual' ? (
-                <motion.div
-                  key="mensual"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
-                  transition={{ duration: 0.3, ease: "easeInOut" }}
-                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-20"
-                >
-                  {MESES.map((mes, index) => (
-                    <MonthCard
-                      key={mes}
-                      mes={mes}
-                      mesIndex={index}
-                      eventos={eventosPorMes[index]}
-                      onEventClick={setSelectedEvent}
-                    />
-                  ))}
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="anual"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={{ duration: 0.3, ease: "easeInOut" }}
-                >
-                  <AnnualCalendar eventos={eventosFiltrados} year={2026} onEventClick={setSelectedEvent} />
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </ScrollReveal>
+                <AnnualCalendar eventos={eventosFiltrados} year={2026} onEventClick={setSelectedEvent} />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
 
         {selectedEvent && (
             <EventModal

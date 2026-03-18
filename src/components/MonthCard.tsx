@@ -11,7 +11,7 @@ interface MonthCardProps {
 
 const MonthCard = memo(({ mes, mesIndex, eventos, onEventClick }: MonthCardProps) => {
     return (
-        <div className="bg-white rounded-[16px] border border-[var(--color-border)] overflow-hidden transition-all duration-300 shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-lg)] hover:-translate-y-1 group relative border-t-4 border-t-[#D91E18]">
+        <div className="bg-white rounded-[16px] border border-[var(--color-border)] overflow-hidden transition-all duration-300 shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-lg)] hover:-translate-y-1 group relative border-t-4 border-t-[#D91E18] content-auto">
             
             <div className="relative p-5 flex items-center justify-between border-b border-[var(--color-border)] bg-gradient-to-br from-white to-blue-50/30">
                 <span className="text-[14px] font-black text-[#1E3A8A] uppercase tracking-widest flex items-center gap-2">

@@ -88,3 +88,13 @@
     -moz-osx-font-smoothing: grayscale;
   }
 }
+/* Rendering Optimizations - INP Phase 2 */
+.content-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 500px;
+}
+
+.optimize-gpu {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+}
