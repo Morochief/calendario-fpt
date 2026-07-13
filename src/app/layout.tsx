@@ -5,12 +5,22 @@ import Watermark from "@/components/Watermark";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
 import AutoLogout from "@/components/AutoLogout";
+import { SerwistProvider } from "@serwist/next/react";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://calendario-fpdt.vercel.app"),
   title: "Calendario 2026 | Federación Paraguaya de Tiro",
   description: "Calendario oficial de competiciones de la Federación Paraguaya de Tiro - 2026",
   keywords: "tiro práctico, Paraguay, IPSC, competiciones, calendario, FPT",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    title: "Calendario FPT",
+    statusBarStyle: "default",
+  },
+  other: {
+    "mobile-web-app-capable": "yes",
+  },
   openGraph: {
     title: "Calendario 2026 | Federación Paraguaya de Tiro",
     description: "Calendario oficial de competiciones de la Federación Paraguaya de Tiro - 2026",
@@ -36,7 +46,9 @@ export const metadata: Metadata = {
   icons: {
     icon: "/LOGO_FPDT-removebg-preview.svg",
     shortcut: "/LOGO_FPDT-removebg-preview.svg",
-    apple: "/LOGO_FPDT-removebg-preview.svg",
+    apple: [
+      { url: "/icons/icon-192x192.png", sizes: "192x192", type: "image/png" },
+    ],
   },
 };
 
@@ -55,19 +67,28 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" suppressHydrationWarning className={inter.variable}>
+      <head>
+        <meta name="theme-color" content="#1E3A8A" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="Calendario FPT" />
+        <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png" />
+      </head>
       <body className={inter.className}>
         <a href="#main-content" className="sr-only">
           Saltar al contenido principal
         </a>
         <Watermark />
-        <div style={{ position: 'relative', zIndex: 1 }}>
-          <ToastProvider>
-            <AutoLogout />
-            {children}
-            <SpeedInsights />
-            <Analytics />
-          </ToastProvider>
-        </div>
+        <SerwistProvider>
+          <div style={{ position: 'relative', zIndex: 1 }}>
+            <ToastProvider>
+              <AutoLogout />
+              {children}
+              <SpeedInsights />
+              <Analytics />
+            </ToastProvider>
+          </div>
+        </SerwistProvider>
       </body>
     </html>
   );
